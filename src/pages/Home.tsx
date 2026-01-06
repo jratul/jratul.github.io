@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { usePosts } from '@/hooks/usePosts';
 import { SEO } from '@/components/seo/SEO';
+import { TagCloud } from '@/components/blog/TagCloud';
 import { SearchBar } from '@/components/blog/SearchBar';
 import { PostList } from '@/components/blog/PostList';
 
@@ -16,6 +17,7 @@ export function Home() {
 
   const {
     filteredPosts,
+    tagFrequencies,
     searchQuery,
     selectedTags,
     loading,
@@ -38,12 +40,12 @@ export function Home() {
 
           <div className="mx-auto max-w-7xl">
             {/* Tag Cloud */}
-            {/* <TagCloud
+            <TagCloud
               tags={tagFrequencies}
               selectedTags={selectedTags}
               onTagClick={toggleTag}
               className="mb-12"
-            /> */}
+            />
 
             {/* Search Bar */}
             <SearchBar
