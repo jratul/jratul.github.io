@@ -1,4 +1,6 @@
-import { useMemo } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import cloud from 'd3-cloud';
+import { select } from 'd3-selection';
 import type { TagFrequency } from '@/types/blog';
 
 interface TagCloudProps {
@@ -8,34 +10,19 @@ interface TagCloudProps {
   className?: string;
 }
 
+interface CloudWord {
+  text: string;
+  size: number;
+  x?: number;
+  y?: number;
+  rotate?: number;
+  count: number;
+}
+
 export function TagCloud({ tags, selectedTags, onTagClick, className = '' }: TagCloudProps) {
-  // Calculate font size and rotation based on tag frequency
-  const getTagStyle = useMemo(() => {
-    if (tags.length === 0) return () => ({});
-
-    const maxCount = Math.max(...tags.map(t => t.count));
-    const minCount = Math.min(...tags.map(t => t.count));
-    const range = maxCount - minCount || 1;
-
-    return (count: number, index: number) => {
-      // Scale font size between 0.875rem (14px) and 4rem (64px) - 더 큰 대비
-      const minSize = 0.875;
-      const maxSize = 4;
-      const scale = (count - minCount) / range;
-      // 비선형 스케일링으로 차이를 더 극대화
-      const exponentialScale = Math.pow(scale, 0.7);
-      const fontSize = minSize + exponentialScale * (maxSize - minSize);
-
-      // 90도 단위 회전: -90, 0, 90도
-      const rotations = [-90, -90, 0, 0, 0, 90, 90, 0, -90, 0, 90, 0, 0];
-      const rotation = rotations[index % rotations.length];
-
-      return {
-        fontSize: `${fontSize}rem`,
-        transform: `rotate(${rotation}deg)`,
-      };
-    };
-  }, [tags]);
+  const svgRef = useRef<SVGSVGElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [dimensions, setDimensions] = useState({ width: 800, height: 400 });
 
   // Get gradient class based on tag position for variety
   const getGradientClass = (index: number) => {
@@ -49,6 +36,135 @@ export function TagCloud({ tags, selectedTags, onTagClick, className = '' }: Tag
     return gradients[index % gradients.length];
   };
 
+  // Update dimensions on resize
+  useEffect(() => {
+    const updateDimensions = () => {
+      if (containerRef.current) {
+        const width = containerRef.current.offsetWidth;
+        const height = Math.min(500, Math.max(300, width * 0.5));
+        setDimensions({ width, height });
+      }
+    };
+
+    updateDimensions();
+    window.addEventListener('resize', updateDimensions);
+    return () => window.removeEventListener('resize', updateDimensions);
+  }, []);
+
+  // Generate word cloud
+  useEffect(() => {
+    if (!svgRef.current || tags.length === 0) return;
+
+    // Calculate font sizes
+    const maxCount = Math.max(...tags.map(t => t.count));
+    const minCount = Math.min(...tags.map(t => t.count));
+    const range = maxCount - minCount || 1;
+
+    // Prepare words for d3-cloud
+    const words: CloudWord[] = tags.map(tag => {
+      const scale = (tag.count - minCount) / range;
+      // More dramatic size difference: 16px to 80px
+      const fontSize = 16 + Math.pow(scale, 0.6) * 64;
+
+      return {
+        text: `#${tag.tag}`,
+        size: fontSize,
+        count: tag.count,
+      };
+    });
+
+    // Create word cloud layout
+    const layout = cloud<CloudWord>()
+      .size([dimensions.width, dimensions.height])
+      .words(words)
+      .padding(5)
+      .rotate(() => {
+        // Random rotation: 0, -45, 45 degrees
+        const rotations = [0, 0, 0, -45, 45, 0, -45, 45];
+        return rotations[Math.floor(Math.random() * rotations.length)];
+      })
+      .fontSize(d => d.size)
+      .on('end', (computedWords) => {
+        draw(computedWords);
+      });
+
+    layout.start();
+
+    function draw(computedWords: CloudWord[]) {
+      if (!svgRef.current) return;
+
+      const svg = select(svgRef.current);
+      svg.selectAll('*').remove();
+
+      const g = svg
+        .attr('width', dimensions.width)
+        .attr('height', dimensions.height)
+        .append('g')
+        .attr('transform', `translate(${dimensions.width / 2},${dimensions.height / 2})`);
+
+      const text = g
+        .selectAll('text')
+        .data(computedWords)
+        .enter()
+        .append('text')
+        .style('font-size', d => `${d.size}px`)
+        .style('font-family', 'Pretendard, sans-serif')
+        .style('font-weight', 'bold')
+        .style('cursor', 'pointer')
+        .attr('text-anchor', 'middle')
+        .attr('transform', d => `translate(${d.x},${d.y})rotate(${d.rotate})`)
+        .text(d => d.text);
+
+      // Apply gradient colors via CSS classes
+      text.each(function(d, i) {
+        const element = select(this);
+        const isSelected = selectedTags.includes(d.text.replace('#', ''));
+        const gradientClass = getGradientClass(i);
+
+        element
+          .attr('class', `
+            text-transparent bg-clip-text bg-gradient-to-r ${gradientClass}
+            transition-all duration-300
+            ${isSelected ? 'opacity-100' : 'opacity-70 hover:opacity-100'}
+          `)
+          .style('filter', isSelected
+            ? 'drop-shadow(0 0 12px rgba(168,85,247,0.8))'
+            : 'none'
+          )
+          .on('mouseenter', function(this: SVGTextElement) {
+            const wordData = select(this).datum() as CloudWord;
+            select(this)
+              .transition()
+              .duration(200)
+              .style('filter', 'drop-shadow(0 0 12px rgba(168,85,247,0.8))')
+              .attr('transform', () => {
+                const scale = 1.1;
+                return `translate(${wordData.x},${wordData.y})rotate(${wordData.rotate})scale(${scale})`;
+              });
+          })
+          .on('mouseleave', function(this: SVGTextElement) {
+            const wordData = select(this).datum() as CloudWord;
+            const stillSelected = selectedTags.includes(wordData.text.replace('#', ''));
+            select(this)
+              .transition()
+              .duration(200)
+              .style('filter', stillSelected
+                ? 'drop-shadow(0 0 12px rgba(168,85,247,0.8))'
+                : 'none'
+              )
+              .attr('transform', `translate(${wordData.x},${wordData.y})rotate(${wordData.rotate})`);
+          })
+          .on('click', () => {
+            onTagClick(d.text.replace('#', ''));
+          });
+      });
+
+      // Add tooltips
+      text.append('title')
+        .text(d => `${d.text.replace('#', '')} (${d.count}개 글)`);
+    }
+  }, [tags, selectedTags, dimensions, onTagClick]);
+
   if (tags.length === 0) {
     return (
       <div className={`text-center py-12 ${className}`}>
@@ -58,37 +174,12 @@ export function TagCloud({ tags, selectedTags, onTagClick, className = '' }: Tag
   }
 
   return (
-    <div className={`flex flex-wrap items-center justify-center gap-x-6 gap-y-4 p-8 ${className}`}>
-      {tags.map((tagFreq, index) => {
-        const isSelected = selectedTags.includes(tagFreq.tag);
-        const gradientClass = getGradientClass(index);
-
-        return (
-          <button
-            key={tagFreq.tag}
-            onClick={() => onTagClick(tagFreq.tag)}
-            style={getTagStyle(tagFreq.count, index)}
-            className={`
-              font-bold transition-all duration-300 ease-out
-              hover:scale-110 active:scale-95
-              inline-block
-              ${
-                isSelected
-                  ? `text-transparent bg-clip-text bg-gradient-to-r ${gradientClass}
-                     drop-shadow-[0_0_12px_rgba(168,85,247,0.8)]
-                     animate-pulse`
-                  : `text-transparent bg-clip-text bg-gradient-to-r ${gradientClass}
-                     opacity-70 hover:opacity-100
-                     hover:drop-shadow-[0_0_8px_rgba(168,85,247,0.6)]`
-              }
-              cursor-pointer select-none
-            `}
-            title={`${tagFreq.tag} (${tagFreq.count}개 글)`}
-          >
-            #{tagFreq.tag}
-          </button>
-        );
-      })}
+    <div ref={containerRef} className={`w-full ${className}`}>
+      <svg
+        ref={svgRef}
+        className="mx-auto"
+        style={{ maxWidth: '100%', height: 'auto' }}
+      />
     </div>
   );
 }
