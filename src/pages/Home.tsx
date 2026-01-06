@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { usePosts } from '@/hooks/usePosts';
 import { SEO } from '@/components/seo/SEO';
-import { TagCloud } from '@/components/blog/TagCloud';
 import { SearchBar } from '@/components/blog/SearchBar';
 import { PostList } from '@/components/blog/PostList';
 
@@ -17,7 +16,6 @@ export function Home() {
 
   const {
     filteredPosts,
-    tagFrequencies,
     searchQuery,
     selectedTags,
     loading,

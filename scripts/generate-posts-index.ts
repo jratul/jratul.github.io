@@ -35,7 +35,7 @@ function scanMarkdownFiles(dir: string): PostMeta[] {
 
     const files = fs.readdirSync(currentDir);
 
-    files.forEach(file => {
+    files.forEach((file: string) => {
       const fullPath = path.join(currentDir, file);
       const stat = fs.statSync(fullPath);
 

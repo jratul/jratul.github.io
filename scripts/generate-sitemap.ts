@@ -5,10 +5,17 @@ interface Post {
   date: string;
 }
 
+interface SitemapUrl {
+  loc: string;
+  lastmod?: string;
+  priority: string;
+  changefreq: string;
+}
+
 const baseUrl = 'https://jratul.github.io';
 
 function generateSitemap(posts: Post[]): string {
-  const urls = [
+  const urls: SitemapUrl[] = [
     { loc: '/', priority: '1.0', changefreq: 'weekly' },
     { loc: '/about', priority: '0.8', changefreq: 'monthly' },
     ...posts.map(post => ({

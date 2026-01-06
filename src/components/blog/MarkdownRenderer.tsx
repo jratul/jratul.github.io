@@ -11,25 +11,28 @@ interface MarkdownRendererProps {
 
 export function MarkdownRenderer({ content, className = '' }: MarkdownRendererProps) {
   const components: Components = {
-    code({ node, inline, className, children, ...props }) {
+    code(props) {
+      const { children, className, ...rest } = props;
       const match = /language-(\w+)/.exec(className || '');
       const language = match ? match[1] : '';
 
-      return !inline && language ? (
+      // Check if it's a code block (has language) or inline code
+      const isCodeBlock = language && typeof children === 'string';
+
+      return isCodeBlock ? (
         <SyntaxHighlighter
           style={vscDarkPlus}
           language={language}
           PreTag="div"
           className="rounded-lg my-4 text-sm"
           showLineNumbers
-          {...props}
         >
           {String(children).replace(/\n$/, '')}
         </SyntaxHighlighter>
       ) : (
         <code
           className="px-1.5 py-0.5 rounded bg-dark-surface/80 text-accent-blue text-[0.9em] font-mono"
-          {...props}
+          {...rest}
         >
           {children}
         </code>
