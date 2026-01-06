@@ -26,6 +26,7 @@ dist-ssr
 # Generated files
 public/posts-index.json
 public/sitemap.xml
+*.tsbuildinfo
 
 # Project specific
 ref
