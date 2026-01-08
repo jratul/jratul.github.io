@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import cloud from 'd3-cloud';
 import { select } from 'd3-selection';
+import 'd3-transition'; // Enable .transition() method
 import type { TagFrequency } from '@/types/blog';
 
 interface TagCloudProps {
