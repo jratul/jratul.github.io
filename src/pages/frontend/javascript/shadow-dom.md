@@ -9,6 +9,8 @@ excerpt: "Shadow DOM의 개념부터 실전 활용까지, 웹 컴포넌트의 �
 
 Shadow DOM은 웹 컴포넌트의 핵심 기술 중 하나로, **캡슐화된 DOM 트리**를 생성하는 브라우저 네이티브 API입니다.
 
+---
+
 ## Shadow DOM이란?
 
 Shadow DOM은 컴포넌트의 내부 구조를 외부로부터 격리시키는 기술입니다:
@@ -71,6 +73,8 @@ console.log(element.shadowRoot); // null
 ```
 
 **권장사항**: 대부분의 경우 `open` 모드를 사용하세요. `closed` 모드는 디버깅을 어렵게 만들고, 실제로는 완전한 보안을 제공하지 않습니다.
+
+---
 
 ## 커스텀 엘리먼트와 함께 사용
 
@@ -290,6 +294,8 @@ customElements.define('user-card', UserCard);
 </user-card>
 ```
 
+---
+
 ## Slot을 통한 컨텐츠 전달
 
 Slot은 Shadow DOM에서 외부 컨텐츠를 받아오는 방법입니다.
@@ -369,6 +375,8 @@ customElements.define('content-wrapper', ContentWrapper);
   <button>Click me</button>
 </content-wrapper>
 ```
+
+---
 
 ## CSS 선택자
 
@@ -701,6 +709,8 @@ function App() {
   );
 }
 ```
+
+---
 
 ## 장단점 및 사용 사례
 
