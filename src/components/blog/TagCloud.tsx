@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
 import cloud from 'd3-cloud';
 import { select } from 'd3-selection';
 import 'd3-transition'; // Enable .transition() method
@@ -20,10 +20,22 @@ interface CloudWord {
   count: number;
 }
 
+// Simple hash function for consistent seeding (moved outside component)
+const hashString = (str: string): number => {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash; // Convert to 32bit integer
+  }
+  return Math.abs(hash);
+};
+
 export function TagCloud({ tags, selectedTags, onTagClick, className = '' }: TagCloudProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState({ width: 800, height: 400 });
+  const [cachedLayout, setCachedLayout] = useState<CloudWord[] | null>(null);
 
   // Get gradient colors for SVG linearGradient
   const getGradientColors = (index: number) => {
@@ -52,9 +64,14 @@ export function TagCloud({ tags, selectedTags, onTagClick, className = '' }: Tag
     return () => window.removeEventListener('resize', updateDimensions);
   }, []);
 
-  // Generate word cloud
+  // Create a cache key based on tags (to detect when tags change)
+  const tagsKey = useMemo(() => {
+    return tags.map(t => `${t.tag}:${t.count}`).join(',');
+  }, [tags]);
+
+  // Generate word cloud layout (only when tags change, not when selectedTags change)
   useEffect(() => {
-    if (!svgRef.current || tags.length === 0) return;
+    if (tags.length === 0) return;
 
     // Calculate font sizes
     const maxCount = Math.max(...tags.map(t => t.count));
@@ -74,22 +91,30 @@ export function TagCloud({ tags, selectedTags, onTagClick, className = '' }: Tag
       };
     });
 
-    // Create word cloud layout
+    // Create word cloud layout with fixed dimensions
     const layout = cloud<CloudWord>()
-      .size([dimensions.width, dimensions.height])
+      .size([800, 400]) // Use fixed dimensions for consistent layout
       .words(words)
       .padding(5)
-      .rotate(() => {
-        // Random rotation: 0, -45, 45 degrees
+      .rotate((d) => {
+        // Consistent rotation based on tag text hash
         const rotations = [0, 0, 0, -45, 45, 0, -45, 45];
-        return rotations[Math.floor(Math.random() * rotations.length)];
+        const hash = hashString(d.text);
+        return rotations[hash % rotations.length];
       })
       .fontSize(d => d.size)
       .on('end', (computedWords) => {
-        draw(computedWords);
+        setCachedLayout(computedWords);
       });
 
     layout.start();
+  }, [tagsKey]);
+
+  // Draw the cached layout whenever selectedTags change
+  useEffect(() => {
+    if (!svgRef.current || !cachedLayout) return;
+
+    draw(cachedLayout);
 
     function draw(computedWords: CloudWord[]) {
       if (!svgRef.current) return;
@@ -212,7 +237,8 @@ export function TagCloud({ tags, selectedTags, onTagClick, className = '' }: Tag
       text.append('title')
         .text(d => `${d.text.replace('#', '')} (${d.count}개 글)`);
     }
-  }, [tags, selectedTags, dimensions, onTagClick]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cachedLayout, selectedTags, dimensions, onTagClick]);
 
   if (tags.length === 0) {
     return (

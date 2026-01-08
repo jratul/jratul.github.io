@@ -1,11 +1,11 @@
 ---
-title: "Shadow DOM 완벽 가이드 - 웹 컴포넌트의 캡슐화"
+title: "Shadow DOM - 웹 컴포넌트의 캡슐화"
 date: "2026-01-06"
 tags: ["javascript", "web-components", "shadow-dom", "web-standards"]
 excerpt: "Shadow DOM의 개념부터 실전 활용까지, 웹 컴포넌트의 핵심 기술인 Shadow DOM을 예제 코드와 함께 상세히 알아봅니다."
 ---
 
-# Shadow DOM 완벽 가이드
+# Shadow DOM
 
 Shadow DOM은 웹 컴포넌트의 핵심 기술 중 하나로, **캡슐화된 DOM 트리**를 생성하는 브라우저 네이티브 API입니다.
 

@@ -1,11 +1,11 @@
 ---
-title: "React 19.2의 Activity API 완벽 가이드"
+title: "React 19.2의 Activity API"
 date: "2026-01-06"
 tags: ["react", "react19", "activity-api", "performance"]
 excerpt: "React 19.2에서 새롭게 추가된 Activity API의 동작 원리와 실전 활용법을 예제 코드와 함께 알아봅니다."
 ---
 
-# React 19.2의 Activity API 완벽 가이드
+# React 19.2의 Activity API
 
 React 19.2 (2025년 10월 출시)에서 새롭게 추가된 **Activity API**는 애플리케이션의 특정 부분을 "활동"으로 분리하여 제어하고 우선순위를 부여할 수 있는 강력한 기능입니다.
 
