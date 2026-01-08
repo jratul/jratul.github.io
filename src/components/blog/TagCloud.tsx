@@ -24,14 +24,14 @@ export function TagCloud({ tags, selectedTags, onTagClick, className = '' }: Tag
   const containerRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState({ width: 800, height: 400 });
 
-  // Get gradient class based on tag position for variety
-  const getGradientClass = (index: number) => {
+  // Get gradient colors for SVG linearGradient
+  const getGradientColors = (index: number) => {
     const gradients = [
-      'from-primary-400 via-primary-300 to-accent-cyan',
-      'from-accent-cyan via-accent-blue to-primary-400',
-      'from-accent-pink via-primary-400 to-accent-cyan',
-      'from-accent-blue via-accent-cyan to-primary-300',
-      'from-primary-300 via-accent-pink to-accent-blue',
+      ['#a78bfa', '#7dd3fc'], // primary-400 to cyan
+      ['#06b6d4', '#3b82f6'], // cyan to blue
+      ['#ec4899', '#a78bfa'], // pink to primary
+      ['#3b82f6', '#06b6d4'], // blue to cyan
+      ['#c084fc', '#ec4899'], // purple to pink
     ];
     return gradients[index % gradients.length];
   };
@@ -96,6 +96,31 @@ export function TagCloud({ tags, selectedTags, onTagClick, className = '' }: Tag
       const svg = select(svgRef.current);
       svg.selectAll('*').remove();
 
+      // Create defs for gradients
+      const defs = svg.append('defs');
+
+      // Define gradients for each word
+      computedWords.forEach((_word, i) => {
+        const [color1, color2] = getGradientColors(i);
+        const gradientId = `gradient-${i}`;
+
+        const gradient = defs
+          .append('linearGradient')
+          .attr('id', gradientId)
+          .attr('x1', '0%')
+          .attr('y1', '0%')
+          .attr('x2', '100%')
+          .attr('y2', '0%');
+
+        gradient.append('stop')
+          .attr('offset', '0%')
+          .attr('stop-color', color1);
+
+        gradient.append('stop')
+          .attr('offset', '100%')
+          .attr('stop-color', color2);
+      });
+
       const g = svg
         .attr('width', dimensions.width)
         .attr('height', dimensions.height)
@@ -115,18 +140,14 @@ export function TagCloud({ tags, selectedTags, onTagClick, className = '' }: Tag
         .attr('transform', d => `translate(${d.x},${d.y})rotate(${d.rotate})`)
         .text(d => d.text);
 
-      // Apply gradient colors via CSS classes
+      // Apply gradient fills to SVG text
       text.each(function(d, i) {
         const element = select(this);
         const isSelected = selectedTags.includes(d.text.replace('#', ''));
-        const gradientClass = getGradientClass(i);
 
         element
-          .attr('class', `
-            text-transparent bg-clip-text bg-gradient-to-r ${gradientClass}
-            transition-all duration-300
-            ${isSelected ? 'opacity-100' : 'opacity-70 hover:opacity-100'}
-          `)
+          .attr('fill', `url(#gradient-${i})`)
+          .style('opacity', isSelected ? '1' : '0.7')
           .style('filter', isSelected
             ? 'drop-shadow(0 0 12px rgba(168,85,247,0.8))'
             : 'none'
@@ -136,6 +157,7 @@ export function TagCloud({ tags, selectedTags, onTagClick, className = '' }: Tag
             select(this)
               .transition()
               .duration(200)
+              .style('opacity', '1')
               .style('filter', 'drop-shadow(0 0 12px rgba(168,85,247,0.8))')
               .attr('transform', () => {
                 const scale = 1.1;
@@ -148,6 +170,7 @@ export function TagCloud({ tags, selectedTags, onTagClick, className = '' }: Tag
             select(this)
               .transition()
               .duration(200)
+              .style('opacity', stillSelected ? '1' : '0.7')
               .style('filter', stillSelected
                 ? 'drop-shadow(0 0 12px rgba(168,85,247,0.8))'
                 : 'none'
