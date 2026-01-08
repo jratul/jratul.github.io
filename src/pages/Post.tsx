@@ -54,7 +54,7 @@ export function Post() {
             </Link>
 
             {/* Title */}
-            <h1 className="bg-clip-text bg-gradient-to-r from-primary-300 mb-6 font-bold text-transparent text-3xl md:text-5xl leading-tight to-accent-blue via-accent-cyan">
+            <h1 className="bg-clip-text bg-gradient-to-r from-primary-300 mb-6 pb-2 font-bold text-transparent text-3xl md:text-5xl leading-normal to-accent-blue via-accent-cyan">
               {post.title}
             </h1>
 
