@@ -147,20 +147,21 @@ export function TagCloud({ tags, selectedTags, onTagClick, className = '' }: Tag
 
         element
           .attr('fill', `url(#gradient-${i})`)
-          .style('opacity', isSelected ? '1' : '0.7')
+          .style('opacity', isSelected ? '1' : '0.75')
           .style('filter', isSelected
-            ? 'drop-shadow(0 0 12px rgba(168,85,247,0.8))'
+            ? 'drop-shadow(0 0 15px rgba(168,85,247,0.9)) drop-shadow(0 0 30px rgba(168,85,247,0.5))'
             : 'none'
           )
+          .style('transition', 'all 0.3s ease')
           .on('mouseenter', function(this: SVGTextElement) {
             const wordData = select(this).datum() as CloudWord;
             select(this)
               .transition()
               .duration(200)
               .style('opacity', '1')
-              .style('filter', 'drop-shadow(0 0 12px rgba(168,85,247,0.8))')
+              .style('filter', 'drop-shadow(0 0 20px rgba(168,85,247,1)) drop-shadow(0 0 40px rgba(168,85,247,0.6)) drop-shadow(0 0 60px rgba(168,85,247,0.3))')
               .attr('transform', () => {
-                const scale = 1.1;
+                const scale = 1.15;
                 return `translate(${wordData.x},${wordData.y})rotate(${wordData.rotate})scale(${scale})`;
               });
           })
@@ -169,10 +170,10 @@ export function TagCloud({ tags, selectedTags, onTagClick, className = '' }: Tag
             const stillSelected = selectedTags.includes(wordData.text.replace('#', ''));
             select(this)
               .transition()
-              .duration(200)
-              .style('opacity', stillSelected ? '1' : '0.7')
+              .duration(300)
+              .style('opacity', stillSelected ? '1' : '0.75')
               .style('filter', stillSelected
-                ? 'drop-shadow(0 0 12px rgba(168,85,247,0.8))'
+                ? 'drop-shadow(0 0 15px rgba(168,85,247,0.9)) drop-shadow(0 0 30px rgba(168,85,247,0.5))'
                 : 'none'
               )
               .attr('transform', `translate(${wordData.x},${wordData.y})rotate(${wordData.rotate})`);
