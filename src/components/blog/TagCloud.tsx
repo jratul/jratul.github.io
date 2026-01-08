@@ -96,7 +96,7 @@ export function TagCloud({ tags, selectedTags, onTagClick, className = '' }: Tag
       const svg = select(svgRef.current);
       svg.selectAll('*').remove();
 
-      // Create defs for gradients
+      // Create defs for gradients and filters
       const defs = svg.append('defs');
 
       // Define gradients for each word
@@ -120,6 +120,37 @@ export function TagCloud({ tags, selectedTags, onTagClick, className = '' }: Tag
           .attr('offset', '100%')
           .attr('stop-color', color2);
       });
+
+      // Create glow filters
+      const normalGlow = defs.append('filter')
+        .attr('id', 'glow-normal')
+        .attr('x', '-50%')
+        .attr('y', '-50%')
+        .attr('width', '200%')
+        .attr('height', '200%');
+
+      normalGlow.append('feGaussianBlur')
+        .attr('stdDeviation', '8')
+        .attr('result', 'coloredBlur');
+
+      const normalMerge = normalGlow.append('feMerge');
+      normalMerge.append('feMergeNode').attr('in', 'coloredBlur');
+      normalMerge.append('feMergeNode').attr('in', 'SourceGraphic');
+
+      const hoverGlow = defs.append('filter')
+        .attr('id', 'glow-hover')
+        .attr('x', '-100%')
+        .attr('y', '-100%')
+        .attr('width', '300%')
+        .attr('height', '300%');
+
+      hoverGlow.append('feGaussianBlur')
+        .attr('stdDeviation', '15')
+        .attr('result', 'coloredBlur');
+
+      const hoverMerge = hoverGlow.append('feMerge');
+      hoverMerge.append('feMergeNode').attr('in', 'coloredBlur');
+      hoverMerge.append('feMergeNode').attr('in', 'SourceGraphic');
 
       const g = svg
         .attr('width', dimensions.width)
@@ -148,18 +179,14 @@ export function TagCloud({ tags, selectedTags, onTagClick, className = '' }: Tag
         element
           .attr('fill', `url(#gradient-${i})`)
           .style('opacity', isSelected ? '1' : '0.75')
-          .style('filter', isSelected
-            ? 'drop-shadow(0 0 15px rgba(168,85,247,0.9)) drop-shadow(0 0 30px rgba(168,85,247,0.5))'
-            : 'none'
-          )
-          .style('transition', 'all 0.3s ease')
+          .attr('filter', isSelected ? 'url(#glow-normal)' : null)
           .on('mouseenter', function(this: SVGTextElement) {
             const wordData = select(this).datum() as CloudWord;
             select(this)
               .transition()
               .duration(200)
               .style('opacity', '1')
-              .style('filter', 'drop-shadow(0 0 20px rgba(168,85,247,1)) drop-shadow(0 0 40px rgba(168,85,247,0.6)) drop-shadow(0 0 60px rgba(168,85,247,0.3))')
+              .attr('filter', 'url(#glow-hover)')
               .attr('transform', () => {
                 const scale = 1.15;
                 return `translate(${wordData.x},${wordData.y})rotate(${wordData.rotate})scale(${scale})`;
@@ -172,10 +199,7 @@ export function TagCloud({ tags, selectedTags, onTagClick, className = '' }: Tag
               .transition()
               .duration(300)
               .style('opacity', stillSelected ? '1' : '0.75')
-              .style('filter', stillSelected
-                ? 'drop-shadow(0 0 15px rgba(168,85,247,0.9)) drop-shadow(0 0 30px rgba(168,85,247,0.5))'
-                : 'none'
-              )
+              .attr('filter', stillSelected ? 'url(#glow-normal)' : null)
               .attr('transform', `translate(${wordData.x},${wordData.y})rotate(${wordData.rotate})`);
           })
           .on('click', () => {
