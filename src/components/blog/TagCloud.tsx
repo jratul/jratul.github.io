@@ -131,7 +131,7 @@ export function TagCloud({ tags, selectedTags, onTagClick, className = '' }: Tag
         .attr('height', '200%');
 
       normalGlow.append('feGaussianBlur')
-        .attr('stdDeviation', '8')
+        .attr('stdDeviation', '4')
         .attr('result', 'coloredBlur');
 
       const normalMerge = normalGlow.append('feMerge');
@@ -140,13 +140,13 @@ export function TagCloud({ tags, selectedTags, onTagClick, className = '' }: Tag
 
       const hoverGlow = defs.append('filter')
         .attr('id', 'glow-hover')
-        .attr('x', '-100%')
-        .attr('y', '-100%')
-        .attr('width', '300%')
-        .attr('height', '300%');
+        .attr('x', '-75%')
+        .attr('y', '-75%')
+        .attr('width', '250%')
+        .attr('height', '250%');
 
       hoverGlow.append('feGaussianBlur')
-        .attr('stdDeviation', '15')
+        .attr('stdDeviation', '8')
         .attr('result', 'coloredBlur');
 
       const hoverMerge = hoverGlow.append('feMerge');
