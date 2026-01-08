@@ -85,7 +85,7 @@ export function TagCloud({ tags, selectedTags, onTagClick, className = '' }: Tag
       const fontSize = 16 + Math.pow(scale, 0.6) * 64;
 
       return {
-        text: `#${tag.tag}`,
+        text: tag.tag,
         size: fontSize,
         count: tag.count,
       };
@@ -200,7 +200,7 @@ export function TagCloud({ tags, selectedTags, onTagClick, className = '' }: Tag
       // Apply gradient fills to SVG text
       text.each(function(d, i) {
         const element = select(this);
-        const isSelected = selectedTags.includes(d.text.replace('#', ''));
+        const isSelected = selectedTags.includes(d.text);
 
         element
           .attr('fill', `url(#gradient-${i})`)
@@ -220,7 +220,7 @@ export function TagCloud({ tags, selectedTags, onTagClick, className = '' }: Tag
           })
           .on('mouseleave', function(this: SVGTextElement) {
             const wordData = select(this).datum() as CloudWord;
-            const stillSelected = selectedTags.includes(wordData.text.replace('#', ''));
+            const stillSelected = selectedTags.includes(wordData.text);
             select(this)
               .transition()
               .duration(300)
@@ -229,13 +229,13 @@ export function TagCloud({ tags, selectedTags, onTagClick, className = '' }: Tag
               .attr('transform', `translate(${wordData.x},${wordData.y})rotate(${wordData.rotate})`);
           })
           .on('click', () => {
-            onTagClick(d.text.replace('#', ''));
+            onTagClick(d.text);
           });
       });
 
       // Add tooltips
       text.append('title')
-        .text(d => `${d.text.replace('#', '')} (${d.count}개 글)`);
+        .text(d => `${d.text} (${d.count}개 글)`);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cachedLayout, selectedTags, dimensions, onTagClick]);
