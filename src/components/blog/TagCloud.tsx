@@ -34,7 +34,7 @@ const hashString = (str: string): number => {
 export function TagCloud({ tags, selectedTags, onTagClick, className = '' }: TagCloudProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [dimensions, setDimensions] = useState({ width: 800, height: 400 });
+  const [dimensions, setDimensions] = useState<{ width: number; height: number } | null>(null);
   const [cachedLayout, setCachedLayout] = useState<CloudWord[] | null>(null);
 
   // Get gradient colors for SVG linearGradient
@@ -71,7 +71,7 @@ export function TagCloud({ tags, selectedTags, onTagClick, className = '' }: Tag
 
   // Generate word cloud layout (when tags or dimensions change)
   useEffect(() => {
-    if (tags.length === 0) return;
+    if (tags.length === 0 || !dimensions) return;
 
     // Calculate font sizes
     const maxCount = Math.max(...tags.map(t => t.count));
@@ -116,12 +116,12 @@ export function TagCloud({ tags, selectedTags, onTagClick, className = '' }: Tag
 
   // Draw the cached layout whenever selectedTags change
   useEffect(() => {
-    if (!svgRef.current || !cachedLayout) return;
+    if (!svgRef.current || !cachedLayout || !dimensions) return;
 
     draw(cachedLayout);
 
     function draw(computedWords: CloudWord[]) {
-      if (!svgRef.current) return;
+      if (!svgRef.current || !dimensions) return;
 
       const svg = select(svgRef.current);
       svg.selectAll('*').remove();
@@ -252,13 +252,25 @@ export function TagCloud({ tags, selectedTags, onTagClick, className = '' }: Tag
     );
   }
 
+  // Show loading state until dimensions are calculated and layout is ready
+  const isLoading = !dimensions || !cachedLayout;
+
   return (
     <div ref={containerRef} className={`w-full ${className}`}>
-      <svg
-        ref={svgRef}
-        className="mx-auto"
-        style={{ maxWidth: '100%', height: 'auto' }}
-      />
+      {isLoading ? (
+        <div className="flex items-center justify-center" style={{ minHeight: '300px' }}>
+          <div className="flex flex-col items-center gap-3">
+            <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary-500 border-t-transparent"></div>
+            <p className="text-sm text-gray-400">태그 클라우드 로딩 중...</p>
+          </div>
+        </div>
+      ) : (
+        <svg
+          ref={svgRef}
+          className="mx-auto"
+          style={{ maxWidth: '100%', height: 'auto' }}
+        />
+      )}
     </div>
   );
 }
