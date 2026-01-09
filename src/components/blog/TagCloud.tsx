@@ -69,7 +69,7 @@ export function TagCloud({ tags, selectedTags, onTagClick, className = '' }: Tag
     return tags.map(t => `${t.tag}:${t.count}`).join(',');
   }, [tags]);
 
-  // Generate word cloud layout (only when tags change, not when selectedTags change)
+  // Generate word cloud layout (when tags or dimensions change)
   useEffect(() => {
     if (tags.length === 0) return;
 
@@ -78,11 +78,15 @@ export function TagCloud({ tags, selectedTags, onTagClick, className = '' }: Tag
     const minCount = Math.min(...tags.map(t => t.count));
     const range = maxCount - minCount || 1;
 
+    // Responsive font sizes based on screen width
+    const baseSize = dimensions.width < 640 ? 12 : 16; // Smaller on mobile
+    const maxSize = dimensions.width < 640 ? 48 : 64; // Smaller on mobile
+
     // Prepare words for d3-cloud
     const words: CloudWord[] = tags.map(tag => {
       const scale = (tag.count - minCount) / range;
-      // More dramatic size difference: 16px to 80px
-      const fontSize = 16 + Math.pow(scale, 0.6) * 64;
+      // More dramatic size difference
+      const fontSize = baseSize + Math.pow(scale, 0.6) * (maxSize - baseSize);
 
       return {
         text: tag.tag,
@@ -91,11 +95,11 @@ export function TagCloud({ tags, selectedTags, onTagClick, className = '' }: Tag
       };
     });
 
-    // Create word cloud layout with fixed dimensions
+    // Create word cloud layout with responsive dimensions
     const layout = cloud<CloudWord>()
-      .size([800, 400]) // Use fixed dimensions for consistent layout
+      .size([dimensions.width, dimensions.height]) // Use responsive dimensions
       .words(words)
-      .padding(5)
+      .padding(dimensions.width < 640 ? 3 : 5) // Less padding on mobile
       .rotate((d) => {
         // Consistent rotation based on tag text hash
         const rotations = [0, 0, 0, -45, 45, 0, -45, 45];
@@ -108,7 +112,7 @@ export function TagCloud({ tags, selectedTags, onTagClick, className = '' }: Tag
       });
 
     layout.start();
-  }, [tagsKey]);
+  }, [tagsKey, dimensions]);
 
   // Draw the cached layout whenever selectedTags change
   useEffect(() => {
