@@ -25,16 +25,24 @@ const hashString = (str: string): number => {
   let hash = 0;
   for (let i = 0; i < str.length; i++) {
     const char = str.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
+    hash = (hash << 5) - hash + char;
     hash = hash & hash; // Convert to 32bit integer
   }
   return Math.abs(hash);
 };
 
-export function TagCloud({ tags, selectedTags, onTagClick, className = '' }: TagCloudProps) {
+export function TagCloud({
+  tags,
+  selectedTags,
+  onTagClick,
+  className = '',
+}: TagCloudProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [dimensions, setDimensions] = useState<{ width: number; height: number } | null>(null);
+  const [dimensions, setDimensions] = useState<{
+    width: number;
+    height: number;
+  } | null>(null);
   const [cachedLayout, setCachedLayout] = useState<CloudWord[] | null>(null);
 
   // Get gradient colors for SVG linearGradient
@@ -59,7 +67,11 @@ export function TagCloud({ tags, selectedTags, onTagClick, className = '' }: Tag
           const height = Math.min(500, Math.max(300, width * 0.5));
           setDimensions(prev => {
             // Only update if dimensions changed significantly (more than 10px)
-            if (!prev || Math.abs(prev.width - width) > 10 || Math.abs(prev.height - height) > 10) {
+            if (
+              !prev ||
+              Math.abs(prev.width - width) > 10 ||
+              Math.abs(prev.height - height) > 10
+            ) {
               return { width, height };
             }
             return prev;
@@ -120,14 +132,14 @@ export function TagCloud({ tags, selectedTags, onTagClick, className = '' }: Tag
       .size([dimensions.width, dimensions.height]) // Use responsive dimensions
       .words(words)
       .padding(dimensions.width < 640 ? 3 : 5) // Less padding on mobile
-      .rotate((d) => {
+      .rotate(d => {
         // Consistent rotation based on tag text hash
         const rotations = [0, 0, 0, -45, 45, 0, -45, 45];
         const hash = hashString(d.text);
         return rotations[hash % rotations.length];
       })
       .fontSize(d => d.size)
-      .on('end', (computedWords) => {
+      .on('end', computedWords => {
         setCachedLayout(computedWords);
       });
 
@@ -162,24 +174,25 @@ export function TagCloud({ tags, selectedTags, onTagClick, className = '' }: Tag
           .attr('x2', '100%')
           .attr('y2', '0%');
 
-        gradient.append('stop')
-          .attr('offset', '0%')
-          .attr('stop-color', color1);
+        gradient.append('stop').attr('offset', '0%').attr('stop-color', color1);
 
-        gradient.append('stop')
+        gradient
+          .append('stop')
           .attr('offset', '100%')
           .attr('stop-color', color2);
       });
 
       // Create glow filters
-      const normalGlow = defs.append('filter')
+      const normalGlow = defs
+        .append('filter')
         .attr('id', 'glow-normal')
         .attr('x', '-50%')
         .attr('y', '-50%')
         .attr('width', '200%')
         .attr('height', '200%');
 
-      normalGlow.append('feGaussianBlur')
+      normalGlow
+        .append('feGaussianBlur')
         .attr('stdDeviation', '4')
         .attr('result', 'coloredBlur');
 
@@ -187,14 +200,16 @@ export function TagCloud({ tags, selectedTags, onTagClick, className = '' }: Tag
       normalMerge.append('feMergeNode').attr('in', 'coloredBlur');
       normalMerge.append('feMergeNode').attr('in', 'SourceGraphic');
 
-      const hoverGlow = defs.append('filter')
+      const hoverGlow = defs
+        .append('filter')
         .attr('id', 'glow-hover')
         .attr('x', '-75%')
         .attr('y', '-75%')
         .attr('width', '250%')
         .attr('height', '250%');
 
-      hoverGlow.append('feGaussianBlur')
+      hoverGlow
+        .append('feGaussianBlur')
         .attr('stdDeviation', '8')
         .attr('result', 'coloredBlur');
 
@@ -206,7 +221,10 @@ export function TagCloud({ tags, selectedTags, onTagClick, className = '' }: Tag
         .attr('width', dimensions.width)
         .attr('height', dimensions.height)
         .append('g')
-        .attr('transform', `translate(${dimensions.width / 2},${dimensions.height / 2})`);
+        .attr(
+          'transform',
+          `translate(${dimensions.width / 2},${dimensions.height / 2})`
+        );
 
       const text = g
         .selectAll('text')
@@ -222,7 +240,7 @@ export function TagCloud({ tags, selectedTags, onTagClick, className = '' }: Tag
         .text(d => d.text);
 
       // Apply gradient fills to SVG text
-      text.each(function(d, i) {
+      text.each(function (d, i) {
         const element = select(this);
         const isSelected = selectedTags.includes(d.text);
 
@@ -230,7 +248,7 @@ export function TagCloud({ tags, selectedTags, onTagClick, className = '' }: Tag
           .attr('fill', `url(#gradient-${i})`)
           .style('opacity', isSelected ? '1' : '0.75')
           .attr('filter', isSelected ? 'url(#glow-normal)' : null)
-          .on('mouseenter', function(this: SVGTextElement) {
+          .on('mouseenter', function (this: SVGTextElement) {
             const wordData = select(this).datum() as CloudWord;
             select(this)
               .transition()
@@ -238,11 +256,11 @@ export function TagCloud({ tags, selectedTags, onTagClick, className = '' }: Tag
               .style('opacity', '1')
               .attr('filter', 'url(#glow-hover)')
               .attr('transform', () => {
-                const scale = 1.15;
+                const scale = 1.05;
                 return `translate(${wordData.x},${wordData.y})rotate(${wordData.rotate})scale(${scale})`;
               });
           })
-          .on('mouseleave', function(this: SVGTextElement) {
+          .on('mouseleave', function (this: SVGTextElement) {
             const wordData = select(this).datum() as CloudWord;
             const stillSelected = selectedTags.includes(wordData.text);
             select(this)
@@ -250,7 +268,10 @@ export function TagCloud({ tags, selectedTags, onTagClick, className = '' }: Tag
               .duration(300)
               .style('opacity', stillSelected ? '1' : '0.75')
               .attr('filter', stillSelected ? 'url(#glow-normal)' : null)
-              .attr('transform', `translate(${wordData.x},${wordData.y})rotate(${wordData.rotate})`);
+              .attr(
+                'transform',
+                `translate(${wordData.x},${wordData.y})rotate(${wordData.rotate})`
+              );
           })
           .on('click', () => {
             onTagClick(d.text);
@@ -258,8 +279,7 @@ export function TagCloud({ tags, selectedTags, onTagClick, className = '' }: Tag
       });
 
       // Add tooltips
-      text.append('title')
-        .text(d => `${d.text} (${d.count}개 글)`);
+      text.append('title').text(d => `${d.text} (${d.count}개 글)`);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cachedLayout, selectedTags, dimensions, onTagClick]);
@@ -278,10 +298,13 @@ export function TagCloud({ tags, selectedTags, onTagClick, className = '' }: Tag
   return (
     <div ref={containerRef} className={`w-full ${className}`}>
       {isLoading ? (
-        <div className="flex items-center justify-center" style={{ minHeight: '300px' }}>
+        <div
+          className="flex justify-center items-center"
+          style={{ minHeight: '300px' }}
+        >
           <div className="flex flex-col items-center gap-3">
-            <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary-500 border-t-transparent"></div>
-            <p className="text-sm text-gray-400">태그 클라우드 로딩 중...</p>
+            <div className="border-4 border-primary-500 border-t-transparent rounded-full w-8 h-8 animate-spin"></div>
+            <p className="text-gray-400 text-sm">태그 클라우드 로딩 중...</p>
           </div>
         </div>
       ) : (
