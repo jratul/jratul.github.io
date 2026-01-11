@@ -54,14 +54,24 @@ export function TagCloud({ tags, selectedTags, onTagClick, className = '' }: Tag
     const updateDimensions = () => {
       if (containerRef.current) {
         const width = containerRef.current.offsetWidth;
-        const height = Math.min(500, Math.max(300, width * 0.5));
-        setDimensions({ width, height });
+        // Only set dimensions if we have a valid width
+        if (width > 0) {
+          const height = Math.min(500, Math.max(300, width * 0.5));
+          setDimensions({ width, height });
+        }
       }
     };
 
-    updateDimensions();
+    // Use requestAnimationFrame to ensure DOM is ready
+    const rafId = requestAnimationFrame(() => {
+      updateDimensions();
+    });
+
     window.addEventListener('resize', updateDimensions);
-    return () => window.removeEventListener('resize', updateDimensions);
+    return () => {
+      cancelAnimationFrame(rafId);
+      window.removeEventListener('resize', updateDimensions);
+    };
   }, []);
 
   // Create a cache key based on tags (to detect when tags change)
