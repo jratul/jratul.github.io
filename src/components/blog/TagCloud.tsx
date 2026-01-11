@@ -57,24 +57,22 @@ export function TagCloud({ tags, selectedTags, onTagClick, className = '' }: Tag
         // Only set dimensions if we have a valid width
         if (width > 0) {
           const height = Math.min(500, Math.max(300, width * 0.5));
-          setDimensions(prev => {
-            // Only update if dimensions actually changed
-            if (!prev || prev.width !== width || prev.height !== height) {
-              return { width, height };
-            }
-            return prev;
-          });
+          setDimensions({ width, height });
         }
       }
     };
 
-    // Use requestAnimationFrame to ensure DOM is ready
+    // Try multiple times to ensure we get the dimensions
+    const timeoutId = setTimeout(updateDimensions, 0);
     const rafId = requestAnimationFrame(() => {
       updateDimensions();
+      // Double-check after a short delay
+      setTimeout(updateDimensions, 100);
     });
 
     window.addEventListener('resize', updateDimensions);
     return () => {
+      clearTimeout(timeoutId);
       cancelAnimationFrame(rafId);
       window.removeEventListener('resize', updateDimensions);
     };
