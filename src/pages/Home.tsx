@@ -44,7 +44,7 @@ export function Home() {
               tags={tagFrequencies}
               selectedTags={selectedTags}
               onTagClick={toggleTag}
-              className="mb-12"
+              className="mb-4"
             />
 
             {/* Search Bar */}
