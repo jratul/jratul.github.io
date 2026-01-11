@@ -57,7 +57,13 @@ export function TagCloud({ tags, selectedTags, onTagClick, className = '' }: Tag
         // Only set dimensions if we have a valid width
         if (width > 0) {
           const height = Math.min(500, Math.max(300, width * 0.5));
-          setDimensions({ width, height });
+          setDimensions(prev => {
+            // Only update if dimensions changed significantly (more than 10px)
+            if (!prev || Math.abs(prev.width - width) > 10 || Math.abs(prev.height - height) > 10) {
+              return { width, height };
+            }
+            return prev;
+          });
         }
       }
     };
