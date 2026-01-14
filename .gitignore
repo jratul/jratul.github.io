@@ -28,6 +28,7 @@ dist-ssr
 public/posts-index.json
 public/sitemap.xml
 *.tsbuildinfo
+tmpclaude-*-cwd
 
 # Project specific
 ref
