@@ -15,19 +15,21 @@ export function MarkdownRenderer({ content, className = '' }: MarkdownRendererPr
       const { children, className, ...rest } = props;
       const match = /language-(\w+)/.exec(className || '');
       const language = match ? match[1] : '';
+      const codeString = String(children).replace(/\n$/, '');
 
-      // Check if it's a code block (has language) or inline code
-      const isCodeBlock = language && typeof children === 'string';
+      // Check if it's a code block (has newlines or has language) or inline code
+      const isCodeBlock = codeString.includes('\n') || language;
 
       return isCodeBlock ? (
         <SyntaxHighlighter
           style={vscDarkPlus}
-          language={language}
+          language={language || 'text'}
           PreTag="div"
-          className="rounded-lg my-4 text-sm"
-          showLineNumbers
+          className="rounded-lg my-4 text-sm !pt-4 !pb-4"
+          showLineNumbers={!!language}
+          customStyle={{ margin: 0 }}
         >
-          {String(children).replace(/\n$/, '')}
+          {codeString}
         </SyntaxHighlighter>
       ) : (
         <code
