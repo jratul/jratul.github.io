@@ -3,8 +3,10 @@ import { Calendar, Clock, ArrowLeft } from 'lucide-react';
 import { usePosts } from '@/hooks/usePosts';
 import { SEO } from '@/components/seo/SEO';
 import { MarkdownRenderer } from '@/components/blog/MarkdownRenderer';
+import { TableOfContents } from '@/components/blog/TableOfContents';
 import { formatDate } from '@/utils/formatDate';
 import { formatReadingTime } from '@/utils/readingTime';
+import { extractToc } from '@/utils/toc';
 
 export function Post() {
   const { '*': slug } = useParams();
@@ -27,6 +29,8 @@ export function Post() {
     return <Navigate to="/" replace />;
   }
 
+  const toc = extractToc(post.content);
+
   return (
     <>
       <SEO
@@ -43,7 +47,7 @@ export function Post() {
           {/* Background Gradient */}
           <div className="-z-10 absolute inset-0 bg-gradient-to-b from-primary-500/5 via-transparent to-transparent" />
 
-          <div className="mx-auto max-w-4xl">
+          <div className="mx-auto max-w-5xl">
             {/* Back Button */}
             <Link
               to="/"
@@ -85,16 +89,28 @@ export function Post() {
           </div>
         </header>
 
-        {/* Content */}
-        <div className="px-4 py-4">
-          <div className="mx-auto max-w-4xl">
-            <MarkdownRenderer content={post.content} />
+        {/* Content + TOC */}
+        <div className="px-4 py-8">
+          <div className="mx-auto max-w-5xl">
+            <div className="lg:grid lg:gap-12" style={{ gridTemplateColumns: toc.length > 0 ? '1fr 220px' : '1fr' }}>
+              {/* Article body */}
+              <div className="min-w-0">
+                <MarkdownRenderer content={post.content} />
+              </div>
+
+              {/* Table of Contents */}
+              {toc.length > 0 && (
+                <aside className="hidden lg:block">
+                  <TableOfContents items={toc} />
+                </aside>
+              )}
+            </div>
           </div>
         </div>
 
         {/* Footer Navigation */}
         <footer className="px-4 py-12 border-dark-border border-t">
-          <div className="mx-auto max-w-4xl">
+          <div className="mx-auto max-w-5xl">
             <Link
               to="/"
               className="inline-flex items-center gap-2 bg-primary-500/10 hover:bg-primary-500/20 px-6 py-3 border border-primary-500/20 hover:border-primary-500/40 rounded-lg text-primary-300 transition-all duration-200"

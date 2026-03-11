@@ -3,6 +3,13 @@ import remarkGfm from 'remark-gfm';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import type { Components } from 'react-markdown';
+import { slugify } from '@/utils/toc';
+
+function extractText(children: React.ReactNode): string {
+  if (typeof children === 'string') return children;
+  if (Array.isArray(children)) return children.map(extractText).join('');
+  return '';
+}
 
 interface MarkdownRendererProps {
   content: string;
@@ -48,15 +55,17 @@ export function MarkdownRenderer({ content, className = '' }: MarkdownRendererPr
       );
     },
     h2({ children }) {
+      const id = slugify(extractText(children));
       return (
-        <h2 className="text-3xl font-bold mt-6 mb-3 text-transparent bg-clip-text bg-gradient-to-r from-primary-300 to-accent-blue">
+        <h2 id={id} className="text-3xl font-bold mt-6 mb-3 text-transparent bg-clip-text bg-gradient-to-r from-primary-300 to-accent-blue">
           {children}
         </h2>
       );
     },
     h3({ children }) {
+      const id = slugify(extractText(children));
       return (
-        <h3 className="text-2xl font-semibold mt-5 mb-2 text-primary-200">
+        <h3 id={id} className="text-2xl font-semibold mt-5 mb-2 text-primary-200">
           {children}
         </h3>
       );
