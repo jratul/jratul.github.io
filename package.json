@@ -5,8 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "npm run generate:index && npm run generate:sitemap && tsc -b && vite build",
+    "build": "npm run generate:index && npm run generate:learn && npm run generate:sitemap && tsc -b && vite build",
     "generate:index": "tsx scripts/generate-posts-index.ts",
+    "generate:learn": "tsx scripts/generate-learn-index.ts",
     "generate:sitemap": "tsx scripts/generate-sitemap.ts",
     "preview": "vite preview",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
