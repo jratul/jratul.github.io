@@ -1,6 +1,6 @@
 import { useParams, Navigate, Link } from 'react-router-dom';
+import { ArrowRight } from 'lucide-react';
 import { SEO } from '@/components/seo/SEO';
-import { LessonAccordion } from '@/components/learn/LessonAccordion';
 import { useLearn } from '@/hooks/useLearn';
 import { CATEGORY_META } from '@/types/learn';
 import type { LearnCategory } from '@/types/learn';
@@ -59,7 +59,7 @@ export function Learn() {
           </div>
         </header>
 
-        {/* 콘텐츠 */}
+        {/* 목차 */}
         <main className="px-4 py-8">
           <div className="mx-auto max-w-3xl">
             {loading ? (
@@ -69,7 +69,35 @@ export function Learn() {
             ) : lessons.length === 0 ? (
               <p className="py-20 text-center text-gray-500">콘텐츠를 불러올 수 없습니다.</p>
             ) : (
-              <LessonAccordion lessons={lessons} />
+              <ol className="space-y-2">
+                {lessons.map((lesson, index) => {
+                  const slug = lesson.id.split('/')[1];
+                  return (
+                    <li key={lesson.id}>
+                      <Link
+                        to={`/learn/${cat}/${slug}`}
+                        className="flex items-center gap-4 rounded-lg border border-dark-border bg-dark-card/50 px-5 py-4 transition-all duration-200 hover:border-primary-500/40 hover:bg-dark-card group"
+                      >
+                        {/* 번호 */}
+                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-dark-border text-xs font-bold text-gray-400 group-hover:bg-primary-500/20 group-hover:text-primary-300 transition-colors duration-200">
+                          {String(index + 1).padStart(2, '0')}
+                        </span>
+
+                        {/* 제목 */}
+                        <span className="flex-1 font-medium text-gray-300 group-hover:text-white transition-colors duration-200">
+                          {lesson.title}
+                        </span>
+
+                        {/* 화살표 */}
+                        <ArrowRight
+                          size={16}
+                          className="shrink-0 text-gray-600 group-hover:text-primary-400 transition-colors duration-200"
+                        />
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ol>
             )}
           </div>
         </main>
