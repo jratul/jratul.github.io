@@ -4,7 +4,12 @@ import { Github, ChevronDown } from 'lucide-react';
 import { CATEGORY_META } from '@/types/learn';
 import type { LearnCategory } from '@/types/learn';
 
-const LEARN_CATEGORIES: LearnCategory[] = ['java', 'kotlin', 'spring'];
+const LEARN_GROUPS: { label: string; categories: LearnCategory[] }[] = [
+  { label: '언어 & 프레임워크', categories: ['java', 'kotlin', 'spring'] },
+  { label: '인프라', categories: ['docker', 'k8s', 'linux', 'aws'] },
+  { label: '데이터 & 네트워크', categories: ['network', 'database', 'redis'] },
+  { label: '설계 & CS', categories: ['system-design', 'algorithms', 'architecture', 'git'] },
+];
 
 export function Header() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -55,32 +60,39 @@ export function Header() {
 
             {dropdownOpen && (
               <div
-                className="absolute right-0 top-full mt-2 min-w-[160px] rounded-lg border border-dark-border bg-dark-card/95 backdrop-blur-md shadow-xl"
+                className="absolute right-0 top-full mt-2 w-[520px] rounded-lg border border-dark-border bg-dark-card/95 backdrop-blur-md shadow-xl"
                 onMouseLeave={() => setDropdownOpen(false)}
               >
-                <div className="p-1.5">
-                  {LEARN_CATEGORIES.map(cat => {
-                    const meta = CATEGORY_META[cat];
-                    const isActive = location.pathname === `/learn/${cat}`;
-                    return (
-                      <Link
-                        key={cat}
-                        to={`/learn/${cat}`}
-                        onClick={() => setDropdownOpen(false)}
-                        className={[
-                          'flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors duration-150',
-                          isActive
-                            ? 'bg-primary-500/15 text-primary-300'
-                            : 'text-gray-400 hover:bg-dark-border/50 hover:text-gray-200',
-                        ].join(' ')}
-                      >
-                        <span
-                          className={`h-2 w-2 rounded-full bg-gradient-to-r ${meta.color}`}
-                        />
-                        {meta.label}
-                      </Link>
-                    );
-                  })}
+                <div className="grid grid-cols-2 gap-x-1 p-2">
+                  {LEARN_GROUPS.map(group => (
+                    <div key={group.label} className="mb-1">
+                      <p className="px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                        {group.label}
+                      </p>
+                      {group.categories.map(cat => {
+                        const meta = CATEGORY_META[cat];
+                        const isActive = location.pathname === `/learn/${cat}`;
+                        return (
+                          <Link
+                            key={cat}
+                            to={`/learn/${cat}`}
+                            onClick={() => setDropdownOpen(false)}
+                            className={[
+                              'flex items-center gap-2.5 rounded-md px-3 py-1.5 text-sm transition-colors duration-150',
+                              isActive
+                                ? 'bg-primary-500/15 text-primary-300'
+                                : 'text-gray-400 hover:bg-dark-border/50 hover:text-gray-200',
+                            ].join(' ')}
+                          >
+                            <span
+                              className={`h-1.5 w-1.5 shrink-0 rounded-full bg-gradient-to-r ${meta.color}`}
+                            />
+                            {meta.label}
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
