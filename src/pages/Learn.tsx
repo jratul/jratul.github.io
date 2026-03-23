@@ -33,7 +33,12 @@ function MobileCategorySelector({
       </button>
 
       {open && (
-        <div className="absolute left-0 right-0 top-full z-20 mt-1 rounded-lg border border-dark-border bg-dark-card/98 shadow-xl">
+        <>
+          <div
+            className="fixed inset-0 z-20"
+            onClick={() => setOpen(false)}
+          />
+          <div className="absolute left-0 right-0 top-full z-30 mt-1 rounded-lg border border-dark-border bg-[#1a1a3e] shadow-xl">
           <div className="p-2">
             {LEARN_GROUPS.map(group => (
               <div key={group.label}>
@@ -65,6 +70,7 @@ function MobileCategorySelector({
             ))}
           </div>
         </div>
+        </>
       )}
     </div>
   );
