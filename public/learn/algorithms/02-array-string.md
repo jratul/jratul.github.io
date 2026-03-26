@@ -5,382 +5,495 @@ order: 2
 
 # 배열과 문자열
 
-코딩 테스트에서 가장 자주 나오는 패턴들입니다. 모든 패턴을 이해하고 나면 문제를 보는 눈이 달라집니다.
+코딩 테스트에서 가장 자주 나오는 유형입니다. 여기서 배우는 패턴들(투 포인터, 슬라이딩 윈도우, HashMap)은 다른 문제에서도 반복해서 등장합니다.
 
 ---
 
-## 투 포인터 (Two Pointers)
+## JavaScript 배열/문자열 기본기
 
-**개념**: 배열 양쪽 끝(또는 특정 위치)에 포인터 두 개를 놓고 조건에 따라 이동시키는 기법.
+본격적인 문제 풀이 전에 자주 쓰는 내장 메서드를 정리합니다.
 
-**언제**: 정렬된 배열에서 특정 합, 차이, 조건을 만족하는 쌍을 찾을 때. O(n²) 이중 반복문을 O(n)으로 줄일 수 있습니다.
+```javascript
+// === 배열 핵심 메서드 ===
+const arr = [1, 2, 3, 4, 5];
 
-**비유**: 줄다리기에서 양쪽 팀이 중앙으로 모이는 것처럼, 양끝에서 조건을 만족할 때까지 좁혀 옵니다.
+// 생성
+Array.from({ length: 5 }, (_, i) => i);  // [0, 1, 2, 3, 4]
+Array.from('hello');                       // ['h', 'e', 'l', 'l', 'o']
+new Array(5).fill(0);                      // [0, 0, 0, 0, 0]
 
-```java
-// 두 수의 합 (정렬된 배열) — 핵심 패턴
-// [1, 2, 3, 4, 6], target = 6 → (2, 4) 인덱스 반환
-int[] twoSum(int[] nums, int target) {
-    int left = 0, right = nums.length - 1;
-    while (left < right) {
-        int sum = nums[left] + nums[right];
-        if (sum == target) return new int[]{left, right};
-        else if (sum < target) left++;   // 합이 작으면 왼쪽 올리기
-        else right--;                    // 합이 크면 오른쪽 내리기
-    }
-    return new int[]{};
-}
-// 시간: O(n), 공간: O(1)
-// 왜 O(n)? — left, right는 항상 한 방향으로만 이동, 교차 시 종료
+// 탐색
+arr.indexOf(3);        // 2  (없으면 -1)
+arr.includes(3);       // true
+arr.findIndex(x => x > 3);  // 3  (처음으로 조건 만족하는 인덱스)
 
-// 팰린드롬 확인 ("racecar" → true)
-boolean isPalindrome(String s) {
-    int left = 0, right = s.length() - 1;
-    while (left < right) {
-        if (s.charAt(left) != s.charAt(right)) return false;
-        left++;
-        right--;
-    }
-    return true;
-}
+// 변환
+arr.slice(1, 3);       // [2, 3]  (원본 유지, end 미포함)
+arr.splice(1, 2);      // [2, 3] 제거, arr은 [1, 4, 5]로 변경 (원본 수정!)
+[...arr].reverse();    // [5, 4, 3, 2, 1]  (스프레드로 복사 후 뒤집기)
+arr.sort((a, b) => a - b);  // 오름차순 (숫자 정렬은 비교 함수 필수!)
 
-// 컨테이너에 물 채우기 (LeetCode 11)
-// 높이 배열에서 가장 많은 물을 담을 수 있는 넓이
-// 핵심: 더 낮은 쪽을 이동해야 더 큰 넓이의 가능성이 생긴다
-int maxWater(int[] heights) {
-    int left = 0, right = heights.length - 1;
-    int maxArea = 0;
-    while (left < right) {
-        int width = right - left;
-        int height = Math.min(heights[left], heights[right]);
-        maxArea = Math.max(maxArea, width * height);
-        // 낮은 쪽을 이동 (높은 쪽을 이동하면 넓이가 절대 늘지 않는다)
-        if (heights[left] < heights[right]) left++;
-        else right--;
-    }
-    return maxArea;
-}
+// Set과 Map
+const set = new Set([1, 2, 2, 3]);  // Set { 1, 2, 3 }  (중복 제거)
+set.has(2);   // true
+set.size;     // 3
+
+const map = new Map();
+map.set('a', 1);
+map.get('a');    // 1
+map.has('a');    // true
+map.size;        // 1
+
+// === 문자열 핵심 메서드 ===
+const s = 'hello world';
+
+s.split(' ');          // ['hello', 'world']
+s.split('');           // ['h', 'e', 'l', 'l', 'o', ' ', 'w', 'o', 'r', 'l', 'd']
+s.includes('world');   // true
+s.indexOf('o');        // 4  (처음 등장 위치)
+s.slice(0, 5);         // 'hello'
+s.toUpperCase();       // 'HELLO WORLD'
+s.replace('world', 'JS');  // 'hello JS'
+s.trim();              // 앞뒤 공백 제거
+
+// 문자열 → 배열 → 처리 → 문자열
+'hello'.split('').reverse().join('');  // 'olleh'
 ```
 
 ---
 
-## 슬라이딩 윈도우 (Sliding Window)
+## 패턴 1: 투 포인터 (Two Pointers)
 
-**개념**: 연속된 부분 배열(윈도우)을 이동시키며 최적값을 찾는 기법.
+**개념**: 배열 양쪽(또는 특정 위치)에 포인터 두 개를 놓고 조건에 따라 이동.
 
-**언제**: "연속된 k개 원소", "조건을 만족하는 최장/최단 부분 배열" 문제.
+**언제 쓰나**: 정렬된 배열에서 특정 합/조건을 찾을 때. O(n²) 이중 반복문을 O(n)으로 줄입니다.
 
-**비유**: 기차 창문처럼 일정 크기의 창문을 왼쪽에서 오른쪽으로 밀면서 보는 것. 처음부터 다시 계산하는 대신, 빠져나간 값을 빼고 새로 들어온 값을 더합니다.
-
-```java
-// 고정 크기 윈도우: 크기 k인 최대 부분합
-// [2, 1, 5, 1, 3, 2], k=3 → 9 (5+1+3)
-int maxSubarraySum(int[] nums, int k) {
-    // 1. 첫 윈도우 합 계산
-    int windowSum = 0;
-    for (int i = 0; i < k; i++) windowSum += nums[i];
-
-    int maxSum = windowSum;
-    // 2. 윈도우 슬라이드: 이전 첫 원소 빼고 새 원소 추가
-    for (int i = k; i < nums.length; i++) {
-        windowSum += nums[i] - nums[i - k];  // 오른쪽으로 한 칸 슬라이드
-        maxSum = Math.max(maxSum, windowSum);
-    }
-    return maxSum;
-}
-// 시간: O(n) — 각 원소를 최대 2번씩만 처리
-
-// 가변 크기 윈도우: 합이 target 이상인 최소 길이 부분배열 (LeetCode 209)
-// [2,3,1,2,4,3], target=7 → 2 ([4,3])
-int minSubarrayLen(int target, int[] nums) {
-    int left = 0, sum = 0, minLen = Integer.MAX_VALUE;
-    for (int right = 0; right < nums.length; right++) {
-        sum += nums[right];                 // 오른쪽 확장
-        while (sum >= target) {             // 조건 만족 시 왼쪽 수축
-            minLen = Math.min(minLen, right - left + 1);
-            sum -= nums[left++];
-        }
-    }
-    return minLen == Integer.MAX_VALUE ? 0 : minLen;
-}
-
-// 중복 없는 최장 부분문자열 (LeetCode 3) — 인터뷰 단골!
-// "abcabcbb" → 3 ("abc")
-int lengthOfLongestSubstring(String s) {
-    Map<Character, Integer> lastIndex = new HashMap<>();  // 문자 → 마지막 위치
-    int maxLen = 0, left = 0;
-
-    for (int right = 0; right < s.length(); right++) {
-        char c = s.charAt(right);
-        // 중복 발견 시 왼쪽 포인터를 중복 문자 다음으로 점프
-        if (lastIndex.containsKey(c) && lastIndex.get(c) >= left) {
-            left = lastIndex.get(c) + 1;
-        }
-        lastIndex.put(c, right);
-        maxLen = Math.max(maxLen, right - left + 1);
-    }
-    return maxLen;
-}
-```
+**비유**: 양끝에서 가운데로 좁혀오는 집게.
 
 ---
 
-## 해시맵 패턴
+## 문제: 두 수의 합 (Two Sum)
 
-**개념**: 값을 키로 저장해 O(1) 조회를 활용하는 기법.
+**난이도**: 하/중
+**유형**: 배열, HashMap (LeetCode #1)
 
-**언제**: "이전에 나온 값이 있는지", "빈도 계산", "쌍 찾기" 등.
+### 문제 설명
 
-**비유**: 영어 사전처럼 알파벳 순서가 아닌, 단어를 바로 찾는 것. 배열에서 순서대로 찾는 것(O(n)) 대신 해시맵으로 즉시 찾기(O(1)).
+정수 배열 `nums`와 정수 `target`이 주어질 때, 합이 `target`이 되는 두 수의 **인덱스**를 반환하세요. 각 입력에 정확히 하나의 답이 존재하며, 같은 원소를 두 번 사용할 수 없습니다.
 
-```java
-// 두 수의 합 — 정렬 없이 O(n) (LeetCode 1)
-// [2, 7, 11, 15], target=9 → [0, 1]
-int[] twoSum(int[] nums, int target) {
-    Map<Integer, Integer> map = new HashMap<>();  // 값 → 인덱스
-    for (int i = 0; i < nums.length; i++) {
-        int complement = target - nums[i];
-        if (map.containsKey(complement)) {
-            return new int[]{map.get(complement), i};
-        }
-        map.put(nums[i], i);
+**입력 예시**: `nums = [2, 7, 11, 15], target = 9`
+**출력 예시**: `[0, 1]`
+
+**입력 예시 2**: `nums = [3, 2, 4], target = 6`
+**출력 예시 2**: `[1, 2]`
+
+### 어떻게 풀까? (접근법)
+
+**1단계 — 브루트포스로 시작:**
+> "모든 쌍을 다 확인해보자"
+- 이중 반복문으로 `nums[i] + nums[j] === target` 확인
+- 직관적이지만 O(n²)
+
+**2단계 — Map으로 최적화:**
+> "어차피 `a + b = target`이면 `b = target - a`인데, b가 이미 나왔는지 O(1)로 확인할 수 없을까?"
+- Map에 `{ 숫자: 인덱스 }` 저장
+- 현재 숫자를 볼 때 `target - 현재숫자`가 Map에 있으면 → 정답!
+- 배열 한 번만 순회 → O(n)
+
+### 풀이 코드 (JavaScript)
+
+```javascript
+// ❌ 브루트포스: O(n²)
+function twoSumBrute(nums, target) {
+  for (let i = 0; i < nums.length; i++) {
+    for (let j = i + 1; j < nums.length; j++) {  // i+1부터: 같은 원소 두 번 쓰지 않기
+      if (nums[i] + nums[j] === target) {
+        return [i, j];
+      }
     }
-    return new int[]{};
-}
-// 아이디어: "7을 만나면 target-7=2가 이전에 있었는지 즉시 확인"
-
-// 아나그램 확인 — 문자 빈도 비교 (LeetCode 242)
-// "anagram", "nagaram" → true
-boolean isAnagram(String s, String t) {
-    if (s.length() != t.length()) return false;
-    int[] count = new int[26];              // 알파벳 26개 카운터
-    for (char c : s.toCharArray()) count[c - 'a']++;
-    for (char c : t.toCharArray()) count[c - 'a']--;
-    for (int n : count) if (n != 0) return false;
-    return true;
+  }
+  return [];
 }
 
-// 그룹 아나그램 (LeetCode 49)
-// ["eat","tea","tan","ate","nat","bat"] → [["eat","tea","ate"],["tan","nat"],["bat"]]
-List<List<String>> groupAnagrams(String[] strs) {
-    Map<String, List<String>> map = new HashMap<>();
-    for (String s : strs) {
-        char[] chars = s.toCharArray();
-        Arrays.sort(chars);                 // 정렬하면 아나그램끼리 같은 키
-        String key = new String(chars);     // "eat","tea","ate" 모두 "aet"
-        map.computeIfAbsent(key, k -> new ArrayList<>()).add(s);
+// ✅ Map 활용: O(n)
+function twoSum(nums, target) {
+  const map = new Map();  // { 숫자값 → 인덱스 }
+
+  for (let i = 0; i < nums.length; i++) {
+    const complement = target - nums[i];  // 필요한 짝꿍
+
+    if (map.has(complement)) {
+      return [map.get(complement), i];  // 짝꿍의 인덱스, 현재 인덱스
     }
-    return new ArrayList<>(map.values());
+
+    map.set(nums[i], i);  // 현재 숫자 저장
+  }
+
+  return [];
 }
+
+// 테스트
+console.log(twoSum([2, 7, 11, 15], 9));  // [0, 1]
+console.log(twoSum([3, 2, 4], 6));        // [1, 2]
+console.log(twoSum([3, 3], 6));           // [0, 1]
 ```
+
+### 실행 추적 (Dry-run)
+
+입력: `nums = [2, 7, 11, 15], target = 9`
+
+```
+Map: {}
+
+i=0, num=2, complement = 9-2 = 7
+  map.has(7)? NO → map.set(2, 0)
+  Map: { 2→0 }
+
+i=1, num=7, complement = 9-7 = 2
+  map.has(2)? YES! → return [map.get(2), 1] = [0, 1] ✅
+```
+
+### 복잡도
+
+- 시간: O(n) — 배열 한 번 순회
+- 공간: O(n) — Map에 최대 n개 저장
 
 ---
 
-## 누적 합 (Prefix Sum)
+## 문제: 가장 긴 중복 없는 부분 문자열
 
-**개념**: 미리 누적 합 배열을 만들어두면 임의 구간의 합을 O(1)에 계산.
+**난이도**: 중
+**유형**: 슬라이딩 윈도우, Set (LeetCode #3)
 
-**언제**: "i번째부터 j번째까지의 합" 쿼리가 여러 번 필요할 때. 전처리 O(n), 쿼리 O(1).
+### 문제 설명
 
-**비유**: 회사 1월~12월 매출을 미리 누적으로 더해두면, "3월~7월 매출"을 물을 때마다 다시 더할 필요 없이 바로 계산 가능.
+문자열 `s`가 주어질 때, 중복 문자가 없는 가장 긴 부분 문자열의 길이를 반환하세요.
 
-```java
-// 구간 합 쿼리
-class PrefixSum {
-    private final int[] prefix;
+**입력 예시**: `s = "abcabcbb"`
+**출력 예시**: `3` (`"abc"`)
 
-    public PrefixSum(int[] nums) {
-        prefix = new int[nums.length + 1];  // 0번 인덱스는 빈 합(0)
-        for (int i = 0; i < nums.length; i++) {
-            prefix[i + 1] = prefix[i] + nums[i];
-        }
-        // nums = [1, 2, 3, 4, 5]
-        // prefix= [0, 1, 3, 6,10,15]
-    }
+**입력 예시 2**: `s = "bbbbb"`
+**출력 예시 2**: `1` (`"b"`)
 
-    // [left, right] 구간 합 O(1)
-    // query(1, 3) = prefix[4] - prefix[1] = 10 - 1 = 9 (= 2+3+4)
-    public int query(int left, int right) {
-        return prefix[right + 1] - prefix[left];
-    }
-}
+**입력 예시 3**: `s = "pwwkew"`
+**출력 예시 3**: `3` (`"wke"`)
 
-// 부분 배열 합이 k인 경우의 수 (LeetCode 560) — 응용
-// [1, 1, 1], k=2 → 2
-int subarraySum(int[] nums, int k) {
-    Map<Integer, Integer> prefixCount = new HashMap<>();
-    prefixCount.put(0, 1);  // 빈 배열(합=0)도 하나 있음
-    int sum = 0, count = 0;
+### 어떻게 풀까? (접근법)
 
-    for (int num : nums) {
-        sum += num;
-        // sum - k가 이전에 등장했다면, 그 위치부터 현재까지 합이 k
-        count += prefixCount.getOrDefault(sum - k, 0);
-        prefixCount.merge(sum, 1, Integer::sum);
-    }
-    return count;
-}
-// 아이디어: "현재까지 누적합 - 이전 어느 시점의 누적합 = k" 활용
+**잘못된 접근 — 모든 부분 문자열 확인 O(n²):**
+- 시작점 i, 끝점 j를 이중 반복문으로 모든 조합 탐색
+- 각 부분 문자열마다 중복 확인 → O(n³)까지 늘어남
+
+**올바른 접근 — 슬라이딩 윈도우 O(n):**
+> "창문(window)을 오른쪽으로 밀면서 중복이 생기면 왼쪽을 줄인다"
+
 ```
+문자열: a b c a b c b b
+윈도우: [  ]              시작
+        [    ]            오른쪽 확장
+        [      ]          오른쪽 확장
+        중복 'a' 발견!
+          [    ]          왼쪽 축소 (a 제거)
+```
+
+- `left`, `right` 두 포인터로 현재 윈도우를 나타냄
+- `Set`으로 현재 윈도우의 문자 관리
+- `right`를 늘려가다 중복이 생기면 `left`를 오른쪽으로 이동
+
+### 풀이 코드 (JavaScript)
+
+```javascript
+function lengthOfLongestSubstring(s) {
+  const charSet = new Set();  // 현재 윈도우 안의 문자들
+  let left = 0;               // 윈도우 왼쪽 끝
+  let maxLen = 0;
+
+  for (let right = 0; right < s.length; right++) {
+    const char = s[right];
+
+    // 중복 문자가 있으면 → 왼쪽을 줄여서 중복 제거
+    while (charSet.has(char)) {
+      charSet.delete(s[left]);  // 왼쪽 문자 제거
+      left++;                    // 왼쪽 포인터 이동
+    }
+
+    // 현재 문자를 윈도우에 추가
+    charSet.add(char);
+
+    // 현재 윈도우 크기 = right - left + 1
+    maxLen = Math.max(maxLen, right - left + 1);
+  }
+
+  return maxLen;
+}
+
+// 테스트
+console.log(lengthOfLongestSubstring('abcabcbb'));  // 3
+console.log(lengthOfLongestSubstring('bbbbb'));      // 1
+console.log(lengthOfLongestSubstring('pwwkew'));     // 3
+console.log(lengthOfLongestSubstring(''));           // 0
+```
+
+### 실행 추적 (Dry-run)
+
+입력: `s = "abcabcbb"`
+
+```
+윈도우 시각화: [left ... right]
+
+right=0, char='a': Set에 없음 → add('a') → Set: {a}       윈도우: [a]         maxLen=1
+right=1, char='b': Set에 없음 → add('b') → Set: {a,b}     윈도우: [ab]        maxLen=2
+right=2, char='c': Set에 없음 → add('c') → Set: {a,b,c}   윈도우: [abc]       maxLen=3
+right=3, char='a': Set에 있음!
+  → delete(s[0]='a'), left=1 → Set: {b,c}
+  → add('a') → Set: {b,c,a}  윈도우: [bca]  maxLen=3
+right=4, char='b': Set에 있음!
+  → delete(s[1]='b'), left=2 → Set: {c,a}
+  → add('b') → Set: {c,a,b}  윈도우: [cab]  maxLen=3
+right=5, char='c': Set에 있음!
+  → delete(s[2]='c'), left=3 → Set: {a,b}
+  → add('c') → Set: {a,b,c}  윈도우: [abc]  maxLen=3
+right=6, char='b': Set에 있음!
+  → delete(s[3]='a'), left=4 → Set: {b,c}  (b 아직 있음)
+  → delete(s[4]='b'), left=5 → Set: {c}
+  → add('b') → Set: {c,b}    윈도우: [cb]   maxLen=3
+right=7, char='b': Set에 있음!
+  → delete(s[5]='c'), left=6 → Set: {b}
+  → delete(s[6]='b'), left=7 → Set: {}
+  → add('b') → Set: {b}      윈도우: [b]    maxLen=3
+
+최종 결과: 3 ✅
+```
+
+### 복잡도
+
+- 시간: O(n) — left, right 각각 최대 n번 이동
+- 공간: O(min(m, n)) — m은 문자 종류 수 (알파벳이면 최대 26)
 
 ---
 
-## 배열 회전 / 변환
+## 문제: 문자열 뒤집기 / 팰린드롬 확인
 
-```java
-// 배열 k칸 오른쪽 회전 (LeetCode 189) — 역전 트릭
-// [1,2,3,4,5], k=2 → [4,5,1,2,3]
-// 전체 뒤집기 → 앞 k개 뒤집기 → 나머지 뒤집기
-void rotate(int[] nums, int k) {
-    k %= nums.length;                          // k가 배열 크기보다 클 때 처리
-    reverse(nums, 0, nums.length - 1);         // [5,4,3,2,1]
-    reverse(nums, 0, k - 1);                   // [4,5,3,2,1]
-    reverse(nums, k, nums.length - 1);         // [4,5,1,2,3] ✅
+**난이도**: 하
+**유형**: 투 포인터, 문자열 조작
+
+### 문제 설명
+
+**(1)** 문자열 `s`를 뒤집어서 반환하세요.
+- 입력: `"hello"` → 출력: `"olleh"`
+
+**(2)** 주어진 문자열이 팰린드롬인지 확인하세요. 팰린드롬은 앞에서 읽으나 뒤에서 읽으나 같은 문자열입니다. 영문자와 숫자만 고려하고, 대소문자 구분 없이 판단합니다.
+- 입력: `"A man, a plan, a canal: Panama"` → 출력: `true`
+- 입력: `"race a car"` → 출력: `false`
+
+### 어떻게 풀까? (접근법)
+
+**문자열 뒤집기:**
+- 방법 1: 내장 메서드 체이닝 `split → reverse → join`
+- 방법 2: 투 포인터로 양끝에서 swap
+- 방법 2가 공간 O(1)로 더 효율적
+
+**팰린드롬 확인:**
+1. 영문자/숫자만 남기고 소문자로 변환 (전처리)
+2. 투 포인터: 양끝에서 가운데로 좁혀오며 문자 비교
+3. 한 군데라도 다르면 false, 끝까지 같으면 true
+
+### 풀이 코드 (JavaScript)
+
+```javascript
+// === (1) 문자열 뒤집기 ===
+
+// 방법 A: 내장 메서드 (한 줄, 공간 O(n))
+function reverseString(s) {
+  return s.split('').reverse().join('');
 }
 
-void reverse(int[] nums, int left, int right) {
-    while (left < right) {
-        int temp = nums[left];
-        nums[left++] = nums[right];
-        nums[right--] = temp;
+// 방법 B: 투 포인터 (배열로 변환 후 in-place swap, 공간 O(n))
+function reverseStringTP(s) {
+  const arr = s.split('');  // JS 문자열은 immutable이라 배열로 변환
+  let left = 0;
+  let right = arr.length - 1;
+
+  while (left < right) {
+    [arr[left], arr[right]] = [arr[right], arr[left]];  // swap
+    left++;
+    right--;
+  }
+
+  return arr.join('');
+}
+
+console.log(reverseString('hello'));    // 'olleh'
+console.log(reverseStringTP('hello'));  // 'olleh'
+
+
+// === (2) 팰린드롬 확인 ===
+
+function isPalindrome(s) {
+  // 전처리: 영문자/숫자만 남기고 소문자로
+  const cleaned = s.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+  // 투 포인터: 양끝에서 가운데로
+  let left = 0;
+  let right = cleaned.length - 1;
+
+  while (left < right) {
+    if (cleaned[left] !== cleaned[right]) {
+      return false;  // 하나라도 다르면 즉시 false
     }
+    left++;
+    right--;
+  }
+
+  return true;  // 끝까지 통과했으면 팰린드롬
 }
 
-// 행렬 90도 시계 방향 회전 (LeetCode 48)
-// 핵심: 전치(transpose) 후 각 행 뒤집기
-void rotateMatrix(int[][] matrix) {
-    int n = matrix.length;
-    // 1. 전치: (i,j) ↔ (j,i)
-    for (int i = 0; i < n; i++)
-        for (int j = i + 1; j < n; j++) {
-            int temp = matrix[i][j];
-            matrix[i][j] = matrix[j][i];
-            matrix[j][i] = temp;
-        }
-    // 2. 각 행을 좌우 반전
-    for (int[] row : matrix) {
-        int left = 0, right = row.length - 1;
-        while (left < right) {
-            int temp = row[left];
-            row[left++] = row[right];
-            row[right--] = temp;
-        }
-    }
-}
+console.log(isPalindrome('A man, a plan, a canal: Panama'));  // true
+console.log(isPalindrome('race a car'));                       // false
+console.log(isPalindrome('Was it a car or a cat I saw?'));    // true
 ```
+
+### 실행 추적 (Dry-run)
+
+팰린드롬 확인: `"racecar"`
+
+```
+전처리: "racecar" (변환 없음)
+
+left=0, right=6:  r vs r → 같음, left=1, right=5
+left=1, right=5:  a vs a → 같음, left=2, right=4
+left=2, right=4:  c vs c → 같음, left=3, right=3
+left(3) >= right(3) → while 종료
+
+return true ✅
+```
+
+팰린드롬 확인: `"race a car"` (전처리 후: `"raceacar"`)
+
+```
+left=0, right=7:  r vs r → 같음, left=1, right=6
+left=1, right=6:  a vs a → 같음, left=2, right=5
+left=2, right=5:  c vs c → 같음, left=3, right=4
+left=3, right=4:  e vs a → 다름! → return false ✅
+```
+
+### 복잡도
+
+- 시간: O(n)
+- 공간: O(n) — cleaned 문자열 저장
 
 ---
 
-## 문자열 패턴
+## 문제 (보너스): 배열 회전 (원형 배열)
 
-```java
-// 문자열 압축 (Run-Length Encoding)
-// "aabcccdddd" → "a2bc3d4"
-String compress(String s) {
-    if (s.isEmpty()) return s;
-    StringBuilder sb = new StringBuilder();
-    int count = 1;
+**난이도**: 중
+**유형**: 배열 조작, 역전 기법 (LeetCode #189)
 
-    for (int i = 1; i <= s.length(); i++) {
-        if (i < s.length() && s.charAt(i) == s.charAt(i-1)) {
-            count++;
-        } else {
-            sb.append(s.charAt(i-1));
-            if (count > 1) sb.append(count);
-            count = 1;
-        }
-    }
-    return sb.length() < s.length() ? sb.toString() : s;
-}
+### 문제 설명
 
-// 회문 부분 문자열 수 세기 — 중심 확장법 (LeetCode 647)
-// "abc" → 3, "aaa" → 6
-int countPalindromes(String s) {
-    int count = 0;
-    for (int i = 0; i < s.length(); i++) {
-        count += expand(s, i, i);      // 홀수 길이: "aba"
-        count += expand(s, i, i + 1); // 짝수 길이: "abba"
-    }
-    return count;
-}
+정수 배열 `nums`를 오른쪽으로 `k`칸 회전하세요.
 
-int expand(String s, int left, int right) {
-    int count = 0;
-    while (left >= 0 && right < s.length()
-           && s.charAt(left) == s.charAt(right)) {
-        count++;
-        left--;
-        right++;
-    }
-    return count;
-}
+**입력 예시**: `nums = [1,2,3,4,5,6,7], k = 3`
+**출력 예시**: `[5,6,7,1,2,3,4]`
+
+설명: `[7,1,2,3,4,5,6]` → `[6,7,1,2,3,4,5]` → `[5,6,7,1,2,3,4]`
+
+### 어떻게 풀까? (접근법)
+
+**직관적 방법 — 슬라이스 O(n):**
+- `k = k % nums.length` (k가 배열 길이보다 클 수 있음)
+- 뒷부분 + 앞부분으로 새 배열 구성
+
+**공간 O(1) 방법 — 역전(Reverse) 트릭:**
+> 세 번 뒤집으면 회전 효과가 생긴다!
+
 ```
+원본:   [1, 2, 3, 4, 5, 6, 7],  k=3
+1단계:  전체 뒤집기  → [7, 6, 5, 4, 3, 2, 1]
+2단계:  앞 k개 뒤집기 → [5, 6, 7, 4, 3, 2, 1]
+3단계:  나머지 뒤집기 → [5, 6, 7, 1, 2, 3, 4] ✅
+```
+
+### 풀이 코드 (JavaScript)
+
+```javascript
+// 방법 A: 슬라이스 O(n) 시간, O(n) 공간
+function rotateSimple(nums, k) {
+  k = k % nums.length;  // k가 길이보다 크면 나머지만 유효
+  if (k === 0) return;
+
+  // 뒤 k개 + 앞 (n-k)개
+  const rotated = [...nums.slice(-k), ...nums.slice(0, -k)];
+  // 원본 배열에 복사 (in-place 요구사항)
+  for (let i = 0; i < nums.length; i++) {
+    nums[i] = rotated[i];
+  }
+}
+
+// 방법 B: 역전 트릭 O(n) 시간, O(1) 공간
+function rotate(nums, k) {
+  k = k % nums.length;
+  if (k === 0) return;
+
+  // 배열의 일부를 뒤집는 헬퍼 함수
+  function reverse(arr, start, end) {
+    while (start < end) {
+      [arr[start], arr[end]] = [arr[end], arr[start]];
+      start++;
+      end--;
+    }
+  }
+
+  const n = nums.length;
+  reverse(nums, 0, n - 1);       // 1단계: 전체 뒤집기
+  reverse(nums, 0, k - 1);       // 2단계: 앞 k개 뒤집기
+  reverse(nums, k, n - 1);       // 3단계: 나머지 뒤집기
+}
+
+// 테스트
+const arr1 = [1, 2, 3, 4, 5, 6, 7];
+rotate(arr1, 3);
+console.log(arr1);  // [5, 6, 7, 1, 2, 3, 4]
+
+const arr2 = [-1, -100, 3, 99];
+rotate(arr2, 2);
+console.log(arr2);  // [3, 99, -1, -100]
+```
+
+### 실행 추적 (Dry-run)
+
+입력: `[1,2,3,4,5,6,7], k=3`
+
+```
+k = 3 % 7 = 3
+
+1단계: reverse(0, 6) 전체 뒤집기
+  [7, 6, 5, 4, 3, 2, 1]
+
+2단계: reverse(0, 2) 앞 3개 뒤집기
+  [5, 6, 7, 4, 3, 2, 1]
+
+3단계: reverse(3, 6) 나머지 뒤집기
+  [5, 6, 7, 1, 2, 3, 4]  ✅
+```
+
+### 복잡도
+
+| 방법 | 시간 | 공간 |
+|------|------|------|
+| 슬라이스 | O(n) | O(n) |
+| 역전 트릭 | O(n) | O(1) |
 
 ---
 
-## 모노토닉 스택 (Monotonic Stack)
-
-**개념**: 스택에 원소를 넣을 때 단조 증가/감소 상태를 유지하는 기법.
-
-**언제**: "다음에 나오는 큰/작은 원소 찾기", "히스토그램 최대 넓이".
-
-```java
-// 다음 큰 원소 (Next Greater Element) — 모노토닉 감소 스택
-// [2, 1, 2, 4, 3] → [4, 2, 4, -1, -1]
-int[] nextGreaterElement(int[] nums) {
-    int n = nums.length;
-    int[] result = new int[n];
-    Arrays.fill(result, -1);
-    Deque<Integer> stack = new ArrayDeque<>();  // 인덱스 저장
-
-    for (int i = 0; i < n; i++) {
-        // 현재 값이 스택 top보다 크면 → top의 "다음 큰 원소"가 현재 값
-        while (!stack.isEmpty() && nums[stack.peek()] < nums[i]) {
-            result[stack.pop()] = nums[i];
-        }
-        stack.push(i);
-    }
-    return result;
-}
-// 아이디어: "아직 다음 큰 원소를 못 찾은 인덱스"를 스택에 보관
-
-// 일일 온도 (LeetCode 739) — 같은 패턴
-// [73,74,75,71,69,72,76,73] → [1,1,4,2,1,1,0,0]
-int[] dailyTemperatures(int[] temps) {
-    int n = temps.length;
-    int[] result = new int[n];
-    Deque<Integer> stack = new ArrayDeque<>();
-
-    for (int i = 0; i < n; i++) {
-        while (!stack.isEmpty() && temps[stack.peek()] < temps[i]) {
-            int j = stack.pop();
-            result[j] = i - j;  // 며칠 기다렸는지
-        }
-        stack.push(i);
-    }
-    return result;
-}
-```
-
----
-
-## 패턴 인식 요약
+## 핵심 패턴 정리
 
 ```
-문제 유형                    → 적합한 패턴
-────────────────────────────────────────────
-정렬 배열에서 두 원소 합     → 투 포인터
-연속 부분배열 최적화         → 슬라이딩 윈도우
-쌍 찾기 / 빈도 계산          → 해시맵
-구간 합 쿼리                 → 누적 합 (Prefix Sum)
-다음 큰/작은 원소            → 모노토닉 스택
-회문 / 대칭                  → 투 포인터 (중심 확장)
-
-자주 쓰는 Java API:
-Arrays.sort(arr)                         // 기본 정렬
-Arrays.sort(arr, (a, b) -> a[0] - b[0]) // 커스텀 정렬
-map.getOrDefault(key, 0)                 // 없으면 기본값
-map.merge(key, 1, Integer::sum)          // 카운트 증가
-map.computeIfAbsent(key, k -> new ArrayList<>())  // 없으면 초기화
-Collections.frequency(list, x)          // 빈도
+문제 유형                     → 사용할 패턴
+─────────────────────────────────────────────
+정렬된 배열에서 쌍 찾기        → 투 포인터 (양끝에서 좁혀오기)
+연속 부분 배열/문자열 최적화   → 슬라이딩 윈도우
+중복 확인, O(1) 조회 필요      → Set / Map
+순서가 중요한 역순 처리        → 배열 reverse() 또는 역전 트릭
+문자 빈도 계산                 → Map { 문자 → 횟수 }
 ```

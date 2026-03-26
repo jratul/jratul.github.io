@@ -54,44 +54,44 @@ O(2^n):   2^1000 번   (사실상 불가)
 
 ## 복잡도 계산 방법
 
-```java
+```javascript
 // O(1) — 상수 시간: 몇 번을 해도 1번
-int first = arr[0];           // 인덱스 직접 접근
-map.get("key");               // 해시맵 조회 (평균)
-stack.peek();                 // 스택 맨 위 확인
+const first = arr[0];           // 인덱스 직접 접근
+map.get('key');                  // Map 조회 (평균)
 
 // O(log n) — 반복마다 범위가 절반으로 감소
-int binarySearch(int[] arr, int target) {
-    int left = 0, right = arr.length - 1;
-    while (left <= right) {         // 최대 log₂(n)회 반복
-        int mid = left + (right - left) / 2;
-        if (arr[mid] == target) return mid;
-        else if (arr[mid] < target) left = mid + 1;
-        else right = mid - 1;
-    }
-    return -1;
+function binarySearch(arr, target) {
+  let left = 0;
+  let right = arr.length - 1;
+  while (left <= right) {         // 최대 log₂(n)회 반복
+    const mid = Math.floor((left + right) / 2);
+    if (arr[mid] === target) return mid;
+    else if (arr[mid] < target) left = mid + 1;
+    else right = mid - 1;
+  }
+  return -1;
 }
 // n=1024이면 최대 10번만 반복
 
 // O(n) — 배열을 딱 한 번 순회
-int sum(int[] arr) {
-    int total = 0;
-    for (int num : arr) total += num;  // n번 반복
-    return total;
+function sum(arr) {
+  let total = 0;
+  for (const num of arr) total += num;  // n번 반복
+  return total;
 }
 
-// O(n log n) — Java의 Arrays.sort (TimSort)
-Arrays.sort(arr);
+// O(n log n) — JavaScript의 Array.sort (TimSort 기반)
+arr.sort((a, b) => a - b);
 
 // O(n²) — 중첩 반복문
-void bubbleSort(int[] arr) {
-    for (int i = 0; i < arr.length; i++) {       // n번
-        for (int j = 0; j < arr.length - 1; j++) { // n번
-            if (arr[j] > arr[j+1]) {
-                int temp = arr[j]; arr[j] = arr[j+1]; arr[j+1] = temp;
-            }
-        }
+function bubbleSort(arr) {
+  for (let i = 0; i < arr.length; i++) {        // n번
+    for (let j = 0; j < arr.length - 1; j++) {  // n번
+      if (arr[j] > arr[j + 1]) {
+        [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];  // 구조분해 swap
+      }
     }
+  }
 }
 // 총 n × n = n² 번
 ```
@@ -100,47 +100,49 @@ void bubbleSort(int[] arr) {
 
 ## 복잡도 계산 규칙 5가지
 
-```java
+```javascript
 // 규칙 1: 상수 무시
 // O(2n) → O(n), O(n + 500) → O(n)
 
 // 규칙 2: 순차 실행 → 덧셈 → 더 큰 것만
-for (int i = 0; i < n; i++) { }    // O(n)
-for (int i = 0; i < n; i++) { }    // O(n)
+for (let i = 0; i < n; i++) { }    // O(n)
+for (let i = 0; i < n; i++) { }    // O(n)
 // 합계: O(n) + O(n) = O(2n) = O(n)
 
-for (int i = 0; i < n; i++) { }    // O(n)
-for (int i = 0; i < n*n; i++) { }  // O(n²)
+for (let i = 0; i < n; i++) { }    // O(n)
+for (let i = 0; i < n * n; i++) { } // O(n²)
 // 합계: O(n) + O(n²) = O(n²)  ← 큰 것만
 
 // 규칙 3: 중첩 → 곱셈
-for (int i = 0; i < n; i++) {       // O(n)
-    for (int j = 0; j < n; j++) {   // O(n)
-    }                                // = O(n × n) = O(n²)
+for (let i = 0; i < n; i++) {       // O(n)
+  for (let j = 0; j < n; j++) {     // O(n)
+    // 본문                           // = O(n × n) = O(n²)
+  }
 }
 
-for (int i = 0; i < n; i++) {           // O(n)
-    for (int j = 0; j < Math.log(n); j++) { // O(log n)
-    }                                    // = O(n log n)
+for (let i = 0; i < n; i++) {              // O(n)
+  for (let j = 0; j < Math.log2(n); j++) { // O(log n)
+    // 본문                                  // = O(n log n)
+  }
 }
 
 // 규칙 4: 독립된 두 입력은 합산
-void process(int[] a, int[] b) {
-    for (int x : a) { }  // O(n)
-    for (int y : b) { }  // O(m)
-    // 합계: O(n + m)  ← O(n) 아님!
+function process(a, b) {
+  for (const x of a) { }  // O(n)
+  for (const y of b) { }  // O(m)
+  // 합계: O(n + m)  ← O(n) 아님!
 }
 
 // 규칙 5: 재귀는 호출 트리 분석
-void countDown(int n) {
-    if (n <= 0) return;
-    countDown(n - 1);  // T(n) = T(n-1) + O(1) → O(n)
+function countDown(n) {
+  if (n <= 0) return;
+  countDown(n - 1);  // T(n) = T(n-1) + O(1) → O(n)
 }
 
-int fibonacci(int n) {
-    if (n <= 1) return n;
-    return fibonacci(n-1) + fibonacci(n-2);
-    // T(n) = T(n-1) + T(n-2) → O(2^n)  ← 매우 느림!
+function fibonacci(n) {
+  if (n <= 1) return n;
+  return fibonacci(n - 1) + fibonacci(n - 2);
+  // T(n) = T(n-1) + T(n-2) → O(2^n)  ← 매우 느림!
 }
 ```
 
@@ -150,40 +152,39 @@ int fibonacci(int n) {
 
 시간만큼 중요한 것이 메모리 사용량입니다. 공간 복잡도는 **알고리즘이 추가로 사용하는 메모리**를 측정합니다 (입력 자체는 제외).
 
-```java
+```javascript
 // O(1) — 추가 공간 상수 (변수 몇 개)
-void reverseInPlace(int[] arr) {
-    int left = 0, right = arr.length - 1;  // 변수 2개만
-    while (left < right) {
-        int temp = arr[left];
-        arr[left++] = arr[right];
-        arr[right--] = temp;
-    }
+function reverseInPlace(arr) {
+  let left = 0;
+  let right = arr.length - 1;  // 변수 2개만
+  while (left < right) {
+    [arr[left], arr[right]] = [arr[right], arr[left]];  // swap
+    left++;
+    right--;
+  }
 }
-// 배열 크기와 무관하게 변수 3개(left, right, temp)만 사용
+// 배열 크기와 무관하게 변수 2개(left, right)만 사용
 
 // O(n) — 입력에 비례한 추가 공간
-int[] copyArray(int[] arr) {
-    int[] copy = new int[arr.length];  // n 크기 배열 생성
-    for (int i = 0; i < arr.length; i++) copy[i] = arr[i];
-    return copy;
+function copyArray(arr) {
+  return [...arr];  // n 크기 새 배열 생성
 }
 
 // O(n) — 재귀 호출 스택
-void recursion(int n) {
-    if (n <= 0) return;
-    recursion(n - 1);  // 스택에 n개의 프레임 쌓임
+function recursion(n) {
+  if (n <= 0) return;
+  recursion(n - 1);  // 스택에 n개의 프레임 쌓임
 }
 // n=10000이면 스택 오버플로우 위험!
 
 // O(log n) — 이진 탐색 재귀 스택 (절반씩 줄어드므로)
-int binarySearchRecursive(int[] arr, int target, int left, int right) {
-    if (left > right) return -1;
-    int mid = left + (right - left) / 2;
-    if (arr[mid] == target) return mid;
-    if (arr[mid] < target) return binarySearchRecursive(arr, target, mid+1, right);
-    return binarySearchRecursive(arr, target, left, mid-1);
-    // 재귀 깊이 = log n
+function binarySearchRecursive(arr, target, left, right) {
+  if (left > right) return -1;
+  const mid = Math.floor((left + right) / 2);
+  if (arr[mid] === target) return mid;
+  if (arr[mid] < target) return binarySearchRecursive(arr, target, mid + 1, right);
+  return binarySearchRecursive(arr, target, left, mid - 1);
+  // 재귀 깊이 = log n
 }
 ```
 
@@ -198,11 +199,11 @@ int binarySearchRecursive(int[] arr, int target, int left, int right) {
 ──────────────────────────────────────────────────────────
 배열 (Array)        O(1)    O(n)    O(n)      O(1)*    O(n)
 연결 리스트          O(n)    O(n)    O(1)      O(n)**   O(1)***
-해시맵 (HashMap)     -      O(1)†    O(1)†      -       O(1)†
+해시맵 (Map)         -      O(1)†    O(1)†      -       O(1)†
 이진 탐색 트리(BST)  O(log n)‡ O(log n)‡ O(log n)‡  -  O(log n)‡
 힙 (Heap)           -      O(1)‡‡  O(log n)   -       O(log n)
 
-* amortized (ArrayList 동적 확장)
+* amortized (동적 배열 확장)
 ** tail 포인터 있으면 O(1)
 *** 앞 삭제 기준
 † 평균, 최악은 O(n) (해시 충돌)
@@ -223,29 +224,31 @@ int binarySearchRecursive(int[] arr, int target, int left, int right) {
 
 코딩 테스트에서 가장 중요한 스킬 중 하나는 **시간-공간 트레이드오프**입니다. 시간을 줄이려면 보통 공간이 더 필요합니다.
 
-```java
+```javascript
 // [Before] O(n²) 시간, O(1) 공간 — 두 수의 합 문제
 // 모든 쌍을 확인
-boolean hasTwoSum(int[] arr, int target) {
-    for (int i = 0; i < arr.length; i++)
-        for (int j = i+1; j < arr.length; j++)
-            if (arr[i] + arr[j] == target) return true;
-    return false;
+function hasTwoSum(arr, target) {
+  for (let i = 0; i < arr.length; i++) {
+    for (let j = i + 1; j < arr.length; j++) {
+      if (arr[i] + arr[j] === target) return true;
+    }
+  }
+  return false;
 }
 
-// [After] O(n) 시간, O(n) 공간 — 해시셋으로 개선
+// [After] O(n) 시간, O(n) 공간 — Set으로 개선
 // "내가 찾는 값이 이전에 나왔는지" 기록
-boolean hasTwoSum(int[] arr, int target) {
-    Set<Integer> seen = new HashSet<>();
-    for (int num : arr) {
-        if (seen.contains(target - num)) return true;
-        seen.add(num);
-    }
-    return false;
+function hasTwoSumFast(arr, target) {
+  const seen = new Set();
+  for (const num of arr) {
+    if (seen.has(target - num)) return true;
+    seen.add(num);
+  }
+  return false;
 }
 
 // 최적화 패턴 정리:
-// O(n²) → O(n):   해시맵 사용 (공간 ↑)
+// O(n²) → O(n):   Map/Set 사용 (공간 ↑)
 // O(n)  → O(log n): 정렬 후 이진 탐색 (정렬 비용 O(n log n))
 // O(2^n) → O(n):  DP (메모이제이션)으로 중복 계산 제거
 // O(n)  → O(1):   공간 절약 필요 시 투 포인터, 슬라이딩 윈도우
@@ -279,3 +282,225 @@ n ≤ 10^5:    O(n log n) 필요     → 정렬, 이진 탐색
 n ≤ 10^6:    O(n) 필요           → 해시맵, 슬라이딩 윈도우
 n ≤ 10^9:    O(log n) 필요       → 이진 탐색, 수학 공식
 ```
+
+---
+
+## 문제: 최대값과 최소값 동시에 구하기
+
+**난이도**: 하
+**유형**: 선형 탐색, 복잡도 비교
+
+### 문제 설명
+
+정수 배열 `nums`가 주어질 때, 배열의 최대값과 최소값을 동시에 구하세요.
+
+**입력 예시**: `nums = [3, 1, 4, 1, 5, 9, 2, 6]`
+**출력 예시**: `{ min: 1, max: 9 }`
+
+### 어떻게 풀까? (접근법)
+
+**나쁜 방법 — O(n²)**: 모든 원소를 서로 비교한다.
+- 바깥 루프: 각 원소를 기준으로 삼기 (n번)
+- 안쪽 루프: 나머지 원소와 비교 (n번)
+- 총 n × n = n² 번 비교 → 배열 크기 1만이면 1억 번 비교!
+
+**좋은 방법 — O(n)**: 배열을 딱 한 번만 훑으면서 최대/최소를 함께 추적한다.
+- 첫 원소로 min, max 초기화
+- 나머지 원소를 순서대로 보며 갱신
+- 배열 크기 1만이면 딱 1만 번 비교
+
+### 풀이 코드 (JavaScript)
+
+```javascript
+// ❌ 나쁜 방법: O(n²) — 모든 쌍 비교
+function minMaxBad(nums) {
+  let min = nums[0];
+  let max = nums[0];
+
+  for (let i = 0; i < nums.length; i++) {
+    for (let j = 0; j < nums.length; j++) {  // 중첩 반복문!
+      if (nums[j] < nums[i]) min = nums[j];
+      if (nums[j] > nums[i]) max = nums[j];
+    }
+  }
+  return { min, max };
+}
+// 배열 길이 100,000이면 → 100억 번 연산 (시간 초과!)
+
+// ✅ 좋은 방법: O(n) — 한 번만 순회
+function minMax(nums) {
+  // 첫 원소로 초기값 설정
+  let min = nums[0];
+  let max = nums[0];
+
+  // 두 번째 원소부터 끝까지 한 번만 순회
+  for (let i = 1; i < nums.length; i++) {
+    if (nums[i] < min) min = nums[i];  // 더 작으면 min 갱신
+    if (nums[i] > max) max = nums[i];  // 더 크면 max 갱신
+  }
+
+  return { min, max };
+}
+
+// JavaScript 내장 메서드 활용
+function minMaxBuiltin(nums) {
+  return {
+    min: Math.min(...nums),  // 스프레드 연산자로 전달
+    max: Math.max(...nums),
+  };
+}
+// 주의: 배열이 매우 크면 스프레드 방식은 스택 오버플로우 위험!
+// 안전한 방법: Math.min.apply(null, nums)
+
+// 테스트
+const nums = [3, 1, 4, 1, 5, 9, 2, 6];
+console.log(minMax(nums));  // { min: 1, max: 9 }
+```
+
+### 실행 추적 (Dry-run)
+
+입력: `[3, 1, 4, 1, 5, 9, 2, 6]`
+
+```
+초기화: min = 3, max = 3
+
+i=1, nums[1]=1:  1 < 3 → min=1   / 1 < 3, max 그대로=3
+i=2, nums[2]=4:  4 > 1, min 그대로=1 / 4 > 3 → max=4
+i=3, nums[3]=1:  1 = 1, min 그대로=1 / 1 < 4, max 그대로=4
+i=4, nums[4]=5:  5 > 1, min 그대로=1 / 5 > 4 → max=5
+i=5, nums[5]=9:  9 > 1, min 그대로=1 / 9 > 5 → max=9
+i=6, nums[6]=2:  2 > 1, min 그대로=1 / 2 < 9, max 그대로=9
+i=7, nums[7]=6:  6 > 1, min 그대로=1 / 6 < 9, max 그대로=9
+
+결과: { min: 1, max: 9 }  ✅
+```
+
+### 복잡도
+
+- **나쁜 방법**: 시간 O(n²), 공간 O(1)
+- **좋은 방법**: 시간 O(n), 공간 O(1)
+
+---
+
+## 문제: 두 수의 합 — 브루트포스 vs HashMap
+
+**난이도**: 하/중
+**유형**: 배열, 해시맵, 복잡도 비교 (LeetCode #1)
+
+### 문제 설명
+
+정수 배열 `nums`와 정수 `target`이 주어질 때, 합이 `target`이 되는 두 수의 **인덱스**를 반환하세요. 각 입력에 정확히 하나의 답이 있고, 같은 원소를 두 번 사용할 수 없습니다.
+
+**입력 예시**: `nums = [2, 7, 11, 15], target = 9`
+**출력 예시**: `[0, 1]` (nums[0] + nums[1] = 2 + 7 = 9)
+
+**입력 예시 2**: `nums = [3, 2, 4], target = 6`
+**출력 예시 2**: `[1, 2]` (nums[1] + nums[2] = 2 + 4 = 6)
+
+### 어떻게 풀까? (접근법)
+
+**1단계 — 브루트포스 (가장 단순한 방법):**
+- "모든 쌍을 다 확인해보자"
+- i번째와 j번째를 더해서 target이 되면 반환
+- 시간 O(n²) → 배열이 크면 너무 느림
+
+**2단계 — Map으로 최적화:**
+- "지금까지 본 숫자를 저장해두면?"
+- `target - nums[i]`가 이미 나왔다면 → 쌍 발견!
+- Map에 `{ 숫자: 인덱스 }` 형태로 저장
+- 배열을 한 번만 순회 → 시간 O(n)
+
+**핵심 아이디어**: `a + b = target` 이면 `b = target - a`
+- a를 보는 순간, b가 이전에 나왔는지 Map에서 O(1)로 확인!
+
+### 풀이 코드 (JavaScript)
+
+```javascript
+// ❌ 방법 1: 브루트포스 O(n²)
+function twoSumBrute(nums, target) {
+  for (let i = 0; i < nums.length; i++) {
+    for (let j = i + 1; j < nums.length; j++) {  // i+1부터 시작 (중복 방지)
+      if (nums[i] + nums[j] === target) {
+        return [i, j];
+      }
+    }
+  }
+  return [];  // 답이 없을 때 (문제 조건상 항상 있음)
+}
+
+// ✅ 방법 2: HashMap O(n)
+function twoSum(nums, target) {
+  // Map: { 숫자값 → 인덱스 } 저장
+  const map = new Map();
+
+  for (let i = 0; i < nums.length; i++) {
+    const complement = target - nums[i];  // 필요한 짝꿍 수
+
+    // 짝꿍이 이미 Map에 있다면 정답!
+    if (map.has(complement)) {
+      return [map.get(complement), i];
+    }
+
+    // 없으면 현재 숫자를 Map에 저장하고 계속 진행
+    map.set(nums[i], i);
+  }
+
+  return [];
+}
+
+// 테스트
+console.log(twoSum([2, 7, 11, 15], 9));   // [0, 1]
+console.log(twoSum([3, 2, 4], 6));         // [1, 2]
+console.log(twoSum([3, 3], 6));            // [0, 1]
+```
+
+### 실행 추적 (Dry-run)
+
+입력: `nums = [2, 7, 11, 15], target = 9`
+
+```
+Map 초기화: {}
+
+i=0, nums[0]=2:
+  complement = 9 - 2 = 7
+  map.has(7)? → NO
+  map.set(2, 0) → Map: { 2→0 }
+
+i=1, nums[1]=7:
+  complement = 9 - 7 = 2
+  map.has(2)? → YES! (인덱스 0에 있음)
+  return [map.get(2), 1] = [0, 1]  ✅
+
+결과: [0, 1]
+검증: nums[0] + nums[1] = 2 + 7 = 9 = target ✅
+```
+
+**두 번째 예시**: `nums = [3, 2, 4], target = 6`
+
+```
+Map 초기화: {}
+
+i=0, nums[0]=3:
+  complement = 6 - 3 = 3
+  map.has(3)? → NO  (아직 비어 있음)
+  map.set(3, 0) → Map: { 3→0 }
+
+i=1, nums[1]=2:
+  complement = 6 - 2 = 4
+  map.has(4)? → NO
+  map.set(2, 1) → Map: { 3→0, 2→1 }
+
+i=2, nums[2]=4:
+  complement = 6 - 4 = 2
+  map.has(2)? → YES! (인덱스 1에 있음)
+  return [map.get(2), 2] = [1, 2]  ✅
+```
+
+### 복잡도
+
+| 방법 | 시간 | 공간 |
+|------|------|------|
+| 브루트포스 | O(n²) | O(1) |
+| HashMap | O(n) | O(n) |
+
+**교훈**: 공간(O(n))을 조금 더 써서 시간을 O(n²) → O(n)으로 줄임. n=100,000이면 10,000,000,000번 → 100,000번으로 단축!
