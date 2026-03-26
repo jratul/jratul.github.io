@@ -25,7 +25,13 @@ export type LearnCategory =
   | 'system-design'
   | 'algorithms'
   | 'git'
-  | 'architecture';
+  | 'architecture'
+  | 'html'
+  | 'css'
+  | 'javascript'
+  | 'typescript'
+  | 'react'
+  | 'nextjs';
 
 export const CATEGORY_META: Record<LearnCategory, { label: string; description: string; color: string }> = {
   java: {
@@ -97,5 +103,35 @@ export const CATEGORY_META: Record<LearnCategory, { label: string; description: 
     label: '소프트웨어 아키텍처',
     description: '헥사고날, 클린 아키텍처, DDD, CQRS',
     color: 'from-indigo-500 to-blue-500',
+  },
+  html: {
+    label: 'HTML',
+    description: '웹의 뼈대, 시맨틱 마크업과 웹 표준',
+    color: 'from-orange-500 to-red-400',
+  },
+  css: {
+    label: 'CSS',
+    description: 'Flexbox, Grid, 애니메이션, 반응형 디자인',
+    color: 'from-blue-400 to-cyan-400',
+  },
+  javascript: {
+    label: 'JavaScript',
+    description: '브라우저와 Node.js를 아우르는 웹의 언어',
+    color: 'from-yellow-400 to-amber-400',
+  },
+  typescript: {
+    label: 'TypeScript',
+    description: '타입 안전성으로 더 견고한 JavaScript',
+    color: 'from-blue-500 to-indigo-500',
+  },
+  react: {
+    label: 'React',
+    description: '컴포넌트 기반 UI 라이브러리',
+    color: 'from-cyan-400 to-blue-400',
+  },
+  nextjs: {
+    label: 'Next.js',
+    description: 'React 기반 풀스택 웹 프레임워크',
+    color: 'from-gray-300 to-gray-100',
   },
 };

@@ -5,6 +5,7 @@ import { CATEGORY_META } from '@/types/learn';
 import type { LearnCategory } from '@/types/learn';
 
 export const LEARN_GROUPS: { label: string; categories: LearnCategory[] }[] = [
+  { label: '프론트엔드', categories: ['html', 'css', 'javascript', 'typescript', 'react', 'nextjs'] },
   { label: '언어 & 프레임워크', categories: ['java', 'kotlin', 'spring'] },
   { label: '인프라', categories: ['docker', 'k8s', 'linux', 'aws'] },
   { label: '데이터 & 네트워크', categories: ['network', 'database', 'redis'] },
