@@ -5,347 +5,529 @@ order: 5
 
 # 트리와 이진 탐색 트리
 
-트리 문제의 90%는 재귀로 풀립니다. "현재 노드에서 무엇을 하고, 자식에게 무엇을 전달하는가"를 명확히 하면 됩니다.
+트리 문제의 핵심은 "지금 이 노드에서 무엇을 하고, 자식에게 무엇을 넘기는가"입니다.
+재귀를 쓰면 복잡해 보이는 트리 문제도 깔끔하게 풀립니다.
 
 ---
 
-## 트리 기본 구조
+## 트리 기본 구조 (JavaScript)
 
-```java
+```javascript
+// 이진 트리 노드 클래스
 class TreeNode {
-    int val;
-    TreeNode left, right;
-    TreeNode(int val) { this.val = val; }
+  constructor(val) {
+    this.val = val;
+    this.left = null;
+    this.right = null;
+  }
 }
 
-// 트리 생성:
-//       1
-//      / \
-//     2   3
-//    / \
-//   4   5
-TreeNode root = new TreeNode(1);
+// 트리 만들기 예시
+//        1
+//       / \
+//      2   3
+//     / \   \
+//    4   5   6
+
+const root = new TreeNode(1);
 root.left = new TreeNode(2);
 root.right = new TreeNode(3);
 root.left.left = new TreeNode(4);
 root.left.right = new TreeNode(5);
+root.right.right = new TreeNode(6);
 ```
 
 ---
 
-## 4가지 순회 방법
+## 문제 1: 이진 트리 레벨 순서 탐색
 
-**비유**: 책을 읽는 방식으로 생각하세요.
-- **전위**: 제목(루트)부터 읽고, 왼쪽 챕터, 오른쪽 챕터
-- **중위**: 왼쪽 챕터 다 읽고, 제목 읽고, 오른쪽 챕터 (BST에서 정렬 순서!)
-- **후위**: 왼쪽, 오른쪽 읽고 나서 제목 (아래에서 위로 처리할 때)
-- **레벨 순서**: 1층, 2층, 3층... (BFS)
+**난이도**: 중
+**유형**: BFS, 트리
 
-```java
-// 전위 (Preorder): 루트 → 왼쪽 → 오른쪽
-// 용도: 트리 복사, 직렬화, 경로 탐색
-void preorder(TreeNode node) {
-    if (node == null) return;
-    System.out.print(node.val + " ");  // 루트 처리 먼저
-    preorder(node.left);
-    preorder(node.right);
-}
+### 문제 설명
 
-// 중위 (Inorder): 왼쪽 → 루트 → 오른쪽
-// 용도: BST에서 정렬된 순서로 출력
-void inorder(TreeNode node) {
-    if (node == null) return;
-    inorder(node.left);
-    System.out.print(node.val + " ");  // 왼쪽 다 처리한 후 루트
-    inorder(node.right);
-}
+이진 트리가 주어질 때, 레벨별로 노드 값을 묶어서 반환하세요.
 
-// 후위 (Postorder): 왼쪽 → 오른쪽 → 루트
-// 용도: 트리 삭제, 서브트리 크기 계산, 후위 표기식
-void postorder(TreeNode node) {
-    if (node == null) return;
-    postorder(node.left);
-    postorder(node.right);
-    System.out.print(node.val + " ");  // 자식 처리 후 루트
-}
+```
+입력:
+        3
+       / \
+      9  20
+        /  \
+       15   7
 
-// 레벨 순서 (BFS) — 큐 사용
-List<List<Integer>> levelOrder(TreeNode root) {
-    List<List<Integer>> result = new ArrayList<>();
-    if (root == null) return result;
+출력: [[3], [9, 20], [15, 7]]
+```
 
-    Queue<TreeNode> queue = new LinkedList<>();
-    queue.offer(root);
+### 어떻게 풀까?
 
-    while (!queue.isEmpty()) {
-        int levelSize = queue.size();  // 현재 레벨의 노드 수
-        List<Integer> level = new ArrayList<>();
+```
+1단계: 문제 분석
+  - 위에서 아래로, 같은 깊이의 노드를 묶어야 한다
+  - 깊이(레벨)가 같은 노드끼리 그룹화
 
-        for (int i = 0; i < levelSize; i++) {
-            TreeNode node = queue.poll();
-            level.add(node.val);
-            if (node.left != null) queue.offer(node.left);
-            if (node.right != null) queue.offer(node.right);
-        }
-        result.add(level);
+2단계: 접근법 선택
+  - DFS(깊이우선)는 깊이 들어가므로 레벨 묶기가 어렵다
+  - BFS(너비우선)는 레벨 단위로 탐색 → 딱 맞다!
+  - Queue를 사용해서 BFS 구현
+
+3단계: BFS 핵심 아이디어
+  - Queue에 루트를 넣는다
+  - 반복할 때마다 "현재 Queue에 있는 노드 수"만큼만 꺼낸다
+  - 그 노드들이 같은 레벨이다
+  - 꺼내면서 자식을 Queue에 넣는다
+```
+
+### 풀이 코드 (JavaScript)
+
+```javascript
+function levelOrder(root) {
+  // 빈 트리 처리
+  if (!root) return [];
+
+  const result = [];
+  const queue = [root]; // Queue 초기화: 루트부터 시작
+
+  while (queue.length > 0) {
+    // 현재 레벨의 노드 수 기록
+    const levelSize = queue.length;
+    const currentLevel = [];
+
+    // 현재 레벨 노드만큼 반복
+    for (let i = 0; i < levelSize; i++) {
+      const node = queue.shift(); // Queue에서 꺼내기 (앞에서)
+      currentLevel.push(node.val);
+
+      // 자식 노드를 Queue에 추가 (다음 레벨)
+      if (node.left) queue.push(node.left);
+      if (node.right) queue.push(node.right);
     }
-    return result;
+
+    result.push(currentLevel);
+  }
+
+  return result;
 }
+
+// 테스트
+const root = new TreeNode(3);
+root.left = new TreeNode(9);
+root.right = new TreeNode(20);
+root.right.left = new TreeNode(15);
+root.right.right = new TreeNode(7);
+
+console.log(levelOrder(root));
+// [[3], [9, 20], [15, 7]]
 ```
+
+### 실행 추적 (Dry-run)
+
+```
+초기: queue = [3], result = []
+
+--- 1번째 반복 ---
+levelSize = 1 (queue에 노드 1개)
+  꺼냄: 3 → currentLevel = [3]
+  3의 자식: left=9, right=20 → queue에 추가
+queue = [9, 20]
+result = [[3]]
+
+--- 2번째 반복 ---
+levelSize = 2 (queue에 노드 2개)
+  꺼냄: 9 → currentLevel = [9]
+    9의 자식: 없음
+  꺼냄: 20 → currentLevel = [9, 20]
+    20의 자식: left=15, right=7 → queue에 추가
+queue = [15, 7]
+result = [[3], [9, 20]]
+
+--- 3번째 반복 ---
+levelSize = 2 (queue에 노드 2개)
+  꺼냄: 15 → currentLevel = [15]
+    15의 자식: 없음
+  꺼냄: 7 → currentLevel = [15, 7]
+    7의 자식: 없음
+queue = []
+result = [[3], [9, 20], [15, 7]]
+
+queue가 비었으므로 종료 → 반환: [[3], [9, 20], [15, 7]]
+```
+
+### 트리 ASCII 시각화
+
+```
+        3          ← 레벨 0: [3]
+       / \
+      9  20        ← 레벨 1: [9, 20]
+        /  \
+       15   7      ← 레벨 2: [15, 7]
+```
+
+### 복잡도
+
+- 시간: O(n) — 모든 노드를 한 번씩 방문
+- 공간: O(n) — Queue에 최대 n/2개(마지막 레벨) 저장
 
 ---
 
-## 트리 재귀 패턴
+## 문제 2: 이진 트리 최대 깊이
 
-대부분의 트리 문제는 이 패턴으로 해결됩니다:
+**난이도**: 하
+**유형**: DFS, 재귀
+
+### 문제 설명
+
+이진 트리의 최대 깊이를 구하세요. 깊이는 루트에서 가장 먼 리프 노드까지의 노드 수입니다.
 
 ```
-result solve(TreeNode node) {
-    // 1. 기저 조건 (null 처리)
-    if (node == null) return 기본값;
+입력:
+        3
+       / \
+      9  20
+        /  \
+       15   7
 
-    // 2. 재귀 호출
-    result left = solve(node.left);
-    result right = solve(node.right);
-
-    // 3. 현재 노드에서 합치기
-    return combine(left, right, node.val);
-}
+출력: 3
 ```
 
-```java
-// 최대 깊이 (LeetCode 104)
-// 아이디어: 현재 노드의 깊이 = 자식 중 더 깊은 쪽 + 1
-int maxDepth(TreeNode root) {
-    if (root == null) return 0;
-    return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));
-}
+### 어떻게 풀까?
 
-// 균형 이진 트리 확인 (LeetCode 110)
-// 아이디어: 각 노드에서 왼쪽/오른쪽 높이 차이가 1 이하
-boolean isBalanced(TreeNode root) {
-    return checkHeight(root) != -1;
-}
-
-int checkHeight(TreeNode node) {
-    if (node == null) return 0;
-    int left = checkHeight(node.left);
-    if (left == -1) return -1;      // 이미 불균형이면 바로 -1 전파
-    int right = checkHeight(node.right);
-    if (right == -1) return -1;
-    if (Math.abs(left - right) > 1) return -1;  // 현재 노드에서 불균형
-    return 1 + Math.max(left, right);
-}
-
-// 두 트리가 같은지 (LeetCode 100)
-boolean isSameTree(TreeNode p, TreeNode q) {
-    if (p == null && q == null) return true;   // 둘 다 null
-    if (p == null || q == null) return false;   // 하나만 null
-    return p.val == q.val
-        && isSameTree(p.left, q.left)
-        && isSameTree(p.right, q.right);
-}
-
-// 경로 합 확인 (LeetCode 112) — 루트에서 리프까지 합이 targetSum
-boolean hasPathSum(TreeNode root, int targetSum) {
-    if (root == null) return false;
-    if (root.left == null && root.right == null) {
-        return root.val == targetSum;  // 리프 노드에서 남은 값과 비교
-    }
-    return hasPathSum(root.left, targetSum - root.val)
-        || hasPathSum(root.right, targetSum - root.val);
-}
 ```
+1단계: 문제 분석
+  - 루트에서 가장 깊은 곳까지 몇 단계인가?
+  - 빈 노드의 깊이 = 0
+  - 리프 노드의 깊이 = 1
+
+2단계: 재귀적 사고
+  - 현재 노드의 깊이 = max(왼쪽 깊이, 오른쪽 깊이) + 1
+  - 자식에게 "네 깊이가 얼마야?"라고 물어보고
+  - 더 깊은 쪽 + 1이 내 깊이
+
+3단계: 기저 조건 (base case)
+  - null 노드가 오면 깊이 0 반환
+```
+
+### 풀이 코드 (JavaScript)
+
+```javascript
+function maxDepth(root) {
+  // 기저 조건: 빈 노드이면 깊이 0
+  if (!root) return 0;
+
+  // 왼쪽, 오른쪽 서브트리의 최대 깊이 재귀 계산
+  const leftDepth = maxDepth(root.left);
+  const rightDepth = maxDepth(root.right);
+
+  // 더 깊은 쪽 + 현재 노드(1)
+  return Math.max(leftDepth, rightDepth) + 1;
+}
+
+console.log(maxDepth(root)); // 3
+```
+
+### 실행 추적 (Dry-run)
+
+```
+트리:
+        3
+       / \
+      9  20
+        /  \
+       15   7
+
+maxDepth(3)
+  maxDepth(9)
+    maxDepth(null) → 0  (9의 왼쪽)
+    maxDepth(null) → 0  (9의 오른쪽)
+    → max(0, 0) + 1 = 1
+  maxDepth(20)
+    maxDepth(15)
+      maxDepth(null) → 0
+      maxDepth(null) → 0
+      → max(0, 0) + 1 = 1
+    maxDepth(7)
+      maxDepth(null) → 0
+      maxDepth(null) → 0
+      → max(0, 0) + 1 = 1
+    → max(1, 1) + 1 = 2
+  → max(1, 2) + 1 = 3  ← 최종 답
+
+재귀 호출 스택:
+maxDepth(3) 호출
+  maxDepth(9) 호출
+    maxDepth(null) = 0 반환
+    maxDepth(null) = 0 반환
+  maxDepth(9) = 1 반환
+  maxDepth(20) 호출
+    maxDepth(15) 호출 → 1 반환
+    maxDepth(7) 호출 → 1 반환
+  maxDepth(20) = 2 반환
+maxDepth(3) = 3 반환
+```
+
+### 복잡도
+
+- 시간: O(n) — 모든 노드 한 번씩 방문
+- 공간: O(h) — 재귀 스택 깊이 = 트리 높이 h (최악 O(n))
 
 ---
 
-## 전역 변수 패턴
+## 문제 3: 이진 탐색 트리(BST) 유효성 검사
 
-때로는 재귀 반환값만으로 표현이 어렵습니다. 전역 변수에 최적값을 갱신하는 패턴을 씁니다.
+**난이도**: 중
+**유형**: BST, 재귀, 중위 순회
 
-```java
-// 이진 트리 최대 경로 합 (LeetCode 124) — 인터뷰 단골!
-// 경로는 트리의 어느 노드에서든 시작/끝 가능 (루트 거칠 필요 없음)
-int maxSum = Integer.MIN_VALUE;  // 전역 변수
+### 문제 설명
 
-int maxPathSum(TreeNode root) {
-    dfs(root);
-    return maxSum;
-}
+주어진 이진 트리가 유효한 이진 탐색 트리(BST)인지 확인하세요.
 
-int dfs(TreeNode node) {
-    if (node == null) return 0;
-    int left = Math.max(0, dfs(node.left));    // 음수 기여는 버림
-    int right = Math.max(0, dfs(node.right));
-    maxSum = Math.max(maxSum, left + right + node.val);  // 현재 노드를 꺾는 경로
-    return node.val + Math.max(left, right);             // 위로 전달하는 값 (한 방향)
-}
-// 핵심: "현재 노드에서 꺾는 경로"와 "위로 전달하는 경로"를 분리
+BST 조건:
+- 왼쪽 서브트리의 모든 노드 값 < 현재 노드 값
+- 오른쪽 서브트리의 모든 노드 값 > 현재 노드 값
+- 왼쪽/오른쪽 서브트리도 각각 BST
+
+```
+유효한 BST:        유효하지 않은 BST:
+    5                   5
+   / \                 / \
+  1   4               1   4
+     / \                 / \
+    3   6               3   6
+                          \
+                           7  ← 5의 오른쪽인데 3의 오른쪽에 있어서
+                              5 > 3이 아님 (실제로 3 < 5이므로 왼쪽 서브트리에서
+                              5보다 작아야 하는데 5 = 5라 위반)
 ```
 
----
+### 어떻게 풀까?
 
-## 경로 찾기 — 백트래킹
+```
+잘못된 접근: "왼쪽 자식 < 현재 < 오른쪽 자식"만 확인
+  → 이것만으로는 부족합니다!
 
-```java
-// 모든 경로 합 목록 (LeetCode 113)
-List<List<Integer>> pathSum(TreeNode root, int target) {
-    List<List<Integer>> result = new ArrayList<>();
-    dfs(root, target, new ArrayList<>(), result);
-    return result;
-}
+  예:
+      10
+     /  \
+    5   15
+       /  \
+      6   20   ← 6은 15의 왼쪽이라 6 < 15 (OK)
+                  하지만 6 < 10이어야 하는데 6 < 10 (이건 틀림! 10의 오른쪽에 있어야 10 미만 X)
+                  → 10의 오른쪽에 있으므로 6 > 10이어야 함 → 위반!
 
-void dfs(TreeNode node, int remaining, List<Integer> path,
-         List<List<Integer>> result) {
-    if (node == null) return;
-    path.add(node.val);
-
-    if (node.left == null && node.right == null && remaining == node.val) {
-        result.add(new ArrayList<>(path));  // 복사해서 저장!
-    } else {
-        dfs(node.left,  remaining - node.val, path, result);
-        dfs(node.right, remaining - node.val, path, result);
-    }
-    path.remove(path.size() - 1);  // 백트래킹 — 현재 노드를 경로에서 제거
-}
+올바른 접근: 각 노드에 유효 범위(min, max)를 전달
+  - 루트: (-Infinity, +Infinity)
+  - 왼쪽 자식: (-Infinity, 부모값)
+  - 오른쪽 자식: (부모값, +Infinity)
 ```
 
----
+### 풀이 코드 (JavaScript)
 
-## 이진 탐색 트리 (BST)
+```javascript
+function isValidBST(root) {
+  // 범위를 인자로 받는 헬퍼 함수
+  function validate(node, min, max) {
+    // 빈 노드는 유효
+    if (!node) return true;
 
-**성질**: 왼쪽 < 루트 < 오른쪽. 중위 순회하면 정렬된 순서로 출력됩니다.
-
-```java
-// BST 탐색 — O(log n) 평균 (균형 트리)
-TreeNode search(TreeNode root, int val) {
-    if (root == null || root.val == val) return root;
-    return val < root.val
-        ? search(root.left, val)    // 작으면 왼쪽
-        : search(root.right, val);  // 크면 오른쪽
-}
-
-// BST 삽입
-TreeNode insert(TreeNode root, int val) {
-    if (root == null) return new TreeNode(val);
-    if (val < root.val) root.left = insert(root.left, val);
-    else if (val > root.val) root.right = insert(root.right, val);
-    return root;
-}
-
-// BST 삭제 — 세 경우: 자식 없음, 자식 하나, 자식 둘
-TreeNode delete(TreeNode root, int key) {
-    if (root == null) return null;
-    if (key < root.val) {
-        root.left = delete(root.left, key);
-    } else if (key > root.val) {
-        root.right = delete(root.right, key);
-    } else {
-        if (root.left == null) return root.right;   // 오른쪽 자식으로 대체
-        if (root.right == null) return root.left;   // 왼쪽 자식으로 대체
-        // 자식 둘: 오른쪽 서브트리의 최솟값(중위 후계자)으로 대체
-        TreeNode minNode = findMin(root.right);
-        root.val = minNode.val;
-        root.right = delete(root.right, minNode.val);
-    }
-    return root;
-}
-
-TreeNode findMin(TreeNode node) {
-    while (node.left != null) node = node.left;
-    return node;
-}
-
-// BST 유효성 검사 (LeetCode 98) — 각 노드의 허용 범위를 전달
-boolean isValidBST(TreeNode root) {
-    return validate(root, Long.MIN_VALUE, Long.MAX_VALUE);
-}
-
-boolean validate(TreeNode node, long min, long max) {
-    if (node == null) return true;
+    // 현재 노드 값이 범위를 벗어나면 유효하지 않음
     if (node.val <= min || node.val >= max) return false;
-    return validate(node.left, min, node.val)    // 왼쪽: 최댓값 = 현재
-        && validate(node.right, node.val, max);  // 오른쪽: 최솟값 = 현재
+
+    // 왼쪽: max를 현재 값으로 좁힘 (왼쪽은 현재보다 작아야)
+    // 오른쪽: min을 현재 값으로 좁힘 (오른쪽은 현재보다 커야)
+    return (
+      validate(node.left, min, node.val) &&
+      validate(node.right, node.val, max)
+    );
+  }
+
+  return validate(root, -Infinity, Infinity);
 }
+
+// 테스트 1: 유효한 BST
+const validBST = new TreeNode(5);
+validBST.left = new TreeNode(1);
+validBST.right = new TreeNode(7);
+console.log(isValidBST(validBST)); // true
+
+// 테스트 2: 유효하지 않은 BST
+const invalidBST = new TreeNode(5);
+invalidBST.left = new TreeNode(1);
+invalidBST.right = new TreeNode(4);
+invalidBST.right.left = new TreeNode(3);
+invalidBST.right.right = new TreeNode(6);
+console.log(isValidBST(invalidBST)); // false (4 < 5인데 오른쪽에 있음)
 ```
+
+### 실행 추적 (Dry-run)
+
+```
+트리:
+    5
+   / \
+  1   7
+
+validate(5, -Infinity, Infinity)
+  5 > -Infinity && 5 < Infinity → OK
+  validate(1, -Infinity, 5)  ← 왼쪽: max = 5
+    1 > -Infinity && 1 < 5 → OK
+    validate(null, ...) → true
+    validate(null, ...) → true
+    → true
+  validate(7, 5, Infinity)  ← 오른쪽: min = 5
+    7 > 5 && 7 < Infinity → OK
+    → true
+  → true && true = true ✓
+
+잘못된 트리 [5, 1, 4, null, null, 3, 6]:
+    5
+   / \
+  1   4  ← 4 < 5인데 오른쪽? min=5이므로 4 > 5 위반!
+
+validate(4, 5, Infinity)
+  4 > 5? → NO → false 즉시 반환
+```
+
+### 복잡도
+
+- 시간: O(n) — 모든 노드 한 번씩 방문
+- 공간: O(h) — 재귀 스택 깊이
 
 ---
 
-## 최저 공통 조상 (LCA)
+## 문제 4: 이진 트리 지름
 
-```java
-// 이진 트리 LCA (LeetCode 236)
-// 아이디어: p나 q를 만나면 그 노드가 LCA 후보
-TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
-    if (root == null || root == p || root == q) return root;
+**난이도**: 중
+**유형**: DFS, 트리
 
-    TreeNode left  = lowestCommonAncestor(root.left, p, q);
-    TreeNode right = lowestCommonAncestor(root.right, p, q);
+### 문제 설명
 
-    if (left != null && right != null) return root;  // 양쪽에서 발견 → 현재 노드가 LCA
-    return left != null ? left : right;
-}
+이진 트리의 지름을 구하세요. 지름이란 두 노드 사이의 가장 긴 경로의 길이(엣지 수)입니다. 이 경로는 루트를 통과하지 않아도 됩니다.
 
-// BST LCA — BST 성질 활용 (더 효율적)
-TreeNode lcaBST(TreeNode root, TreeNode p, TreeNode q) {
-    if (p.val < root.val && q.val < root.val) {
-        return lcaBST(root.left, p, q);   // 둘 다 왼쪽
-    }
-    if (p.val > root.val && q.val > root.val) {
-        return lcaBST(root.right, p, q);  // 둘 다 오른쪽
-    }
-    return root;  // 갈라지는 지점 = LCA
-}
 ```
+입력:
+        1
+       / \
+      2   3
+     / \
+    4   5
+
+출력: 3  (경로: 4→2→1→3 또는 5→2→1→3, 엣지 3개)
+```
+
+### 어떻게 풀까?
+
+```
+1단계: 문제 분석
+  - 지름 = 가장 긴 경로의 엣지 수
+  - 경로는 루트를 거칠 수도, 거치지 않을 수도 있다
+
+2단계: 핵심 관찰
+  - 어떤 노드를 "꺾이는 점"으로 보면
+  - 그 노드를 통과하는 최장 경로 = 왼쪽 최대 깊이 + 오른쪽 최대 깊이
+
+3단계: 전략
+  - 모든 노드에 대해 (왼쪽 깊이 + 오른쪽 깊이)를 계산
+  - 그 중 최댓값이 지름
+  - 깊이 계산하는 재귀 함수 안에서 지름을 갱신
+```
+
+### 풀이 코드 (JavaScript)
+
+```javascript
+function diameterOfBinaryTree(root) {
+  let maxDiameter = 0; // 전역 최댓값 추적
+
+  function depth(node) {
+    if (!node) return 0;
+
+    const leftDepth = depth(node.left);
+    const rightDepth = depth(node.right);
+
+    // 현재 노드를 꺾이는 점으로 했을 때 경로 길이 갱신
+    maxDiameter = Math.max(maxDiameter, leftDepth + rightDepth);
+
+    // 부모에게는 "더 긴 쪽 + 1" 반환 (깊이)
+    return Math.max(leftDepth, rightDepth) + 1;
+  }
+
+  depth(root);
+  return maxDiameter;
+}
+
+// 테스트
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+
+console.log(diameterOfBinaryTree(root)); // 3
+```
+
+### 실행 추적 (Dry-run)
+
+```
+트리:
+        1
+       / \
+      2   3
+     / \
+    4   5
+
+depth(1) 호출
+  depth(2) 호출
+    depth(4) 호출
+      depth(null) → 0, depth(null) → 0
+      maxDiameter = max(0, 0+0) = 0
+      반환: max(0,0)+1 = 1
+    depth(5) 호출
+      depth(null) → 0, depth(null) → 0
+      maxDiameter = max(0, 0+0) = 0
+      반환: 1
+    노드 2에서: leftDepth=1, rightDepth=1
+    maxDiameter = max(0, 1+1) = 2
+    반환: max(1,1)+1 = 2
+  depth(3) 호출
+    depth(null) → 0, depth(null) → 0
+    maxDiameter = max(2, 0+0) = 2  (변화 없음)
+    반환: 1
+  노드 1에서: leftDepth=2, rightDepth=1
+  maxDiameter = max(2, 2+1) = 3  ← 최종 갱신!
+  반환: max(2,1)+1 = 3
+
+최종 답: 3
+경로: 4 → 2 → 1 → 3 (엣지 3개)
+```
+
+### 복잡도
+
+- 시간: O(n) — 모든 노드 한 번씩 방문
+- 공간: O(h) — 재귀 스택 깊이
 
 ---
 
-## 트리 직렬화 / 역직렬화
+## 핵심 정리
 
-```java
-// LeetCode 297 — 트리를 문자열로 저장하고 복원
-class Codec {
-    // 전위 순회로 직렬화
-    public String serialize(TreeNode root) {
-        if (root == null) return "null";
-        return root.val + "," + serialize(root.left) + "," + serialize(root.right);
-    }
+| 탐색 방법 | 사용 도구 | 언제 쓰나 |
+|-----------|-----------|-----------|
+| BFS (레벨 순서) | Queue | 레벨별 처리, 최단 거리 |
+| DFS (전위/중위/후위) | 재귀 / Stack | 값 계산, 경로 탐색 |
+| 범위 전달 재귀 | 재귀 파라미터 | BST 검증, 조건부 탐색 |
 
-    // 역직렬화: 큐로 순서대로 소비
-    public TreeNode deserialize(String data) {
-        Queue<String> queue = new LinkedList<>(Arrays.asList(data.split(",")));
-        return build(queue);
-    }
+```
+트리 재귀 문제 풀이 템플릿:
 
-    private TreeNode build(Queue<String> queue) {
-        String val = queue.poll();
-        if ("null".equals(val)) return null;
-        TreeNode node = new TreeNode(Integer.parseInt(val));
-        node.left  = build(queue);
-        node.right = build(queue);
-        return node;
-    }
+function solve(node) {
+  // 1. 기저 조건 (null 처리)
+  if (!node) return 기본값;
+
+  // 2. 왼쪽, 오른쪽 재귀 호출
+  const left = solve(node.left);
+  const right = solve(node.right);
+
+  // 3. 현재 노드에서 처리 (전역 변수 갱신 등)
+
+  // 4. 부모에게 반환할 값 계산
+  return 반환값;
 }
-```
-
----
-
-## 문제 접근 가이드
-
-```
-질문                        → 선택
-────────────────────────────────────────────────────
-순서 기반 처리?             → 전위(전처리), 중위(BST), 후위(후처리)
-레벨별 처리 / 최단 경로?    → BFS (레벨 순회)
-최적값을 트리 전체에서?      → 전역 변수 패턴
-두 노드의 공통 조상?        → LCA
-BST 정렬 순서 활용?         → 중위 순회
-경로 추적?                  → 백트래킹 (path 리스트 + 복원)
-
-재귀 함수 설계 체크리스트:
-□ null일 때 무엇을 반환하는가?
-□ 리프 노드일 때 무엇을 반환하는가?
-□ 왼쪽/오른쪽 결과를 어떻게 합치는가?
-□ 전역 변수가 필요한가? (경로 합, 최댓값 등)
-□ 반환값이 "아래서 위로 전달"과 "전체 답" 두 가지인가?
 ```

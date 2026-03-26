@@ -1,564 +1,568 @@
 ---
-title: "그래프 탐색"
+title: "그래프와 탐색 (DFS/BFS)"
 order: 6
 ---
 
-# 그래프 탐색
+# 그래프와 탐색 (DFS/BFS)
 
-그래프는 "관계"를 표현하는 자료구조입니다. 친구 관계, 도로망, 컴퓨터 네트워크 — 노드(정점)와 간선(엣지)으로 표현할 수 있는 모든 것이 그래프입니다.
-
----
-
-## 그래프란 무엇인가?
-
-**비유**: 서울 지하철 노선도를 떠올려 보세요. 각 역이 **노드**, 두 역을 잇는 선로가 **간선**입니다. "강남역에서 홍대입구역까지 몇 정거장?" 같은 질문이 바로 그래프 탐색 문제입니다.
-
-**용어 정리**:
-- **방향 그래프 (Directed)**: 간선에 방향이 있음 (인스타그램 팔로우: A→B이지만 B→A 아님)
-- **무방향 그래프 (Undirected)**: 양방향 (카카오 친구: A-B이면 B-A도)
-- **가중치 그래프 (Weighted)**: 간선에 비용/거리가 있음 (도로 km)
-- **사이클**: 출발점으로 돌아오는 경로 존재
-- **연결 컴포넌트**: 서로 연결된 노드들의 그룹
+그래프는 "연결 관계"를 표현하는 자료구조입니다. 트리도 그래프의 일종이지만, 그래프는 사이클이 있을 수 있고 방향도 있을 수 있습니다.
 
 ---
 
-## 그래프 표현 방법
+## 그래프 표현 방법 (JavaScript)
 
-```java
-// 1. 인접 리스트 — 가장 일반적, O(V+E) 공간
-// 노드 수 많고 간선 적을 때 효율적
-List<List<Integer>> graph = new ArrayList<>();
-for (int i = 0; i < n; i++) graph.add(new ArrayList<>());
+```javascript
+// 방법 1: 인접 리스트 (Map 사용) — 일반적으로 권장
+const graph = new Map();
+graph.set(1, [2, 3]);
+graph.set(2, [1, 4]);
+graph.set(3, [1]);
+graph.set(4, [2]);
 
-// 무방향 간선 추가
-graph.get(0).add(1);
-graph.get(1).add(0);
+// 방법 2: 인접 리스트 (배열 사용) — 노드가 0~n 정수일 때
+const n = 5; // 노드 수
+const adj = Array.from({ length: n }, () => []);
+adj[0].push(1);
+adj[0].push(2);
+adj[1].push(3);
 
-// 코딩 테스트에서 주로 받는 형식
-int n = 5;  // 노드 수
-int[][] edges = {{0,1},{0,2},{1,3},{2,4}};
+// 방법 3: 인접 행렬 — 노드 수가 적을 때
+const matrix = [
+  [0, 1, 1, 0],
+  [1, 0, 0, 1],
+  [1, 0, 0, 0],
+  [0, 1, 0, 0],
+];
+// matrix[i][j] = 1이면 i → j 연결
 
-List<List<Integer>> graph = new ArrayList<>();
-for (int i = 0; i < n; i++) graph.add(new ArrayList<>());
-for (int[] edge : edges) {
-    graph.get(edge[0]).add(edge[1]);
-    graph.get(edge[1]).add(edge[0]);  // 무방향
-}
-
-// 2. 인접 행렬 — 노드 수 적고 간선 많을 때
-// O(V²) 공간, 특정 간선 존재 여부 O(1) 확인 가능
-int[][] adj = new int[n][n];
-adj[0][1] = 1;  // 0 → 1 간선 (가중치 없으면 1)
-adj[0][1] = 5;  // 0 → 1 가중치 5
-
-// 3. 가중치 그래프 인접 리스트
-// [이웃 노드, 가중치] 쌍으로 저장
-List<List<int[]>> weightedGraph = new ArrayList<>();
-for (int i = 0; i < n; i++) weightedGraph.add(new ArrayList<>());
-// 0 → 1, 비용 5 간선 추가
-weightedGraph.get(0).add(new int[]{1, 5});
-```
-
----
-
-## DFS (깊이 우선 탐색)
-
-**개념**: 한 방향으로 갈 수 있는 끝까지 탐색하고, 막히면 돌아와서 다른 방향 탐색.
-
-**비유**: 미로를 탈출할 때 한 방향으로 계속 걷다가 막히면 되돌아오는 전략.
-
-**언제**: 경로 존재 여부, 사이클 감지, 연결 컴포넌트, 위상 정렬.
-
-```java
-// 재귀 DFS 템플릿
-boolean[] visited = new boolean[n];
-
-void dfs(int node, List<List<Integer>> graph) {
-    visited[node] = true;
-    System.out.println("방문: " + node);  // 처리
-
-    for (int neighbor : graph.get(node)) {
-        if (!visited[neighbor]) {
-            dfs(neighbor, graph);
-        }
-    }
-}
-
-// 반복 DFS (스택 사용) — 재귀 깊이 제한 우회 가능
-void dfsIterative(int start, List<List<Integer>> graph) {
-    Deque<Integer> stack = new ArrayDeque<>();
-    boolean[] visited = new boolean[n];
-
-    stack.push(start);
-
-    while (!stack.isEmpty()) {
-        int node = stack.pop();
-        if (visited[node]) continue;  // 이미 방문한 노드 건너뜀
-        visited[node] = true;
-        System.out.println("방문: " + node);
-
-        for (int neighbor : graph.get(node)) {
-            if (!visited[neighbor]) stack.push(neighbor);
-        }
-    }
-}
-
-// 연결된 컴포넌트 수 세기
-// 아이디어: 아직 방문하지 않은 노드에서 DFS 시작할 때마다 새 컴포넌트
-int countComponents(int n, int[][] edges) {
-    List<List<Integer>> graph = new ArrayList<>();
-    for (int i = 0; i < n; i++) graph.add(new ArrayList<>());
-    for (int[] edge : edges) {
-        graph.get(edge[0]).add(edge[1]);
-        graph.get(edge[1]).add(edge[0]);
-    }
-
-    boolean[] visited = new boolean[n];
-    int count = 0;
-
-    for (int i = 0; i < n; i++) {
-        if (!visited[i]) {
-            dfs(i, graph, visited);  // 이 컴포넌트 전체 방문
-            count++;                  // 새 컴포넌트 발견
-        }
-    }
-    return count;
-}
-
-void dfs(int node, List<List<Integer>> graph, boolean[] visited) {
-    visited[node] = true;
-    for (int neighbor : graph.get(node)) {
-        if (!visited[neighbor]) dfs(neighbor, graph, visited);
-    }
+// 에지 추가 헬퍼 (양방향 그래프)
+function addEdge(adj, u, v) {
+  adj[u].push(v);
+  adj[v].push(u);
 }
 ```
 
 ---
 
-## BFS (너비 우선 탐색)
+## 문제 1: 섬의 개수 (Number of Islands)
 
-**개념**: 현재 노드에서 거리 1인 노드 모두 방문 → 거리 2인 노드 모두 방문 → ...
+**난이도**: 중
+**유형**: DFS, 2D 격자 그래프, 연결 컴포넌트
 
-**비유**: 물에 돌을 던지면 물결이 동심원으로 퍼져 나가는 것처럼, BFS는 출발점에서 동심원 모양으로 탐색합니다.
+### 문제 설명
 
-**언제**: **최단 경로** (가중치 없는 그래프), 레벨별 처리, 최소 단계.
+`'1'`은 땅, `'0'`은 물을 나타내는 2D 격자가 주어질 때, 섬의 개수를 반환하세요.
+섬은 상하좌우로 연결된 `'1'`들의 집합입니다.
 
-```java
-// BFS 기본 템플릿
-void bfs(int start, List<List<Integer>> graph) {
-    Queue<Integer> queue = new LinkedList<>();
-    boolean[] visited = new boolean[n];
-
-    queue.offer(start);
-    visited[start] = true;
-
-    while (!queue.isEmpty()) {
-        int node = queue.poll();
-        System.out.println("방문: " + node);
-
-        for (int neighbor : graph.get(node)) {
-            if (!visited[neighbor]) {
-                visited[neighbor] = true;
-                queue.offer(neighbor);
-            }
-        }
-    }
-}
-
-// 최단 경로 거리 구하기 (가중치 없음)
-int bfsShortestPath(int start, int end, List<List<Integer>> graph, int n) {
-    boolean[] visited = new boolean[n];
-    Queue<Integer> queue = new LinkedList<>();
-
-    queue.offer(start);
-    visited[start] = true;
-    int distance = 0;
-
-    while (!queue.isEmpty()) {
-        int size = queue.size();  // 현재 거리의 노드 수
-
-        for (int i = 0; i < size; i++) {
-            int node = queue.poll();
-            if (node == end) return distance;
-
-            for (int neighbor : graph.get(node)) {
-                if (!visited[neighbor]) {
-                    visited[neighbor] = true;
-                    queue.offer(neighbor);
-                }
-            }
-        }
-        distance++;  // 다음 레벨 (거리 +1)
-    }
-    return -1;  // 도달 불가
-}
 ```
+입력:
+11000
+11000
+00100
+00011
+
+출력: 3  (섬 3개)
+```
+
+### 어떻게 풀까?
+
+```
+1단계: 문제 분석
+  - 2D 격자 = 그래프 (각 칸이 노드, 상하좌우 연결이 엣지)
+  - "연결된 '1' 집합" = 연결 컴포넌트 수 세기
+
+2단계: 접근법
+  - 격자를 순회하면서 '1'을 발견하면 섬 카운트 +1
+  - 그 '1'에서 DFS로 연결된 모든 '1'을 '0'으로 표시 (방문 처리)
+  - 이미 방문한 '1'은 다시 카운트하지 않음
+
+3단계: DFS 방향
+  - 상(row-1, col), 하(row+1, col), 좌(row, col-1), 우(row, col+1)
+  - 격자 범위를 벗어나거나 '0'이면 멈춤
+```
+
+### 풀이 코드 (JavaScript)
+
+```javascript
+function numIslands(grid) {
+  if (!grid || grid.length === 0) return 0;
+
+  const rows = grid.length;
+  const cols = grid[0].length;
+  let count = 0;
+
+  // DFS: 연결된 모든 '1'을 '0'으로 표시
+  function dfs(r, c) {
+    // 범위 벗어나거나 물이면 종료
+    if (r < 0 || r >= rows || c < 0 || c >= cols || grid[r][c] === '0') {
+      return;
+    }
+
+    grid[r][c] = '0'; // 방문 표시 (원본 수정)
+
+    // 상하좌우 탐색
+    dfs(r - 1, c); // 위
+    dfs(r + 1, c); // 아래
+    dfs(r, c - 1); // 왼쪽
+    dfs(r, c + 1); // 오른쪽
+  }
+
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      if (grid[r][c] === '1') {
+        count++; // 새 섬 발견
+        dfs(r, c); // 섬 전체를 '0'으로 표시
+      }
+    }
+  }
+
+  return count;
+}
+
+// 테스트
+const grid = [
+  ['1','1','0','0','0'],
+  ['1','1','0','0','0'],
+  ['0','0','1','0','0'],
+  ['0','0','0','1','1'],
+];
+console.log(numIslands(grid)); // 3
+```
+
+### 실행 추적 (Dry-run)
+
+```
+입력 격자 시각화:
+  열→  0  1  2  3  4
+행0  [ 1, 1, 0, 0, 0 ]
+행1  [ 1, 1, 0, 0, 0 ]
+행2  [ 0, 0, 1, 0, 0 ]
+행3  [ 0, 0, 0, 1, 1 ]
+
+(r=0, c=0): '1' 발견 → count=1, dfs(0,0) 호출
+  (0,0)='0' 표시, 상하좌우 DFS
+  → (1,0)='1': (1,0)='0', 이웃 탐색
+    → (1,1)='1': (1,1)='0', 이웃 탐색
+      → (0,1)='1': (0,1)='0' ...
+        모든 연결된 '1' → '0' 처리 완료
+
+격자 상태 (첫 번째 DFS 후):
+  [ 0, 0, 0, 0, 0 ]
+  [ 0, 0, 0, 0, 0 ]
+  [ 0, 0, 1, 0, 0 ]  ← 아직 미방문
+  [ 0, 0, 0, 1, 1 ]  ← 아직 미방문
+
+계속 순회:
+(r=2, c=2): '1' 발견 → count=2, dfs(2,2)
+(r=3, c=3): '1' 발견 → count=3, dfs(3,3) → (3,4)도 처리
+
+최종 count = 3 ✓
+```
+
+### 복잡도
+
+- 시간: O(m × n) — 격자의 모든 칸을 최대 한 번씩 방문
+- 공간: O(m × n) — 재귀 스택 깊이 (최악의 경우 모두 '1')
 
 ---
 
-## 그리드(격자) 탐색
+## 문제 2: 미로 탈출 (BFS 최단 경로)
 
-코딩 테스트에서 가장 자주 나오는 그래프 문제 유형입니다. 2D 배열을 그래프로 보고 DFS/BFS를 적용합니다.
+**난이도**: 중
+**유형**: BFS, 최단 경로
 
-```java
-// 4방향 이동 (상하좌우)
-int[] dx = {0, 0, 1, -1};
-int[] dy = {1, -1, 0, 0};
+### 문제 설명
 
-// 8방향 이동 (대각선 포함)
-int[] dx8 = {-1,-1,-1, 0, 0, 1, 1, 1};
-int[] dy8 = {-1, 0, 1,-1, 1,-1, 0, 1};
+`0`은 길, `1`은 벽인 N×M 격자 미로가 있습니다. `(0,0)`에서 `(N-1, M-1)`까지 이동하는 최소 칸 수를 구하세요. 이동은 상하좌우로 가능하며, 이동할 수 없으면 -1을 반환합니다.
 
-// 섬의 수 (LeetCode 200)
-// '1'로 연결된 덩어리 수 세기
-// 아이디어: '1'을 만나면 DFS로 연결된 모든 '1'을 '0'으로 바꿈 (방문 표시)
-int numIslands(char[][] grid) {
-    int islands = 0;
-    for (int i = 0; i < grid.length; i++) {
-        for (int j = 0; j < grid[0].length; j++) {
-            if (grid[i][j] == '1') {
-                dfs(grid, i, j);  // 연결된 땅 전부 방문
-                islands++;
-            }
-        }
-    }
-    return islands;
-}
-
-void dfs(char[][] grid, int i, int j) {
-    // 범위 밖이거나 이미 방문('0')이면 종료
-    if (i < 0 || i >= grid.length || j < 0 || j >= grid[0].length
-        || grid[i][j] != '1') return;
-    grid[i][j] = '0';  // 방문 표시 (원본 수정)
-    dfs(grid, i+1, j);
-    dfs(grid, i-1, j);
-    dfs(grid, i, j+1);
-    dfs(grid, i, j-1);
-}
-
-// 0/1 BFS — 최단 거리 (BFS 변형)
-int bfsGrid(int[][] grid, int startR, int startC, int endR, int endC) {
-    int m = grid.length, n = grid[0].length;
-    int[][] dist = new int[m][n];
-    for (int[] row : dist) Arrays.fill(row, Integer.MAX_VALUE);
-    dist[startR][startC] = 0;
-
-    Queue<int[]> queue = new LinkedList<>();
-    queue.offer(new int[]{startR, startC});
-
-    int[] dx = {0, 0, 1, -1};
-    int[] dy = {1, -1, 0, 0};
-
-    while (!queue.isEmpty()) {
-        int[] curr = queue.poll();
-        int r = curr[0], c = curr[1];
-
-        for (int d = 0; d < 4; d++) {
-            int nr = r + dx[d], nc = c + dy[d];
-            if (nr >= 0 && nr < m && nc >= 0 && nc < n
-                && grid[nr][nc] == 0
-                && dist[nr][nc] > dist[r][c] + 1) {
-                dist[nr][nc] = dist[r][c] + 1;
-                queue.offer(new int[]{nr, nc});
-            }
-        }
-    }
-    return dist[endR][endC];
-}
 ```
+입력:
+0 0 1 0 0
+0 0 0 0 1
+1 0 1 0 0
+0 0 0 1 0
+0 1 0 0 0
+
+출력: 9
+```
+
+### 어떻게 풀까?
+
+```
+DFS vs BFS — 왜 BFS가 최단 경로를 보장하나?
+
+DFS: 한 방향으로 끝까지 가다가 막히면 돌아옴
+  → 처음 도달했다고 최단이 아닐 수 있음
+  → 모든 경로를 탐색해야 최단 알 수 있음 → 비효율
+
+BFS: 가까운 노드부터 차례대로 탐색
+  거리 1 → 거리 2 → 거리 3 → ...
+  → 처음으로 목적지에 도달할 때 = 최단 거리!
+
+직관: 물이 (0,0)에서 모든 방향으로 동시에 퍼진다고 생각하면
+  가장 먼저 (N-1, M-1)에 닿는 시점이 최단 거리
+```
+
+### 풀이 코드 (JavaScript)
+
+```javascript
+function shortestPath(maze) {
+  const N = maze.length;
+  const M = maze[0].length;
+
+  if (maze[0][0] === 1 || maze[N-1][M-1] === 1) return -1;
+
+  const directions = [[-1,0],[1,0],[0,-1],[0,1]]; // 상하좌우
+  const visited = Array.from({ length: N }, () => new Array(M).fill(false));
+
+  // BFS: [row, col, 거리]
+  const queue = [[0, 0, 1]]; // 시작칸 포함해서 거리 1
+  visited[0][0] = true;
+
+  while (queue.length > 0) {
+    const [r, c, dist] = queue.shift();
+
+    // 목적지 도달
+    if (r === N - 1 && c === M - 1) return dist;
+
+    for (const [dr, dc] of directions) {
+      const nr = r + dr;
+      const nc = c + dc;
+
+      if (
+        nr >= 0 && nr < N &&
+        nc >= 0 && nc < M &&
+        maze[nr][nc] === 0 &&
+        !visited[nr][nc]
+      ) {
+        visited[nr][nc] = true;
+        queue.push([nr, nc, dist + 1]);
+      }
+    }
+  }
+
+  return -1; // 도달 불가
+}
+
+// 테스트
+const maze = [
+  [0, 0, 1, 0, 0],
+  [0, 0, 0, 0, 1],
+  [1, 0, 1, 0, 0],
+  [0, 0, 0, 1, 0],
+  [0, 1, 0, 0, 0],
+];
+console.log(shortestPath(maze)); // 9
+```
+
+### 실행 추적 (Dry-run)
+
+```
+격자 (0=길, 1=벽), S=시작, E=끝:
+  S 0 # 0 0
+  0 0 0 0 #
+  # 0 # 0 0
+  0 0 0 # 0
+  0 # 0 0 E
+
+BFS 탐색 순서 (거리별):
+거리 1: (0,0)
+거리 2: (1,0), (0,1)
+거리 3: (2,0)은 벽!, (1,1), (1,0)의 위는 이미 방문
+         유효: (1,1)만 새로 추가
+거리 4: (2,1), (1,2)
+거리 5: (3,1), (2,1)에서 (1,1) 이미 방문, (1,3)
+...
+
+BFS는 레벨(거리) 순으로 탐색하므로
+(4,4)에 처음 도달하는 시점 = 최단 거리 9
+```
+
+### 복잡도
+
+- 시간: O(N × M)
+- 공간: O(N × M) — visited 배열 + queue
 
 ---
 
-## 위상 정렬 (Topological Sort)
+## 문제 3: 사이클 감지 (Cycle Detection)
 
-**개념**: 방향 그래프에서 노드들의 선후 관계를 지키는 순서로 나열.
+**난이도**: 중
+**유형**: DFS, 방향 그래프
 
-**비유**: 요리 레시피처럼 "물 끓이기 → 면 넣기 → 소스 넣기". 앞 단계가 완료되어야 다음 단계 가능.
+### 문제 설명
 
-**언제**: 선수 과목, 작업 순서, 의존성 관리 (Maven/Gradle 빌드 순서).
+방향 그래프에서 사이클이 존재하는지 확인하세요.
 
-```java
-// Kahn's Algorithm (BFS 기반) — 가장 직관적
-// 핵심: 진입차수(in-degree)가 0인 노드부터 처리
-int[] topologicalSort(int n, int[][] prerequisites) {
-    List<List<Integer>> graph = new ArrayList<>();
-    int[] inDegree = new int[n];  // 각 노드로 들어오는 간선 수
+```
+입력: n=4, edges=[[0,1],[1,2],[2,3],[3,1]]
+출력: true  (1→2→3→1 사이클 존재)
 
-    for (int i = 0; i < n; i++) graph.add(new ArrayList<>());
-    for (int[] pre : prerequisites) {
-        // pre[1] → pre[0]: pre[1] 선수 후 pre[0] 수강
-        graph.get(pre[1]).add(pre[0]);
-        inDegree[pre[0]]++;
-    }
-
-    // 진입차수 0인 노드들 먼저 큐에 추가
-    Queue<Integer> queue = new LinkedList<>();
-    for (int i = 0; i < n; i++) {
-        if (inDegree[i] == 0) queue.offer(i);
-    }
-
-    int[] order = new int[n];
-    int idx = 0;
-
-    while (!queue.isEmpty()) {
-        int node = queue.poll();
-        order[idx++] = node;
-
-        for (int next : graph.get(node)) {
-            inDegree[next]--;
-            if (inDegree[next] == 0) queue.offer(next);  // 선수 모두 완료
-        }
-    }
-
-    // idx < n이면 사이클 존재 (모든 노드를 처리 못함)
-    return idx == n ? order : new int[]{};
-}
-
-// 코스 완료 가능 여부 (LeetCode 207)
-// 사이클이 없으면 모든 과목 수강 가능
-boolean canFinish(int numCourses, int[][] prerequisites) {
-    int[] result = topologicalSort(numCourses, prerequisites);
-    return result.length == numCourses;
-}
-// 시간: O(V + E), 공간: O(V + E)
+입력: n=3, edges=[[0,1],[1,2]]
+출력: false
 ```
 
----
+### 어떻게 풀까?
 
-## Dijkstra (다익스트라)
+```
+3가지 방문 상태를 사용합니다:
 
-**개념**: 가중치 있는 그래프에서 한 노드에서 모든 노드까지의 최단 거리.
+0: 미방문 (WHITE)  — 아직 탐색 안 함
+1: 방문 중 (GRAY)  — 현재 DFS 경로 위에 있음
+2: 완료 (BLACK)    — DFS가 완전히 끝남
 
-**비유**: 네비게이션이 최단 경로를 찾는 방식. 현재까지 발견한 최단 경로 중 가장 가까운 것부터 확정해 나갑니다.
+핵심: DFS 탐색 중 "방문 중(GRAY)" 노드를 다시 만나면 사이클!
 
-**제약**: 음수 가중치 불가 (음수가 있으면 Bellman-Ford 사용).
+왜?
+  현재 경로: A → B → C → ... → A
+  A는 아직 "방문 중(1)" 상태
+  → A로 돌아오는 경로가 있다 = 사이클
 
-```java
-// 우선순위 큐를 이용한 Dijkstra
-// [거리, 노드] 쌍을 최소 힙에 넣고 거리 순으로 처리
-int[] dijkstra(int start, List<List<int[]>> graph, int n) {
-    int[] dist = new int[n];
-    Arrays.fill(dist, Integer.MAX_VALUE);
-    dist[start] = 0;
-
-    PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[0] - b[0]);
-    pq.offer(new int[]{0, start});  // [거리, 노드]
-
-    while (!pq.isEmpty()) {
-        int[] curr = pq.poll();
-        int d = curr[0], node = curr[1];
-
-        if (d > dist[node]) continue;  // 이미 더 짧은 경로 처리됨 → 스킵
-
-        for (int[] edge : graph.get(node)) {
-            int neighbor = edge[0], weight = edge[1];
-            int newDist = dist[node] + weight;
-            if (newDist < dist[neighbor]) {
-                dist[neighbor] = newDist;
-                pq.offer(new int[]{newDist, neighbor});
-            }
-        }
-    }
-    return dist;  // dist[i] = start에서 i까지 최단 거리
-}
-// 시간: O((V + E) log V), 공간: O(V + E)
-
-// 네트워크 지연 시간 (LeetCode 743)
-// k에서 보낸 신호가 모든 노드에 도달하는 최소 시간
-int networkDelayTime(int[][] times, int n, int k) {
-    List<List<int[]>> graph = new ArrayList<>();
-    for (int i = 0; i <= n; i++) graph.add(new ArrayList<>());
-    for (int[] time : times) {
-        graph.get(time[0]).add(new int[]{time[1], time[2]});
-    }
-
-    int[] dist = dijkstra(k, graph, n + 1);
-
-    int maxDist = 0;
-    for (int i = 1; i <= n; i++) {
-        if (dist[i] == Integer.MAX_VALUE) return -1;  // 도달 불가 노드 있음
-        maxDist = Math.max(maxDist, dist[i]);
-    }
-    return maxDist;  // 가장 늦게 도달하는 노드 시간 = 전체 완료 시간
-}
+완료(BLACK) 노드를 다시 만나는 건 괜찮음
+  → 이미 탐색 완료, 사이클 없음 확인됨
 ```
 
----
+### 풀이 코드 (JavaScript)
 
-## Union-Find (서로소 집합 / 유니온 파인드)
+```javascript
+function hasCycle(n, edges) {
+  const adj = Array.from({ length: n }, () => []);
+  for (const [u, v] of edges) {
+    adj[u].push(v);
+  }
 
-**개념**: "두 노드가 같은 그룹에 속하는가?"를 빠르게 답하는 자료구조.
+  // 0: 미방문, 1: 방문 중, 2: 완료
+  const state = new Array(n).fill(0);
 
-**비유**: 학교 동아리처럼, 처음엔 모두 개인이다가 둘씩 합쳐집니다. "A와 B가 같은 동아리?" 질문에 빠르게 답할 수 있습니다.
+  function dfs(node) {
+    state[node] = 1; // 방문 중
 
-**언제**: 연결 여부 확인, 사이클 감지, MST (Kruskal 알고리즘).
-
-```java
-class UnionFind {
-    int[] parent, rank;
-
-    UnionFind(int n) {
-        parent = new int[n];
-        rank = new int[n];
-        for (int i = 0; i < n; i++) parent[i] = i;  // 초기: 자기 자신이 루트
-    }
-
-    // 루트 찾기 + 경로 압축 (Path Compression)
-    // 경로 압축: 찾는 중 만나는 모든 노드를 루트에 바로 연결
-    int find(int x) {
-        if (parent[x] != x) {
-            parent[x] = find(parent[x]);  // 재귀적으로 루트 찾고, 직접 연결
-        }
-        return parent[x];
-    }
-
-    // 두 집합 합치기 + 랭크 기반 합치기 (Union by Rank)
-    // 랭크: 트리 높이의 상한. 낮은 트리를 높은 트리 아래에 붙여 높이 최소화
-    boolean union(int x, int y) {
-        int px = find(x), py = find(y);
-        if (px == py) return false;  // 이미 같은 집합 → 사이클!
-
-        if (rank[px] < rank[py]) { int t = px; px = py; py = t; }
-        parent[py] = px;                          // 낮은 랭크를 높은 랭크 아래로
-        if (rank[px] == rank[py]) rank[px]++;     // 같으면 랭크 증가
+    for (const neighbor of adj[node]) {
+      if (state[neighbor] === 1) {
+        // 현재 경로에 있는 노드를 다시 만남 = 사이클
         return true;
+      }
+      if (state[neighbor] === 0) {
+        if (dfs(neighbor)) return true;
+      }
+      // state === 2: 완료된 노드, 사이클 없음 → 건너뜀
     }
 
-    boolean connected(int x, int y) {
-        return find(x) == find(y);
-    }
-}
-// find, union: 사실상 O(α(n)) ≈ O(1) (역 아커만 함수, 매우 빠름)
-
-// 친구 관계 그룹 수 (LeetCode 547)
-int findCircleNum(int[][] isConnected) {
-    int n = isConnected.length;
-    UnionFind uf = new UnionFind(n);
-    int components = n;  // 처음엔 n개 개별 컴포넌트
-
-    for (int i = 0; i < n; i++) {
-        for (int j = i + 1; j < n; j++) {
-            if (isConnected[i][j] == 1 && uf.union(i, j)) {
-                components--;  // 두 컴포넌트가 합쳐지면 수 감소
-            }
-        }
-    }
-    return components;
-}
-```
-
----
-
-## 그래프 문제 선택 가이드
-
-```
-질문                               → 알고리즘
-────────────────────────────────────────────────────────────
-최단 경로 (가중치 없음)?           → BFS
-최단 경로 (가중치 있고 양수)?      → Dijkstra
-최단 경로 (음수 가중치 가능)?      → Bellman-Ford
-모든 쌍 최단 경로?                 → Floyd-Warshall O(V³)
-경로 존재 여부?                    → DFS 또는 BFS
-연결 여부 쿼리 (반복)?             → Union-Find
-선후 관계 / 의존성?                → 위상 정렬
-사이클 감지 (방향)?                → DFS (색칠법)
-사이클 감지 (무방향)?              → Union-Find
-연결 컴포넌트?                     → DFS/BFS 또는 Union-Find
-최소 신장 트리(MST)?               → Kruskal (Union-Find), Prim
-
-그리드 DFS/BFS 방향 배열:
-int[] dr = {0, 0, 1, -1};    // 행 이동
-int[] dc = {1, -1, 0, 0};    // 열 이동
-
-그래프 복잡도:
-V = 노드 수, E = 간선 수
-BFS/DFS: O(V + E)
-Dijkstra: O((V + E) log V)
-Floyd-Warshall: O(V³)
-```
-
----
-
-## 면접 빈출 문제
-
-```java
-// 양방향 BFS (Bidirectional BFS) — 단어 변환 최단 경로 (LeetCode 127)
-// 아이디어: 출발지와 목적지 양쪽에서 동시에 BFS → 만나면 완료
-// 단방향보다 탐색 공간이 훨씬 작음 O(b^(d/2)) vs O(b^d)
-int ladderLength(String beginWord, String endWord, List<String> wordList) {
-    Set<String> wordSet = new HashSet<>(wordList);
-    if (!wordSet.contains(endWord)) return 0;
-
-    Queue<String> queue = new LinkedList<>();
-    Set<String> visited = new HashSet<>();
-    queue.offer(beginWord);
-    visited.add(beginWord);
-    int steps = 1;
-
-    while (!queue.isEmpty()) {
-        int size = queue.size();
-        for (int i = 0; i < size; i++) {
-            String word = queue.poll();
-            char[] chars = word.toCharArray();
-
-            for (int j = 0; j < chars.length; j++) {
-                char orig = chars[j];
-                for (char c = 'a'; c <= 'z'; c++) {
-                    if (c == orig) continue;
-                    chars[j] = c;
-                    String next = new String(chars);
-                    if (next.equals(endWord)) return steps + 1;
-                    if (wordSet.contains(next) && !visited.contains(next)) {
-                        visited.add(next);
-                        queue.offer(next);
-                    }
-                }
-                chars[j] = orig;  // 복원
-            }
-        }
-        steps++;
-    }
-    return 0;
-}
-
-// 사이클 감지 (방향 그래프) — 색칠법
-// WHITE(0): 미방문, GRAY(1): 방문 중, BLACK(2): 완료
-boolean hasCycleDirected(int n, List<List<Integer>> graph) {
-    int[] color = new int[n];
-    for (int i = 0; i < n; i++) {
-        if (color[i] == 0 && dfsDetect(i, graph, color)) return true;
-    }
+    state[node] = 2; // 완료
     return false;
+  }
+
+  for (let i = 0; i < n; i++) {
+    if (state[i] === 0) {
+      if (dfs(i)) return true;
+    }
+  }
+
+  return false;
 }
 
-boolean dfsDetect(int node, List<List<Integer>> graph, int[] color) {
-    color[node] = 1;  // 방문 중
-    for (int neighbor : graph.get(node)) {
-        if (color[neighbor] == 1) return true;  // 방문 중인 노드 재방문 = 사이클
-        if (color[neighbor] == 0 && dfsDetect(neighbor, graph, color)) return true;
-    }
-    color[node] = 2;  // 완료
-    return false;
-}
+console.log(hasCycle(4, [[0,1],[1,2],[2,3],[3,1]])); // true
+console.log(hasCycle(3, [[0,1],[1,2]]));             // false
 ```
+
+### 실행 추적 (Dry-run)
+
+```
+그래프: 0→1→2→3→1 (1→2→3→1 사이클)
+state = [0, 0, 0, 0]
+
+dfs(0): state[0]=1 (방문 중)
+  이웃: 1
+  dfs(1): state[1]=1 (방문 중)
+    이웃: 2
+    dfs(2): state[2]=1 (방문 중)
+      이웃: 3
+      dfs(3): state[3]=1 (방문 중)
+        이웃: 1
+        state[1] === 1 → 사이클 발견! true 반환
+      ↑ true 전파
+    ↑ true 전파
+  ↑ true 전파
+↑ true 전파
+
+결과: true ✓
+
+사이클 없는 경우 [0→1, 1→2]:
+dfs(0): 1방문 → 2방문 → 이웃 없음
+  state[2]=2(완료) → state[1]=2 → state[0]=2
+  모두 false 반환 → 사이클 없음 ✓
+```
+
+### 복잡도
+
+- 시간: O(V + E)
+- 공간: O(V) — state 배열 + 재귀 스택
 
 ---
 
-## 핵심 패턴 정리
+## 문제 4: 위상 정렬 (Topological Sort)
+
+**난이도**: 중상
+**유형**: 위상 정렬, BFS (Kahn's Algorithm)
+
+### 문제 설명
+
+n개의 과목이 있고 `prerequisites[i] = [a, b]`는 "과목 a를 듣기 전에 b를 먼저 들어야 한다"는 뜻입니다. 모든 과목을 들을 수 있는 수강 순서를 반환하세요. 불가능하면 빈 배열을 반환합니다.
 
 ```
-알고리즘      언제 사용                     시간복잡도
-──────────────────────────────────────────────────────────
-BFS           최단 경로(무가중치), 레벨 탐색   O(V + E)
-DFS           경로 탐색, 사이클 감지, 백트래킹 O(V + E)
-Dijkstra      최단 경로(양수 가중치)           O((V+E) log V)
-위상 정렬     선후 관계, 의존성                O(V + E)
-Union-Find    연결 여부, 사이클 감지           O(α(n)) ≈ O(1)
-Floyd-Warshall 모든 쌍 최단 경로             O(V³)
+입력: n=4, prerequisites=[[1,0],[2,0],[3,1],[3,2]]
+출력: [0, 1, 2, 3] 또는 [0, 2, 1, 3]
 
-자주 하는 실수:
-— visited 배열 없이 탐색 → 무한 루프
-— 그리드 경계 체크 누락 → ArrayIndexOutOfBoundsException
-— 양방향 그래프를 단방향으로 구성
-— Dijkstra에서 음수 간선 사용
+입력: n=2, prerequisites=[[1,0],[0,1]]
+출력: []  (사이클 있음, 불가능)
+```
+
+### 어떻게 풀까?
+
+```
+위상 정렬이란?
+  방향 그래프에서 "선행 조건"을 먼저 나열하는 순서 정하기
+  사이클이 없는 DAG(방향 비순환 그래프)에서만 가능
+
+Kahn's Algorithm (BFS 기반):
+
+1. 각 노드의 진입차수(in-degree) 계산
+   진입차수 = 나를 가리키는 엣지의 수
+
+2. 진입차수 0인 노드 = 선수 조건 없는 과목 → Queue에 넣기
+
+3. Queue에서 꺼내어 결과에 추가하고
+   그 과목을 수강했으므로 다음 과목의 진입차수 -1
+
+4. 진입차수가 0이 된 과목 → Queue에 추가
+
+5. 결과 크기 = n이면 성공, 아니면 사이클 존재
+```
+
+### 풀이 코드 (JavaScript)
+
+```javascript
+function findOrder(n, prerequisites) {
+  const adj = Array.from({ length: n }, () => []);
+  const inDegree = new Array(n).fill(0);
+
+  for (const [course, pre] of prerequisites) {
+    adj[pre].push(course); // pre → course (pre 먼저)
+    inDegree[course]++;
+  }
+
+  // 진입차수 0인 과목부터 시작
+  const queue = [];
+  for (let i = 0; i < n; i++) {
+    if (inDegree[i] === 0) queue.push(i);
+  }
+
+  const order = [];
+
+  while (queue.length > 0) {
+    const course = queue.shift();
+    order.push(course);
+
+    for (const next of adj[course]) {
+      inDegree[next]--;
+      if (inDegree[next] === 0) {
+        queue.push(next);
+      }
+    }
+  }
+
+  return order.length === n ? order : [];
+}
+
+console.log(findOrder(4, [[1,0],[2,0],[3,1],[3,2]]));
+// [0, 1, 2, 3]
+console.log(findOrder(2, [[1,0],[0,1]]));
+// []
+```
+
+### 실행 추적 (Dry-run)
+
+```
+n=4, prerequisites=[[1,0],[2,0],[3,1],[3,2]]
+
+그래프:
+  0 → [1, 2]
+  1 → [3]
+  2 → [3]
+
+진입차수:
+  과목 0: 0  (선수 조건 없음)
+  과목 1: 1  (0이 필요)
+  과목 2: 1  (0이 필요)
+  과목 3: 2  (1, 2 모두 필요)
+
+초기 queue = [0]
+
+[1번] 꺼냄: 0 → order=[0]
+  다음 과목: 1, 2
+  inDegree[1] = 1-1 = 0 → queue 추가
+  inDegree[2] = 1-1 = 0 → queue 추가
+  queue = [1, 2]
+
+[2번] 꺼냄: 1 → order=[0, 1]
+  다음 과목: 3
+  inDegree[3] = 2-1 = 1
+  queue = [2]
+
+[3번] 꺼냄: 2 → order=[0, 1, 2]
+  다음 과목: 3
+  inDegree[3] = 1-1 = 0 → queue 추가
+  queue = [3]
+
+[4번] 꺼냄: 3 → order=[0, 1, 2, 3]
+  queue = []
+
+order.length(4) === n(4) → [0,1,2,3] 반환 ✓
+
+사이클 있는 경우 [[1,0],[0,1]]:
+  inDegree = [1, 1] (모두 진입차수 1)
+  queue = [] (진입차수 0인 노드 없음)
+  order = [] → 길이 0 ≠ 2 → [] 반환
+```
+
+### 복잡도
+
+- 시간: O(V + E)
+- 공간: O(V + E)
+
+---
+
+## 핵심 정리
+
+| 알고리즘 | 자료구조 | 주요 용도 |
+|----------|----------|-----------|
+| DFS | 재귀 / Stack | 연결 컴포넌트, 사이클 감지, 경로 탐색 |
+| BFS | Queue | 최단 거리, 레벨별 탐색 |
+| 위상 정렬 | Queue + 진입차수 | 의존성 순서, 스케줄링 |
+
+```javascript
+// DFS 템플릿
+function dfs(node, visited, adj) {
+  visited[node] = true;
+  for (const next of adj[node]) {
+    if (!visited[next]) {
+      dfs(next, visited, adj);
+    }
+  }
+}
+
+// BFS 템플릿
+function bfs(start, adj) {
+  const visited = new Set([start]);
+  const queue = [start];
+  while (queue.length > 0) {
+    const node = queue.shift();
+    for (const next of adj[node]) {
+      if (!visited.has(next)) {
+        visited.add(next);
+        queue.push(next);
+      }
+    }
+  }
+}
 ```
