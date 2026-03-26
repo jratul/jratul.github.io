@@ -31,7 +31,8 @@ export type LearnCategory =
   | 'javascript'
   | 'typescript'
   | 'react'
-  | 'nextjs';
+  | 'nextjs'
+  | 'tooling';
 
 export const CATEGORY_META: Record<LearnCategory, { label: string; description: string; color: string }> = {
   java: {
@@ -133,5 +134,10 @@ export const CATEGORY_META: Record<LearnCategory, { label: string; description: 
     label: 'Next.js',
     description: 'React 기반 풀스택 웹 프레임워크',
     color: 'from-gray-300 to-gray-100',
+  },
+  tooling: {
+    label: '빌드 & 성능',
+    description: 'Vite, Webpack, 번들링, 웹 성능 최적화, 테스팅 도구',
+    color: 'from-violet-400 to-purple-500',
   },
 };
