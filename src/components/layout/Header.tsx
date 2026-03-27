@@ -5,6 +5,10 @@ import { CATEGORY_META } from '@/types/learn';
 import type { LearnCategory } from '@/types/learn';
 
 const LEARN_GROUPS: { label: string; categories: LearnCategory[] }[] = [
+  {
+    label: '프론트엔드',
+    categories: ['html', 'css', 'javascript', 'typescript', 'react', 'nextjs', 'tooling'],
+  },
   { label: '언어 & 프레임워크', categories: ['java', 'kotlin', 'spring'] },
   { label: '인프라', categories: ['docker', 'k8s', 'linux', 'aws'] },
   { label: '데이터 & 네트워크', categories: ['network', 'database', 'redis'] },
@@ -60,10 +64,10 @@ export function Header() {
 
             {dropdownOpen && (
               <div
-                className="fixed inset-x-2 top-16 z-50 rounded-lg border border-dark-border bg-dark-card/95 shadow-xl backdrop-blur-md lg:absolute lg:inset-x-auto lg:right-0 lg:top-full lg:mt-2 lg:w-[520px]"
+                className="fixed inset-x-2 top-16 z-50 rounded-lg border border-dark-border bg-dark-card/95 shadow-xl backdrop-blur-md lg:absolute lg:inset-x-auto lg:right-0 lg:top-full lg:mt-2 lg:w-[620px]"
                 onMouseLeave={() => setDropdownOpen(false)}
               >
-                <div className="grid grid-cols-1 gap-x-1 p-2 lg:grid-cols-2">
+                <div className="grid grid-cols-1 gap-x-1 p-2 lg:grid-cols-3">
                   {LEARN_GROUPS.map(group => (
                     <div key={group.label} className="mb-1">
                       <p className="px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-gray-600">
