@@ -13,5 +13,15 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     sourcemap: false,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+          'vendor-markdown': ['react-markdown', 'remark-gfm', 'rehype-slug', 'rehype-autolink-headings'],
+          'vendor-syntax': ['react-syntax-highlighter'],
+          'vendor-d3': ['d3-cloud', 'd3-selection', 'd3-transition'],
+        },
+      },
+    },
   },
 });
