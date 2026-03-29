@@ -80,24 +80,18 @@ export function TagCloud({
       }
     };
 
-    // Try multiple times with increasing delays to ensure we get the dimensions
-    const timeouts: NodeJS.Timeout[] = [];
-
-    // Immediate attempt
+    // Immediate attempt + rAF for layout-complete dimensions
     updateDimensions();
-
-    // Try with requestAnimationFrame
     const rafId = requestAnimationFrame(updateDimensions);
 
-    // Try at various intervals (especially for mobile)
-    [0, 50, 100, 200, 300, 500].forEach(delay => {
-      timeouts.push(setTimeout(updateDimensions, delay));
-    });
+    // ResizeObserver handles container size changes (replaces setTimeout polling)
+    const ro = new ResizeObserver(updateDimensions);
+    if (containerRef.current) ro.observe(containerRef.current);
 
     window.addEventListener('resize', updateDimensions);
     return () => {
       cancelAnimationFrame(rafId);
-      timeouts.forEach(clearTimeout);
+      ro.disconnect();
       window.removeEventListener('resize', updateDimensions);
     };
   }, []);
@@ -298,28 +292,17 @@ export function TagCloud({
     );
   }
 
-  // Show loading state until dimensions are calculated and layout is ready
-  const isLoading = !dimensions || !cachedLayout;
-
   return (
     <div ref={containerRef} className={`w-full ${className}`}>
-      {isLoading ? (
-        <div
-          className="flex justify-center items-center"
-          style={{ minHeight: '300px' }}
-        >
-          <div className="flex flex-col items-center gap-3">
-            <div className="border-4 border-primary-500 border-t-transparent rounded-full w-8 h-8 animate-spin"></div>
-            <p className="text-gray-400 text-sm">태그 클라우드 로딩 중...</p>
-          </div>
-        </div>
-      ) : (
-        <svg
-          ref={svgRef}
-          className="mx-auto"
-          style={{ maxWidth: '100%', height: 'auto' }}
-        />
-      )}
+      <svg
+        ref={svgRef}
+        className="mx-auto block"
+        style={{
+          maxWidth: '100%',
+          height: cachedLayout ? 'auto' : '300px',
+          minHeight: '300px',
+        }}
+      />
     </div>
   );
 }
