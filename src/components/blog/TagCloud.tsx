@@ -80,18 +80,24 @@ export function TagCloud({
       }
     };
 
-    // Immediate attempt + rAF for layout-complete dimensions
+    // Try multiple times with increasing delays to ensure we get the dimensions
+    const timeouts: NodeJS.Timeout[] = [];
+
+    // Immediate attempt
     updateDimensions();
+
+    // Try with requestAnimationFrame
     const rafId = requestAnimationFrame(updateDimensions);
 
-    // ResizeObserver handles container size changes (replaces setTimeout polling)
-    const ro = new ResizeObserver(updateDimensions);
-    if (containerRef.current) ro.observe(containerRef.current);
+    // Try at various intervals (especially for mobile)
+    [0, 50, 100, 200, 300, 500].forEach(delay => {
+      timeouts.push(setTimeout(updateDimensions, delay));
+    });
 
     window.addEventListener('resize', updateDimensions);
     return () => {
       cancelAnimationFrame(rafId);
-      ro.disconnect();
+      timeouts.forEach(clearTimeout);
       window.removeEventListener('resize', updateDimensions);
     };
   }, []);
