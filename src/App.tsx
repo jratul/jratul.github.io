@@ -23,7 +23,7 @@ function App() {
               <Route path="/post/*" element={<Post />} />
               <Route path="/learn/:category/:lessonSlug" element={<LearnLessonPage />} />
               <Route path="/learn/:category" element={<Learn />} />
-              <Route path="/learn" element={<Navigate to="/learn/java" replace />} />
+              <Route path="/learn" element={<Navigate to="/learn/html" replace />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </Suspense>

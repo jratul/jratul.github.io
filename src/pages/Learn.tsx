@@ -81,7 +81,7 @@ export function Learn() {
   const navigate = useNavigate();
 
   if (!category || !ALL_CATEGORIES.includes(category as LearnCategory)) {
-    return <Navigate to="/learn/java" replace />;
+    return <Navigate to="/learn/html" replace />;
   }
 
   const cat = category as LearnCategory;
