@@ -74,12 +74,14 @@ function SidebarNav({
 export function LearnSidebar({ currentCat }: { currentCat: LearnCategory }) {
   const navigate = useNavigate();
   return (
-    <aside className="hidden w-52 shrink-0 overflow-y-auto py-8 lg:flex lg:flex-col">
-      <div className="mb-4 flex items-center gap-2 text-sm font-semibold text-gray-300">
-        <BookOpen size={15} />
-        학습 섹션
+    <aside className="hidden w-52 shrink-0 lg:block">
+      <div className="sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto overscroll-contain py-8">
+        <div className="mb-4 flex items-center gap-2 text-sm font-semibold text-gray-300">
+          <BookOpen size={15} />
+          학습 섹션
+        </div>
+        <SidebarNav currentCat={currentCat} onSelect={cat => navigate(`/learn/${cat}`)} />
       </div>
-      <SidebarNav currentCat={currentCat} onSelect={cat => navigate(`/learn/${cat}`)} />
     </aside>
   );
 }
