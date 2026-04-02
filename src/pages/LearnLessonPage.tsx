@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useParams, Link, Navigate } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, BookOpen } from 'lucide-react';
 import { useLearn } from '@/hooks/useLearn';
@@ -38,6 +38,7 @@ export function LearnLessonPage() {
 
   if (!lesson) return <Navigate to={`/learn/${category}`} replace />;
 
+  const scrollRef = useRef<HTMLDivElement>(null);
   const meta = CATEGORY_META[category as LearnCategory];
   const { prev, next } = getPrevNext(lessonId, category!);
   const toc = extractToc(lesson.content);
@@ -56,7 +57,7 @@ export function LearnLessonPage() {
         <LearnSidebar currentCat={category as LearnCategory} />
 
         {/* 메인 콘텐츠 */}
-        <div id="learn-scroll" className="min-w-0 flex-1 overflow-y-auto overscroll-contain pt-8 pb-16 lg:py-8">
+        <div ref={scrollRef} className="min-w-0 flex-1 overflow-y-auto overscroll-contain pt-8 pb-16 lg:py-8">
           <article>
             {/* Header */}
             <header className="relative px-4 py-10 mb-2 rounded-xl border border-dark-border bg-dark-card/30">
@@ -99,7 +100,7 @@ export function LearnLessonPage() {
 
                 {toc.length > 0 && (
                   <aside className="hidden lg:block">
-                    <TableOfContents items={toc} />
+                    <TableOfContents items={toc} scrollContainer={scrollRef} />
                   </aside>
                 )}
               </div>

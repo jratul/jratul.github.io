@@ -1,15 +1,19 @@
 import { useState, useEffect } from 'react';
+import type { RefObject } from 'react';
 import type { TocItem } from '@/utils/toc';
 
 interface Props {
   items: TocItem[];
+  scrollContainer?: RefObject<HTMLDivElement>;
 }
 
-export function TableOfContents({ items }: Props) {
+export function TableOfContents({ items, scrollContainer }: Props) {
   const [activeId, setActiveId] = useState<string>('');
 
   useEffect(() => {
     if (items.length === 0) return;
+
+    const root = scrollContainer?.current ?? null;
 
     const observer = new IntersectionObserver(
       entries => {
@@ -21,7 +25,7 @@ export function TableOfContents({ items }: Props) {
           setActiveId(visible[0].target.id);
         }
       },
-      { rootMargin: '-64px 0% -60% 0%', threshold: 0 }
+      { root, rootMargin: '0px 0px -50% 0px', threshold: 0 }
     );
 
     items.forEach(({ id }) => {
@@ -30,14 +34,14 @@ export function TableOfContents({ items }: Props) {
     });
 
     return () => observer.disconnect();
-  }, [items]);
+  }, [items, scrollContainer]);
 
   if (items.length === 0) return null;
 
   const handleClick = (id: string) => {
     const el = document.getElementById(id);
     if (!el) return;
-    const container = document.getElementById('learn-scroll');
+    const container = scrollContainer?.current;
     if (container) {
       const offset = el.getBoundingClientRect().top - container.getBoundingClientRect().top + container.scrollTop - 24;
       container.scrollTo({ top: offset, behavior: 'smooth' });
