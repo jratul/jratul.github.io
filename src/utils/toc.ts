@@ -28,10 +28,10 @@ export function extractToc(markdown: string): TocItem[] {
 
     if (h2) {
       const text = h2[1].trim();
-      items.push({ id: slugify(text), text, level: 2 });
+      items.push({ id: slugify(text.replace(/<[^>]+>/g, '')), text, level: 2 });
     } else if (h3) {
       const text = h3[1].trim();
-      items.push({ id: slugify(text), text, level: 3 });
+      items.push({ id: slugify(text.replace(/<[^>]+>/g, '')), text, level: 3 });
     }
   }
 

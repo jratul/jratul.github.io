@@ -8,6 +8,9 @@ import { slugify } from '@/utils/toc';
 function extractText(children: React.ReactNode): string {
   if (typeof children === 'string') return children;
   if (Array.isArray(children)) return children.map(extractText).join('');
+  if (children !== null && typeof children === 'object' && 'props' in (children as object)) {
+    return extractText((children as React.ReactElement).props.children);
+  }
   return '';
 }
 
