@@ -100,12 +100,12 @@ export function Learn() {
         keywords={[meta.label.toLowerCase(), 'learn', 'tutorial', '학습']}
       />
 
-      <div className="sticky top-16 mx-auto flex h-[calc(100dvh-4rem)] max-w-7xl gap-8 overflow-hidden px-4">
+      <div className="mx-auto max-w-7xl px-4 lg:sticky lg:top-16 lg:flex lg:h-[calc(100dvh-4rem)] lg:gap-8 lg:overflow-hidden">
         {/* 사이드바 (데스크탑) */}
         <LearnSidebar currentCat={cat} />
 
         {/* 메인 */}
-        <main className="min-w-0 flex-1 overflow-y-auto overscroll-contain pt-8 pb-24">
+        <main className="min-w-0 flex-1 py-8 lg:overflow-y-auto lg:overscroll-contain">
           {/* 모바일 카테고리 선택기 */}
           <MobileCategorySelector currentCat={cat} onSelect={handleSelect} />
 

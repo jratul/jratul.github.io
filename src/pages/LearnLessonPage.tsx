@@ -42,12 +42,12 @@ export function LearnLessonPage() {
         keywords={[category!, 'learn', 'tutorial']}
       />
 
-      <div className="sticky top-16 mx-auto flex h-[calc(100dvh-4rem)] max-w-7xl gap-8 overflow-hidden px-4">
+      <div className="mx-auto max-w-7xl px-4 lg:sticky lg:top-16 lg:flex lg:h-[calc(100dvh-4rem)] lg:gap-8 lg:overflow-hidden">
         {/* 사이드바 (데스크탑) */}
         <LearnSidebar currentCat={category as LearnCategory} />
 
         {/* 메인 콘텐츠 */}
-        <div className="min-w-0 flex-1 overflow-y-auto overscroll-contain pt-8 pb-24">
+        <div className="min-w-0 flex-1 py-8 lg:overflow-y-auto lg:overscroll-contain">
           <article>
             {/* Header */}
             <header className="relative px-4 py-10 mb-2 rounded-xl border border-dark-border bg-dark-card/30">
