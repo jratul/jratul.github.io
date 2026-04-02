@@ -35,12 +35,9 @@ export function TableOfContents({ items }: Props) {
   if (items.length === 0) return null;
 
   const handleClick = (id: string) => {
-    console.log('[TOC] click id:', id);
     const el = document.getElementById(id);
-    console.log('[TOC] element:', el);
     if (!el) return;
     const top = el.getBoundingClientRect().top + window.scrollY - 88;
-    console.log('[TOC] scrollY:', window.scrollY, 'rect.top:', el.getBoundingClientRect().top, 'target top:', top);
     window.scrollTo({ top, behavior: 'smooth' });
   };
 
