@@ -105,7 +105,7 @@ export function Learn() {
         <LearnSidebar currentCat={cat} />
 
         {/* 메인 */}
-        <main className="min-w-0 flex-1 py-8 lg:overflow-y-auto lg:overscroll-contain">
+        <main className="min-w-0 flex-1 pt-8 pb-16 lg:overflow-y-auto lg:overscroll-contain lg:py-8">
           {/* 모바일 카테고리 선택기 */}
           <MobileCategorySelector currentCat={cat} onSelect={handleSelect} />
 
