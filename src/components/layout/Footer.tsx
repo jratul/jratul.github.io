@@ -1,5 +1,6 @@
+const CURRENT_YEAR = new Date().getFullYear();
+
 export function Footer() {
-  const currentYear = new Date().getFullYear();
 
   return (
     <footer className="bg-dark-bg/50 backdrop-blur-sm mt-20 border-dark-border border-t">
@@ -7,7 +8,7 @@ export function Footer() {
         {/* Copyright */}
 
         <p className="text-gray-500 text-sm text-center">
-          © {currentYear} jratul.github.io.
+          © {CURRENT_YEAR} jratul.github.io.
         </p>
       </div>
     </footer>

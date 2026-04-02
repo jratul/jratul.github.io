@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import type { PostMeta, PostsIndex, TagFrequency } from '@/types/blog';
 
 /**
@@ -7,7 +7,6 @@ import type { PostMeta, PostsIndex, TagFrequency } from '@/types/blog';
 export function usePosts(initialTags: string[] = []) {
   const [postsIndex, setPostsIndex] = useState<PostsIndex | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTags, setSelectedTags] = useState<string[]>(initialTags);
 
@@ -22,8 +21,8 @@ export function usePosts(initialTags: string[] = []) {
         }
         const data: PostsIndex = await response.json();
         setPostsIndex(data);
-      } catch (err) {
-        setError(err instanceof Error ? err : new Error('Unknown error'));
+      } catch {
+        // silently fail — no UI for error state
       } finally {
         setLoading(false);
       }
@@ -78,20 +77,18 @@ export function usePosts(initialTags: string[] = []) {
     return filtered;
   }, [postsIndex, searchQuery, selectedTags]);
 
-  // Toggle tag selection
-  const toggleTag = (tag: string) => {
+  const toggleTag = useCallback((tag: string) => {
     setSelectedTags(prev =>
       prev.includes(tag)
         ? prev.filter(t => t !== tag)
         : [...prev, tag]
     );
-  };
+  }, []);
 
-  // Clear all filters
-  const clearFilters = () => {
+  const clearFilters = useCallback(() => {
     setSearchQuery('');
     setSelectedTags([]);
-  };
+  }, []);
 
   // Get post by slug
   const getPostBySlug = (slug: string): PostMeta | undefined => {
@@ -105,7 +102,6 @@ export function usePosts(initialTags: string[] = []) {
     searchQuery,
     selectedTags,
     loading,
-    error,
     setSearchQuery,
     toggleTag,
     clearFilters,

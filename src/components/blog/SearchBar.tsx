@@ -54,7 +54,7 @@ export function SearchBar({
           w-full h-12 pl-12 pr-20
           bg-dark-surface/50 backdrop-blur-sm
           border-2 rounded-xl
-          text-gray-700 placeholder-gray-500
+          text-gray-200 placeholder-gray-500
           transition-all duration-300
           focus:outline-none
           ${
@@ -78,7 +78,7 @@ export function SearchBar({
 
       {/* Keyboard Shortcut Hint */}
       <div className="top-1/2 right-4 absolute -translate-y-1/2">
-        <kbd className="hidden sm:inline-flex items-center gap-1 bg-slate-300 px-2 py-1 border border-dark-border rounded text-gray-700 text-xs">
+        <kbd className="hidden sm:inline-flex items-center gap-1 bg-dark-border px-2 py-1 border border-dark-border rounded text-gray-400 text-xs">
           <span className="text-[10px]">⌘</span>K
         </kbd>
       </div>

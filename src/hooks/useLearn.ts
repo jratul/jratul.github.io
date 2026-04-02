@@ -17,8 +17,6 @@ export function useLearn(category?: string) {
     ? allLessons.filter(l => l.category === category).sort((a, b) => a.order - b.order)
     : allLessons;
 
-  const getLessonById = (id: string) => allLessons.find(l => l.id === id);
-
   const getPrevNext = (id: string, cat: string) => {
     const catLessons = allLessons
       .filter(l => l.category === cat)
@@ -30,5 +28,5 @@ export function useLearn(category?: string) {
     };
   };
 
-  return { lessons, loading, getLessonById, getPrevNext };
+  return { lessons, loading, getPrevNext };
 }
