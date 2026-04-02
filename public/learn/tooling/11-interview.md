@@ -5,7 +5,7 @@ order: 11
 
 # 프론트엔드 Tooling 면접 예상 질문
 
-빌드 도구, 패키지 매니저, CI/CD 면접에서 빈출되는 핵심 질문들입니다.
+빌드 도구, 패키지 매니저, CI/CD (Continuous Integration/Continuous Delivery, 지속적 통합/지속적 배포) 면접에서 빈출되는 핵심 질문들입니다.
 
 ## Q1. Vite가 webpack보다 빠른 이유는?
 
@@ -23,9 +23,9 @@ order: 11
 ```
 
 **핵심 차이:**
-1. **사전 번들링:** `node_modules` 의존성을 `esbuild`로 빠르게 번들 (Go 기반, webpack 대비 10~100배 빠름)
-2. **소스 코드:** ESM으로 브라우저에 직접 서빙, HMR도 변경된 모듈만 전달
-3. **프로덕션 빌드:** Rollup 기반 (최적화 번들 생성)
+1. **사전 번들링:** `node_modules` 의존성을 `esbuild` (Go 언어로 작성된 초고속 JS 번들러)로 빠르게 번들 (Go 기반, webpack 대비 10~100배 빠름)
+2. **소스 코드:** ESM (ES Modules, 브라우저 네이티브 모듈 시스템)으로 브라우저에 직접 서빙, HMR (Hot Module Replacement, 페이지 새로고침 없이 변경된 모듈만 교체)도 변경된 모듈만 전달
+3. **프로덕션 빌드:** Rollup (트리 쉐이킹에 강한 번들러) 기반 (최적화 번들 생성)
 
 ---
 
@@ -50,7 +50,7 @@ pnpm: 중앙 저장소에 1번만 저장 + 하드링크로 연결
 
 ## Q3. 트리 쉐이킹(Tree Shaking)이란?
 
-번들 시 **사용하지 않는 코드를 제거**하는 최적화 기법입니다.
+번들 시 **사용하지 않는 코드를 제거**하는 최적화 기법입니다. 나무를 흔들어 죽은 잎(불필요한 코드)을 떨어뜨린다는 의미에서 유래했습니다.
 
 ```javascript
 // utils.js — 여러 함수 export
@@ -66,7 +66,7 @@ import { add } from './utils.js';
 
 **조건:**
 - **ESM(import/export) 문법** 필요 — CommonJS(require)는 정적 분석 어려움
-- 사이드 이펙트 없는 모듈 (`"sideEffects": false` in package.json)
+- 사이드 이펙트(side effect, 모듈을 임포트하는 것만으로 발생하는 부수 효과) 없는 모듈 (`"sideEffects": false` in package.json)
 
 ```json
 // package.json
@@ -81,7 +81,7 @@ import { add } from './utils.js';
 
 ## Q4. 코드 스플리팅(Code Splitting)이란?
 
-번들을 **여러 청크로 분할**해 초기 로딩 성능을 개선합니다.
+번들을 **여러 청크(chunk, 분할된 코드 조각)로 분할**해 초기 로딩 성능을 개선합니다.
 
 ```javascript
 // 동적 임포트 (React.lazy)
@@ -139,6 +139,8 @@ import eslintConfigPrettier from 'eslint-config-prettier';
 
 ## Q6. CI/CD 파이프라인을 어떻게 구성하나요?
 
+CI (Continuous Integration)는 코드 변경 시 자동으로 빌드·테스트하고, CD (Continuous Delivery/Deployment)는 검증된 코드를 자동으로 배포합니다.
+
 ```yaml
 # .github/workflows/ci.yml
 name: CI
@@ -170,7 +172,7 @@ jobs:
 ```
 
 **CD 전략:**
-- PR 머지 → 자동 스테이징 배포
+- PR (Pull Request) 머지 → 자동 스테이징 배포
 - 수동 승인 → 프로덕션 배포
 
 ---

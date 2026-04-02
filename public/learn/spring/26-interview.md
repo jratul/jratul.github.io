@@ -42,6 +42,8 @@ class OrderService {
 
 ## Q2. Spring Bean의 스코프(Scope)는 무엇이 있나요?
 
+Bean은 Spring IoC 컨테이너가 관리하는 객체를 의미합니다. 스코프는 Bean 인스턴스의 생존 범위를 정의합니다.
+
 | 스코프 | 설명 | 사용 케이스 |
 |-------|------|------------|
 | **singleton** (기본) | 컨테이너당 인스턴스 1개 | 대부분의 서비스/리포지토리 |
@@ -55,7 +57,7 @@ class OrderService {
 
 ## Q3. @Transactional이 어떻게 동작하나요?
 
-Spring은 `@Transactional`을 **AOP 프록시**로 구현합니다.
+Spring은 `@Transactional`을 **AOP (Aspect-Oriented Programming, 관점 지향 프로그래밍) 프록시**로 구현합니다. 프록시는 실제 객체를 감싸 부가 기능(트랜잭션 관리 등)을 추가하는 대리 객체입니다.
 
 ```
 클라이언트 → 프록시(트랜잭션 시작) → 실제 메서드 → 프록시(커밋/롤백)
@@ -79,16 +81,16 @@ class OrderService {
 }
 ```
 
-**propagation 주요 옵션:**
+**propagation (트랜잭션 전파 방식) 주요 옵션:**
 - `REQUIRED` (기본): 기존 트랜잭션 참여, 없으면 생성
 - `REQUIRES_NEW`: 기존 트랜잭션 일시 중단, 새 트랜잭션 생성
-- `NESTED`: 세이브포인트 기반 중첩 트랜잭션
+- `NESTED`: 세이브포인트(savepoint, 트랜잭션 중간 복구 지점) 기반 중첩 트랜잭션
 
 ---
 
 ## Q4. JPA N+1 문제란 무엇이고 어떻게 해결하나요?
 
-1번의 쿼리로 N개의 결과를 가져올 때, 연관 엔티티를 위해 **추가로 N번의 쿼리**가 발생하는 문제입니다.
+JPA (Java Persistence API, 자바 ORM 표준 인터페이스)에서 1번의 쿼리로 N개의 결과를 가져올 때, 연관 엔티티를 위해 **추가로 N번의 쿼리**가 발생하는 문제입니다.
 
 ```java
 // N+1 발생 예시
@@ -118,6 +120,8 @@ List<Member> members;
 ---
 
 ## Q5. AOP(관점 지향 프로그래밍)의 주요 개념을 설명하세요
+
+AOP (Aspect-Oriented Programming)는 로깅, 트랜잭션 등 여러 모듈에 걸친 공통 관심사를 분리해서 관리하는 프로그래밍 패러다임입니다.
 
 | 용어 | 설명 | 예시 |
 |-----|------|------|
@@ -156,10 +160,10 @@ HTTP 요청
   → 컨트롤러 진입
 ```
 
-**JWT 사용 시:**
+**JWT (JSON Web Token, JSON 기반의 자기 포함형 인증 토큰) 사용 시:**
 - `OncePerRequestFilter`를 구현해 토큰 검증 필터 추가
 - `SecurityContextHolder`에 Authentication 수동 설정
-- 세션을 `STATELESS`로 설정
+- 세션을 `STATELESS` (서버가 세션 상태를 저장하지 않음)로 설정
 
 ---
 
@@ -229,7 +233,7 @@ public class GlobalExceptionHandler {
 ## Q10. Spring Boot 애플리케이션 성능 튜닝 포인트는?
 
 **DB 접근:**
-- 커넥션 풀 크기 조절 (`spring.datasource.hikari.maximum-pool-size`)
+- 커넥션 풀 (Connection Pool, DB 연결을 미리 만들어 재사용하는 기법) 크기 조절 (`spring.datasource.hikari.maximum-pool-size`)
 - 슬로우 쿼리 탐지 및 인덱스 추가
 - Fetch Join / Batch Size로 N+1 제거
 
@@ -247,4 +251,4 @@ public CompletableFuture<Void> sendEmail(String to) { ... }
 
 **JVM 튜닝:**
 - G1GC 사용, Heap 사이즈 적정 설정
-- Actuator + Micrometer로 메트릭 모니터링
+- Actuator + Micrometer (JVM 메트릭 수집 라이브러리)로 메트릭 모니터링

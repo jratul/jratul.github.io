@@ -17,7 +17,7 @@ Android 개발 면접에서 자주 나오는 핵심 질문들입니다.
 **Fragment:**
 - Activity 위에서 동작하는 UI 조각, Activity 생명주기에 종속
 - 하나의 Activity에 여러 Fragment 조합 가능 (태블릿 UI 등)
-- 재사용성 높고 백스택 관리 유리
+- 재사용성 높고 백스택(back stack, 이전 화면으로 돌아가기 위한 화면 히스토리 스택) 관리 유리
 
 ```kotlin
 // Fragment 추가
@@ -43,7 +43,7 @@ supportFragmentManager.beginTransaction()
 
 ## Q3. ViewModel이 화면 회전에도 데이터를 유지하는 이유는?
 
-ViewModel은 `ViewModelStore`에 보관되며, Activity 재생성 시 `ViewModelStore`는 유지됩니다.
+ViewModel (뷰모델, UI 관련 데이터를 생명주기에 독립적으로 관리하는 컴포넌트)은 `ViewModelStore`에 보관되며, Activity 재생성 시 `ViewModelStore`는 유지됩니다.
 
 ```
 화면 회전 발생
@@ -70,11 +70,13 @@ ViewModelProvider가 기존 ViewModel 반환
 | 연산자 | 제한적 | map, filter 등 풍부 |
 | 테스트 | 복잡 | 간단 (coroutines-test) |
 
-**현재 권장:** StateFlow. LiveData는 Compose와 통합이 불편하고, StateFlow가 더 유연합니다.
+**현재 권장:** StateFlow (상태를 보유하는 핫 플로우). LiveData는 Compose와 통합이 불편하고, StateFlow가 더 유연합니다.
 
 ---
 
 ## Q5. Room에서 @Transaction을 써야 하는 경우는?
+
+Room은 SQLite (경량 내장형 관계형 데이터베이스)를 추상화한 Android 공식 ORM (Object-Relational Mapping, 객체와 DB 테이블을 매핑하는 기술) 라이브러리입니다.
 
 ```kotlin
 // 1:N 관계 데이터를 한 번에 조회할 때
@@ -98,7 +100,7 @@ suspend fun transferItems(fromId: Int, toId: Int, item: Item) {
 
 ## Q6. Coroutine의 구조화된 동시성(Structured Concurrency)이란?
 
-부모 코루틴이 취소되면 **모든 자식 코루틴도 취소**되는 계층 구조입니다.
+부모 코루틴이 취소되면 **모든 자식 코루틴도 취소**되는 계층 구조입니다. 리소스 누수를 방지하고 예외 처리를 단순화하는 핵심 개념입니다.
 
 ```kotlin
 viewModelScope.launch {
@@ -122,6 +124,8 @@ supervisorScope {
 
 ## Q7. Hilt에서 @Singleton과 @ViewModelScoped의 차이는?
 
+Hilt는 Dagger 기반의 Android 공식 DI (Dependency Injection, 의존성 주입) 프레임워크입니다.
+
 | Scope | 인스턴스 공유 범위 | 생명주기 |
 |-------|----------------|---------|
 | `@Singleton` | 앱 전체 | Application 종료까지 |
@@ -142,7 +146,7 @@ class SearchFilter @Inject constructor(...)
 
 ## Q8. Compose의 Recomposition이란? 최적화 방법은?
 
-**Recomposition:** 상태(State)가 변경되면 해당 Composable 함수가 다시 실행되어 UI를 갱신하는 과정.
+**Recomposition (재구성):** 상태(State)가 변경되면 해당 Composable 함수가 다시 실행되어 UI를 갱신하는 과정.
 
 **최적화 방법:**
 
@@ -175,12 +179,12 @@ val isButtonEnabled by remember {
 
 ## Q9. ANR이란? 어떻게 방지하나요?
 
-**ANR(Application Not Responding):** 메인 스레드가 5초 이상 응답 없을 때 시스템이 표시하는 오류 다이얼로그.
+**ANR (Application Not Responding, 애플리케이션 응답 없음):** 메인 스레드(UI 스레드)가 5초 이상 응답 없을 때 시스템이 표시하는 오류 다이얼로그.
 
 **원인:**
 - 메인 스레드에서 네트워크/DB 작업
 - 메인 스레드에서 오래 걸리는 연산
-- 데드락
+- 데드락(deadlock, 두 스레드가 서로의 자원을 기다리며 영원히 멈추는 상태)
 
 **방지:**
 ```kotlin
@@ -208,7 +212,7 @@ StrictMode.setThreadPolicy(
 R8(ProGuard 후속)은 릴리즈 빌드 시 3가지를 수행합니다.
 
 1. **Shrinking(축소):** 사용하지 않는 코드/리소스 제거
-2. **Obfuscation(난독화):** 클래스/메서드명을 짧은 이름으로 변경 (a, b, c...)
+2. **Obfuscation(난독화):** 클래스/메서드명을 짧은 이름으로 변경 (a, b, c...) — 리버스 엔지니어링 방지
 3. **Optimization(최적화):** 바이트코드 최적화
 
 ```kotlin
@@ -241,7 +245,7 @@ buildTypes {
 | 상태 업데이트 | 전체 View 트리 재측정 가능 | 변경된 Composable만 재구성 |
 | 메모리 | View 객체 상주 | 재구성 시 재생성 |
 
-Compose는 `ConstraintLayout` 같은 중첩을 줄인 구조가 불필요하고, `LazyColumn`이 RecyclerView보다 사용하기 쉬우며 내부적으로 유사한 최적화를 합니다.
+Compose는 `ConstraintLayout` 같은 중첩을 줄인 구조가 불필요하고, `LazyColumn` (RecyclerView와 유사한 지연 로딩 목록 컴포넌트)이 RecyclerView보다 사용하기 쉬우며 내부적으로 유사한 최적화를 합니다.
 
 ---
 

@@ -9,7 +9,7 @@ Kotlin 개발자 면접에서 자주 등장하는 핵심 질문들입니다.
 
 ## Q1. Kotlin의 Null Safety는 어떻게 동작하나요?
 
-Kotlin은 **컴파일 타임에 NPE를 방지**합니다. 타입에 `?`를 붙여야만 null을 허용합니다.
+Kotlin은 **컴파일 타임에 NPE (NullPointerException, 널 참조 예외)를 방지**합니다. 타입에 `?`를 붙여야만 null을 허용합니다.
 
 ```kotlin
 var name: String = "Alice"   // non-null
@@ -28,19 +28,19 @@ val len = name!!.length
 name?.let { println(it.length) }
 ```
 
-Java 코드 연동 시에는 `@Nullable` / `@NonNull` 어노테이션 또는 플랫폼 타입(`String!`)에 주의합니다.
+Java 코드 연동 시에는 `@Nullable` / `@NonNull` 어노테이션 또는 플랫폼 타입(`String!`, Java에서 온 타입으로 null 여부를 알 수 없음)에 주의합니다.
 
 ---
 
 ## Q2. data class가 일반 class와 다른 점은?
 
-`data class`는 **데이터 보관 목적의 클래스**에 필요한 보일러플레이트를 자동 생성합니다.
+`data class`는 **데이터 보관 목적의 클래스**에 필요한 보일러플레이트(boilerplate, 반복적으로 작성해야 하는 상용구 코드)를 자동 생성합니다.
 
 자동 생성 메서드:
 - `equals()` / `hashCode()` — 프로퍼티 값 기반 비교
 - `toString()` — "ClassName(prop=value, ...)" 형식
 - `copy()` — 일부 프로퍼티 변경한 복사본
-- `componentN()` — 구조 분해 선언
+- `componentN()` — 구조 분해 선언 (변수 여러 개에 한 번에 대입하는 문법)
 
 ```kotlin
 data class User(val id: Long, val name: String)
@@ -79,7 +79,7 @@ fun handleResult(result: Result<User>) = when (result) {
 
 ## Q4. Kotlin Coroutine의 핵심 개념을 설명해주세요
 
-코루틴은 **비동기 코드를 동기처럼 작성**할 수 있게 해주는 경량 스레드입니다.
+코루틴(Coroutine)은 **비동기 코드를 동기처럼 작성**할 수 있게 해주는 경량 스레드입니다. 스레드를 차단하지 않고 실행을 일시 중단할 수 있어 효율적입니다.
 
 ```kotlin
 // suspend 함수 — 일시 중단 가능
@@ -96,7 +96,7 @@ viewModelScope.launch {
 }
 ```
 
-**주요 Dispatcher:**
+**주요 Dispatcher (코루틴이 실행될 스레드를 결정하는 컴포넌트):**
 | Dispatcher | 용도 |
 |-----------|------|
 | `Dispatchers.Main` | UI 업데이트 (Android) |
@@ -134,7 +134,7 @@ val comparator = object : Comparator<Int> {
 
 ## Q6. extension function의 실제 동작 원리는?
 
-확장 함수는 **정적 메서드로 컴파일**됩니다. 클래스를 수정하지 않고 기능을 추가할 수 있습니다.
+확장 함수(extension function)는 기존 클래스를 수정하지 않고 외부에서 새 메서드를 추가하는 기능으로, **정적 메서드로 컴파일**됩니다.
 
 ```kotlin
 fun String.isPalindrome(): Boolean {
@@ -157,7 +157,7 @@ public static boolean isPalindrome(String $this) {
 
 ## Q7. inline function은 언제 사용하나요?
 
-고차 함수(람다를 받는 함수)에서 **람다 객체 생성 오버헤드를 제거**합니다.
+고차 함수(higher-order function, 람다를 받거나 반환하는 함수)에서 **람다 객체 생성 오버헤드를 제거**합니다.
 
 ```kotlin
 // inline 없이 — 람다마다 Function 객체 생성
@@ -171,7 +171,7 @@ fun measure(block: () -> Unit) {
 inline fun measure(block: () -> Unit) { ... }
 ```
 
-`reified` 키워드와 조합하면 런타임에 타입 정보를 유지할 수 있습니다.
+`reified` 키워드와 조합하면 런타임에 타입 정보를 유지할 수 있습니다. 일반적으로 제네릭 타입 정보는 런타임에 소거(type erasure)되지만, `inline + reified`를 사용하면 이를 보존할 수 있습니다.
 
 ```kotlin
 inline fun <reified T> Gson.fromJson(json: String): T {
@@ -182,6 +182,8 @@ inline fun <reified T> Gson.fromJson(json: String): T {
 ---
 
 ## Q8. Kotlin의 스코프 함수(let, run, with, apply, also)를 비교하세요
+
+스코프 함수(scope function)는 객체의 컨텍스트 안에서 코드 블록을 실행하기 위한 함수들입니다.
 
 | 함수 | 수신 객체 참조 | 반환값 |
 |-----|-------------|-------|

@@ -11,10 +11,10 @@ Next.js 개발자 면접에서 빈출되는 핵심 질문들입니다.
 
 | 방식 | 렌더링 위치 | 데이터 갱신 | 사용 케이스 |
 |-----|-----------|------------|------------|
-| **CSR** | 브라우저 | 항상 최신 | 대시보드, 인증 필요 페이지 |
-| **SSR** | 서버 (요청마다) | 항상 최신 | 실시간 데이터, 사용자별 다른 페이지 |
-| **SSG** | 빌드 타임 | 재배포 시 갱신 | 블로그, 문서, 마케팅 페이지 |
-| **ISR** | 빌드 타임 + 백그라운드 | 주기적 자동 갱신 | 뉴스, 상품 목록 |
+| **CSR** (Client-Side Rendering, 클라이언트 사이드 렌더링) | 브라우저 | 항상 최신 | 대시보드, 인증 필요 페이지 |
+| **SSR** (Server-Side Rendering, 서버 사이드 렌더링) | 서버 (요청마다) | 항상 최신 | 실시간 데이터, 사용자별 다른 페이지 |
+| **SSG** (Static Site Generation, 정적 사이트 생성) | 빌드 타임 | 재배포 시 갱신 | 블로그, 문서, 마케팅 페이지 |
+| **ISR** (Incremental Static Regeneration, 점진적 정적 재생성) | 빌드 타임 + 백그라운드 | 주기적 자동 갱신 | 뉴스, 상품 목록 |
 
 ```typescript
 // SSG (App Router — 기본값)
@@ -42,7 +42,7 @@ const data = await fetch(url, { next: { revalidate: 60 } });  // 60초마다 갱
 | 레이아웃 | `_app.tsx`, `_document.tsx` | `layout.tsx` (중첩 가능) |
 | 데이터 패칭 | `getServerSideProps`, `getStaticProps` | async/await 직접 사용 |
 | 로딩/에러 | 수동 구현 | `loading.tsx`, `error.tsx` 내장 |
-| 스트리밍 | 제한적 | `Suspense` 기반 스트리밍 지원 |
+| 스트리밍 | 제한적 | `Suspense` (비동기 로딩 경계) 기반 스트리밍 지원 |
 
 ---
 
@@ -50,11 +50,11 @@ const data = await fetch(url, { next: { revalidate: 60 } });  // 60초마다 갱
 
 **Server Component (기본):**
 - 서버에서만 실행 — 클라이언트에 JS 번들 포함 안 됨
-- DB, 파일시스템 직접 접근 가능
+- DB (데이터베이스), 파일시스템 직접 접근 가능
 - `useState`, `useEffect`, 이벤트 핸들러 사용 불가
 
 **Client Component (`'use client'` 선언):**
-- 브라우저에서 실행 (SSR로 HTML 생성 후 하이드레이션)
+- 브라우저에서 실행 (SSR로 HTML 생성 후 하이드레이션 — 서버에서 생성한 HTML에 클라이언트 JS를 연결하는 과정)
 - React Hooks 사용 가능
 - 브라우저 API 접근 가능
 
@@ -81,7 +81,7 @@ Next.js App Router는 4가지 레이어의 캐싱을 제공합니다.
 
 ```
 1. Request Memoization  — 동일 요청을 렌더링 도중 중복 제거
-2. Data Cache           — fetch 결과를 영구 캐시 (CDN)
+2. Data Cache           — fetch 결과를 영구 캐시 (CDN, 콘텐츠 전송 네트워크)
 3. Full Route Cache     — 정적 페이지 HTML/RSC Payload 캐시
 4. Router Cache         — 클라이언트 측 내비게이션 캐시
 ```
@@ -112,16 +112,16 @@ import Image from 'next/image';
     alt="히어로 이미지"
     width={800}
     height={400}
-    priority          // LCP 이미지에 preload
+    priority          // LCP(Largest Contentful Paint, 최대 콘텐츠 렌더링 시간) 이미지에 preload
     placeholder="blur" // 로딩 중 blur 플레이스홀더
 />
 ```
 
 **자동 최적화:**
-- WebP/AVIF 변환 (브라우저 지원 기준)
+- WebP/AVIF 변환 (브라우저 지원 기준) — WebP, AVIF는 JPEG보다 압축률이 높은 차세대 이미지 포맷
 - 요청 시 리사이징 (서버/CDN에서 처리)
 - `sizes` 속성으로 반응형 이미지 제공
-- 자동 lazy loading (priority 없는 경우)
+- 자동 lazy loading (priority 없는 경우) — 화면에 보일 때까지 이미지 로딩을 미루는 기법
 
 외부 이미지는 `next.config.js`의 `remotePatterns`에 도메인 등록 필요합니다.
 
@@ -129,7 +129,7 @@ import Image from 'next/image';
 
 ## Q6. Middleware는 어디에서 실행되고 무엇에 사용하나요?
 
-미들웨어는 **Edge Runtime에서 요청이 완료되기 전에 실행**됩니다.
+미들웨어는 **Edge Runtime (CDN 엣지 서버에서 실행되는 경량 런타임)에서 요청이 완료되기 전에 실행**됩니다.
 
 ```typescript
 // middleware.ts (루트에 위치)
@@ -155,7 +155,7 @@ export const config = {
 };
 ```
 
-**활용:** 인증/인가, A/B 테스팅, 지역화(i18n), 봇 차단
+**활용:** 인증/인가, A/B 테스팅, 지역화(i18n, Internationalization), 봇 차단
 
 ---
 
@@ -184,7 +184,7 @@ function CreatePostForm() {
 }
 ```
 
-**장점:** API Route 없이 폼 처리 가능, JS 비활성화 환경에서도 작동
+**장점:** API Route (API 엔드포인트) 없이 폼 처리 가능, JS 비활성화 환경에서도 작동
 
 ---
 
