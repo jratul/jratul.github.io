@@ -57,7 +57,7 @@ export function MarkdownRenderer({ content, className = '' }: MarkdownRendererPr
     h2({ children }) {
       const id = slugify(extractText(children));
       return (
-        <h2 id={id} className="text-3xl font-bold mt-6 mb-3 text-transparent bg-clip-text bg-gradient-to-r from-primary-300 to-accent-blue">
+        <h2 id={id} className="scroll-mt-6 text-3xl font-bold mt-6 mb-3 text-transparent bg-clip-text bg-gradient-to-r from-primary-300 to-accent-blue">
           {children}
         </h2>
       );
@@ -65,7 +65,7 @@ export function MarkdownRenderer({ content, className = '' }: MarkdownRendererPr
     h3({ children }) {
       const id = slugify(extractText(children));
       return (
-        <h3 id={id} className="text-2xl font-semibold mt-5 mb-2 text-primary-200">
+        <h3 id={id} className="scroll-mt-6 text-2xl font-semibold mt-5 mb-2 text-primary-200">
           {children}
         </h3>
       );

@@ -38,16 +38,7 @@ export function TableOfContents({ items }: Props) {
 
   const handleClick = (id: string) => {
     const el = document.getElementById(id);
-    if (!el) return;
-    const scrollContainer = document.getElementById('learn-scroll');
-    if (scrollContainer) {
-      const containerTop = scrollContainer.getBoundingClientRect().top;
-      const elTop = el.getBoundingClientRect().top;
-      scrollContainer.scrollTo({ top: scrollContainer.scrollTop + elTop - containerTop - 24, behavior: 'smooth' });
-    } else {
-      const top = el.getBoundingClientRect().top + window.scrollY - 88;
-      window.scrollTo({ top, behavior: 'smooth' });
-    }
+    el?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   return (
