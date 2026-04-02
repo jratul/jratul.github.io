@@ -19,7 +19,7 @@ export function Header() {
         {/* Navigation Links */}
         <div className="flex items-center gap-4">
           <Link
-            to="/learn/java"
+            to="/learn/html"
             className={[
               'text-sm font-medium transition-colors duration-200',
               isLearnActive ? 'text-primary-400' : 'text-gray-400 hover:text-gray-200',
