@@ -11,8 +11,6 @@ export function TableOfContents({ items }: Props) {
   useEffect(() => {
     if (items.length === 0) return;
 
-    const scrollContainer = document.getElementById('learn-scroll') ?? null;
-
     const observer = new IntersectionObserver(
       entries => {
         const visible = entries
@@ -23,7 +21,7 @@ export function TableOfContents({ items }: Props) {
           setActiveId(visible[0].target.id);
         }
       },
-      { root: scrollContainer, rootMargin: '-80px 0% -60% 0%', threshold: 0 }
+      { rootMargin: '-64px 0% -60% 0%', threshold: 0 }
     );
 
     items.forEach(({ id }) => {
