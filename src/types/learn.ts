@@ -15,12 +15,18 @@ export type LearnCategory =
   | 'java'
   | 'kotlin'
   | 'spring'
+  | 'android'
   | 'docker'
   | 'k8s'
   | 'linux'
   | 'network'
   | 'database'
   | 'redis'
+  | 'cassandra'
+  | 'elasticsearch'
+  | 'kafka'
+  | 'airbyte'
+  | 'hive'
   | 'aws'
   | 'system-design'
   | 'algorithms'
@@ -139,5 +145,35 @@ export const CATEGORY_META: Record<LearnCategory, { label: string; description: 
     label: '빌드 & 성능',
     description: 'Vite, Webpack, 번들링, 웹 성능 최적화, 테스팅 도구',
     color: 'from-violet-400 to-purple-500',
+  },
+  android: {
+    label: 'Android',
+    description: 'Jetpack Compose, ViewModel, Room, Coroutines 안드로이드 개발',
+    color: 'from-green-400 to-teal-500',
+  },
+  cassandra: {
+    label: 'Cassandra',
+    description: '분산 NoSQL DB, 링 아키텍처, CQL, 컨시스턴시 레벨',
+    color: 'from-blue-400 to-indigo-400',
+  },
+  elasticsearch: {
+    label: 'Elasticsearch',
+    description: '역색인 기반 분산 검색 엔진, Query DSL, ELK 스택',
+    color: 'from-yellow-400 to-orange-400',
+  },
+  kafka: {
+    label: 'Kafka',
+    description: '분산 이벤트 스트리밍, Producer/Consumer, Kafka Streams',
+    color: 'from-gray-300 to-slate-400',
+  },
+  airbyte: {
+    label: 'Airbyte',
+    description: '오픈소스 ELT 플랫폼, CDC, dbt 연동, 커스텀 커넥터',
+    color: 'from-purple-400 to-pink-400',
+  },
+  hive: {
+    label: 'Apache Hive',
+    description: 'Hadoop 기반 데이터 웨어하우스, HiveQL, ORC/Parquet, Iceberg',
+    color: 'from-amber-400 to-yellow-300',
   },
 };
