@@ -9,7 +9,7 @@ CSS 프론트엔드 면접에서 빈출되는 핵심 질문들입니다.
 
 ## Q1. CSS 명시도(Specificity)는 어떻게 계산하나요?
 
-명시도가 높을수록 해당 스타일이 적용됩니다.
+명시도(Specificity)는 동일한 요소에 여러 CSS 규칙이 충돌할 때 어떤 스타일을 적용할지 결정하는 우선순위 점수입니다. 명시도가 높을수록 해당 스타일이 적용됩니다.
 
 ```
 (인라인, ID, 클래스/속성/의사클래스, 태그/의사요소)
@@ -34,6 +34,8 @@ p { color: blue; }              /* (0,0,0,1) */
 ---
 
 ## Q2. CSS 박스 모델을 설명해주세요
+
+CSS 박스 모델(Box Model)은 모든 HTML 요소를 content(내용), padding(안쪽 여백), border(테두리), margin(바깥 여백) 네 영역으로 구성하는 레이아웃 개념입니다.
 
 ```
 ┌─────────────────────────────┐
@@ -67,6 +69,8 @@ p { color: blue; }              /* (0,0,0,1) */
 
 ## Q3. Flexbox의 주요 속성을 설명해주세요
 
+Flexbox (Flexible Box Layout, 유연한 박스 레이아웃)는 1차원(행 또는 열) 방향으로 아이템을 배치하고 정렬하기 위한 CSS 레이아웃 모듈입니다.
+
 ```css
 .container {
     display: flex;
@@ -90,6 +94,8 @@ p { color: blue; }              /* (0,0,0,1) */
 ---
 
 ## Q4. CSS Grid의 주요 속성을 설명해주세요
+
+CSS Grid (그리드 레이아웃)는 행과 열을 동시에 제어하는 2차원 레이아웃 시스템입니다.
 
 ```css
 .container {
@@ -148,7 +154,7 @@ position: sticky;      /* 스크롤 시 지정 임계값에 fixed로 전환 */
 
 ## Q6. BEM 방법론이란 무엇인가요?
 
-**Block, Element, Modifier** — CSS 클래스 네이밍 규칙입니다.
+**BEM (Block, Element, Modifier)** — CSS 클래스 네이밍 규칙입니다. 컴포넌트를 블록·요소·변형 세 개념으로 나눠 일관된 클래스명을 작성하는 CSS 방법론입니다.
 
 ```css
 /* Block: 독립적인 컴포넌트 */
@@ -177,6 +183,8 @@ position: sticky;      /* 스크롤 시 지정 임계값에 fixed로 전환 */
 ---
 
 ## Q7. CSS 변수(Custom Properties)를 설명해주세요
+
+CSS 변수(Custom Properties)는 CSS 안에서 값을 재사용할 수 있도록 `--변수명` 형식으로 선언하는 기능입니다. JavaScript에서 동적으로 변경할 수 있어 테마 전환에 유용합니다.
 
 ```css
 /* 선언 — :root에 전역 변수 정의 */
@@ -237,3 +245,5 @@ position: sticky;      /* 스크롤 시 지정 임계값에 fixed로 전환 */
 }
 /* ❌ layout을 일으키는 속성은 피함: top/left/width/height */
 ```
+
+`will-change`는 브라우저에게 해당 속성이 곧 변경될 것임을 미리 알려 GPU 레이어를 생성하게 하는 힌트 속성입니다. `transition`은 상태 변화 시 한 번만 재생되고, `@keyframes`를 사용하는 `animation`은 반복·세밀한 제어가 가능합니다.
