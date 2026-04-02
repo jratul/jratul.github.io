@@ -14,6 +14,8 @@ export function LearnLessonPage() {
   const { category, lessonSlug } = useParams<{ category: string; lessonSlug: string }>();
   const { lessons, loading, getPrevNext } = useLearn(category);
 
+  const scrollRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     const mql = window.matchMedia('(min-width: 1024px)');
     const update = () => { document.documentElement.style.overflow = mql.matches ? 'hidden' : ''; };
@@ -38,7 +40,6 @@ export function LearnLessonPage() {
 
   if (!lesson) return <Navigate to={`/learn/${category}`} replace />;
 
-  const scrollRef = useRef<HTMLDivElement>(null);
   const meta = CATEGORY_META[category as LearnCategory];
   const { prev, next } = getPrevNext(lessonId, category!);
   const toc = extractToc(lesson.content);
