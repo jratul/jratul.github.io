@@ -11,6 +11,8 @@ export function TableOfContents({ items }: Props) {
   useEffect(() => {
     if (items.length === 0) return;
 
+    const scrollContainer = document.getElementById('learn-scroll') ?? null;
+
     const observer = new IntersectionObserver(
       entries => {
         const visible = entries
@@ -21,7 +23,7 @@ export function TableOfContents({ items }: Props) {
           setActiveId(visible[0].target.id);
         }
       },
-      { rootMargin: '-80px 0% -60% 0%', threshold: 0 }
+      { root: scrollContainer, rootMargin: '-80px 0% -60% 0%', threshold: 0 }
     );
 
     items.forEach(({ id }) => {
@@ -37,8 +39,15 @@ export function TableOfContents({ items }: Props) {
   const handleClick = (id: string) => {
     const el = document.getElementById(id);
     if (!el) return;
-    const top = el.getBoundingClientRect().top + window.scrollY - 88;
-    window.scrollTo({ top, behavior: 'smooth' });
+    const scrollContainer = document.getElementById('learn-scroll');
+    if (scrollContainer) {
+      const containerTop = scrollContainer.getBoundingClientRect().top;
+      const elTop = el.getBoundingClientRect().top;
+      scrollContainer.scrollTo({ top: scrollContainer.scrollTop + elTop - containerTop - 24, behavior: 'smooth' });
+    } else {
+      const top = el.getBoundingClientRect().top + window.scrollY - 88;
+      window.scrollTo({ top, behavior: 'smooth' });
+    }
   };
 
   return (
