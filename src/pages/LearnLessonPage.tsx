@@ -47,7 +47,7 @@ export function LearnLessonPage() {
         <LearnSidebar currentCat={category as LearnCategory} />
 
         {/* 메인 콘텐츠 */}
-        <div className="min-w-0 flex-1 overflow-y-auto overscroll-contain py-8">
+        <div className="min-w-0 flex-1 overflow-y-auto overscroll-contain pt-8 pb-24">
           <article>
             {/* Header */}
             <header className="relative px-4 py-10 mb-2 rounded-xl border border-dark-border bg-dark-card/30">
