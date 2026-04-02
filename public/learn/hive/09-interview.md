@@ -6,13 +6,13 @@ order: 9
 ## Q1. Hive가 RDBMS보다 느린 이유는?
 
 **지연 원인:**
-1. **MapReduce/Tez 시작 오버헤드:** 쿼리 실행 시마다 YARN에서 컨테이너를 할당받는 데 수십 초 소요
+1. **MapReduce (대용량 데이터를 분산 처리하는 프로그래밍 모델)/Tez 시작 오버헤드:** 쿼리 실행 시마다 YARN (Yet Another Resource Negotiator, 하둡 클러스터 리소스 관리 시스템)에서 컨테이너를 할당받는 데 수십 초 소요
 2. **Shuffle 비용:** Reduce 단계에서 네트워크를 통한 데이터 이동
-3. **디스크 기반 처리:** 중간 결과를 HDFS에 저장 (MapReduce의 경우)
+3. **디스크 기반 처리:** 중간 결과를 HDFS (Hadoop Distributed File System, 하둡 분산 파일 시스템)에 저장 (MapReduce의 경우)
 4. **스키마 파싱 비용:** 읽기 시 Schema-on-Read 적용
 
 **개선 방법:**
-- **Tez 엔진:** MapReduce보다 2~10배 빠름 (메모리 기반 DAG)
+- **Tez 엔진:** MapReduce보다 2~10배 빠름 (메모리 기반 DAG - Directed Acyclic Graph, 방향성 비순환 그래프로 작업 단계를 표현)
 - **LLAP(Live Long And Process):** 데이터를 메모리에 캐싱해 반복 쿼리 가속
 - **ORC/Parquet 포맷:** 열 기반 I/O 감소
 - **파티션 프루닝:** 전체 스캔 방지
@@ -172,7 +172,7 @@ LLAP:
 
 6. 통계 갱신
    → ANALYZE TABLE로 최신 통계 수집
-   → CBO가 올바른 계획 선택하도록 유도
+   → CBO (Cost-Based Optimizer, 비용 기반 쿼리 최적화기)가 올바른 계획 선택하도록 유도
 
 7. YARN 리소스 확인
    → Pending 컨테이너 수, 메모리 사용률

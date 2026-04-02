@@ -172,7 +172,7 @@ O(1) 평균 — O(N) 최악 (모든 키가 충돌 시)
 | Heap | O(N log N) | O(N log N) | O(1) | ❌ |
 
 - **안정 정렬:** 동일 키에서 원래 순서 보존
-- **Java Arrays.sort():** 기본 타입은 DualPivot QuickSort, 객체는 TimSort (Merge + Insertion)
+- **Java Arrays.sort():** 기본 타입은 DualPivot QuickSort (두 개의 피벗을 사용하는 퀵소트 변형), 객체는 TimSort (Tim Peters가 개발한 합병 정렬 + 삽입 정렬 하이브리드 — 실세계 데이터에 최적화)
 
 ---
 

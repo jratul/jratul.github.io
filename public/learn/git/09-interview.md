@@ -49,7 +49,7 @@ after rebase feature onto main:
   feature:         D' - E'  (커밋을 재작성)
 ```
 ✅ 깔끔한 선형 히스토리
-❌ 커밋 SHA가 바뀜 → 공유 브랜치에 사용 금지
+❌ 커밋 SHA (Secure Hash Algorithm, Git이 각 커밋을 식별하는 고유 해시값)가 바뀜 → 공유 브랜치에 사용 금지
 
 **실무 가이드:**
 - 혼자 작업하는 feature 브랜치: rebase

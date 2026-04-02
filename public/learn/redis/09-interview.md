@@ -12,7 +12,7 @@ Redis 면접에서 빈출되는 핵심 질문들입니다.
 1. **인메모리:** 디스크 I/O 없이 RAM에서 직접 읽고 씀
 2. **단일 스레드 이벤트 루프:** 컨텍스트 스위칭 없음, Lock-free
 3. **효율적인 자료구조:** 목적에 최적화된 내부 인코딩 (ziplist, skiplist 등)
-4. **비동기 I/O:** Non-blocking I/O 멀티플렉싱
+4. **비동기 I/O:** Non-blocking I/O 멀티플렉싱 (하나의 스레드가 여러 소켓 이벤트를 동시에 감시하는 기법)
 
 **성능 기준:** 초당 100,000 이상의 GET/SET 처리 가능
 
@@ -52,7 +52,7 @@ ZREVRANGE leaderboard 0 9 WITHSCORES  # 상위 10명
 ```
 1. 캐시 조회 → 미스
 2. DB 조회
-3. 캐시에 저장 (TTL 설정)
+3. 캐시에 저장 (TTL - Time To Live, 데이터 자동 만료 시간 설정)
 4. 반환
 ```
 ✅ 자주 읽는 데이터만 캐시됨
@@ -87,7 +87,7 @@ ZREVRANGE leaderboard 0 9 WITHSCORES  # 상위 10명
 **캐시 페네트레이션 (Cache Penetration):** 없는 키를 반복 조회해 매번 DB 히트
 
 ```
-해결: Null 값도 캐시 저장 (짧은 TTL) 또는 블룸 필터 사용
+해결: Null 값도 캐시 저장 (짧은 TTL) 또는 블룸 필터(Bloom Filter - 특정 값이 집합에 존재하는지 빠르게 판별하는 확률적 자료구조) 사용
 ```
 
 **캐시 애벌런치 (Cache Avalanche):** 동시에 많은 캐시 키 만료
@@ -129,7 +129,7 @@ try {
 
 ## Q6. Redis 영속성(Persistence) 방법을 설명해주세요
 
-**RDB (Redis Database):**
+**RDB (Redis Database Backup):**
 - 주기적으로 메모리 스냅샷을 .rdb 파일로 저장
 - ✅ 작은 파일 크기, 빠른 재시작
 - ❌ 스냅샷 사이 데이터 유실 가능
@@ -147,7 +147,7 @@ try {
 ## Q7. Redis Cluster와 Sentinel의 차이는?
 
 **Redis Sentinel:**
-- **고가용성(HA)** 목적 — Master 장애 시 Slave 자동 승격
+- **고가용성(HA - High Availability)** 목적 — Master 장애 시 Slave 자동 승격
 - 데이터 샤딩 없음 (모든 노드가 전체 데이터 보유)
 - Sentinel 프로세스가 Master 모니터링
 
@@ -170,9 +170,9 @@ Cluster:  데이터가 매우 많거나 쓰기 처리량이 높은 경우
 | 정책 | 설명 |
 |-----|------|
 | `noeviction` | 메모리 초과 시 오류 반환 |
-| `allkeys-lru` | 모든 키 중 LRU 기준 제거 |
+| `allkeys-lru` | 모든 키 중 LRU (Least Recently Used, 가장 오랫동안 미사용) 기준 제거 |
 | `volatile-lru` | TTL 있는 키 중 LRU 기준 제거 |
-| `allkeys-lfu` | 모든 키 중 LFU 기준 제거 |
+| `allkeys-lfu` | 모든 키 중 LFU (Least Frequently Used, 사용 빈도 가장 낮음) 기준 제거 |
 | `volatile-ttl` | TTL이 가장 짧은 키 제거 |
 | `allkeys-random` | 무작위 제거 |
 

@@ -147,8 +147,8 @@ cluster.initial_master_nodes: ["node-1", "node-2", "node-3"]
 
 1. **집계는 text 필드에서 불가**: keyword 또는 숫자 필드 사용
 2. **terms 집계의 근사값**: 분산 환경에서 `doc_count`는 근사값일 수 있음 (정확도 높이려면 `shard_size` 증가)
-3. **cardinality 집계**: 유니크 값 수는 근사값 (HyperLogLog++ 알고리즘)
-4. **메모리**: 집계 버킷이 많으면 JVM 힙 소모 큼 — `size` 제한 필수
+3. **cardinality 집계**: 유니크 값 수는 근사값 (HyperLogLog++ — 고유값 수를 적은 메모리로 근사 계산하는 확률적 알고리즘)
+4. **메모리**: 집계 버킷이 많으면 JVM (Java Virtual Machine, 자바 가상 머신) 힙 소모 큼 — `size` 제한 필수
 
 ```bash
 # terms 집계 정확도 개선
@@ -178,7 +178,7 @@ cluster.initial_master_nodes: ["node-1", "node-2", "node-3"]
   "search_after": [2500000, "doc-123"] }
 ```
 
-**3. Scroll API**: 대량 데이터 내보내기용, 실시간성 없음 (현재는 PIT + search_after 권장)
+**3. Scroll API**: 대량 데이터 내보내기용, 실시간성 없음 (현재는 PIT (Point In Time, 특정 시점 인덱스 스냅샷) + search_after 권장)
 ```bash
 GET /products/_search?scroll=1m
 { "size": 1000 }
@@ -206,7 +206,7 @@ forcemerge로 세그먼트 병합 시 실제 삭제
 
 ## Q11. Vector Search / kNN이란?
 
-Elasticsearch 8.x에서 지원하는 **벡터 유사도 검색**입니다. 텍스트나 이미지를 벡터(숫자 배열)로 임베딩해 의미적으로 유사한 문서를 찾습니다.
+Elasticsearch 8.x에서 지원하는 **벡터 유사도 검색**입니다. kNN (k-Nearest Neighbors, k 최근접 이웃 — 가장 유사한 벡터 k개를 찾는 알고리즘)으로 텍스트나 이미지를 벡터(숫자 배열)로 임베딩해 의미적으로 유사한 문서를 찾습니다.
 
 ```bash
 # 매핑

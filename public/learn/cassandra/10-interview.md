@@ -25,7 +25,7 @@ order: 10
 ```
 
 1. **순차 쓰기만 사용** — 랜덤 I/O 없음 (HDD도 빠름)
-2. **메모리 버퍼(Memtable)** — 실제 SSTable 쓰기는 나중에 비동기로
+2. **메모리 버퍼(Memtable - Memory Table)** — 실제 SSTable (Sorted String Table, 정렬된 불변 데이터 저장 파일) 쓰기는 나중에 비동기로
 3. **업데이트 = 새 쓰기** — 기존 데이터 찾아 수정하지 않음 (항상 새 타임스탬프로 삽입)
 
 읽기는 여러 SSTable을 머지해야 해서 상대적으로 느릴 수 있습니다.
@@ -48,7 +48,7 @@ DELETE 시 데이터를 즉시 지우지 않고 **Tombstone(삭제 마커)** 를
 
 ## Q4. 일관성 수준 QUORUM을 언제 사용하나요?
 
-`QUORUM = RF/2 + 1`개 노드의 응답을 요구합니다.
+`QUORUM = RF/2 + 1`개 노드의 응답을 요구합니다. (RF - Replication Factor, 복제본 수)
 
 **쓰기 QUORUM + 읽기 QUORUM:** R+W > RF → 항상 최신 데이터 보장 (강한 일관성)
 
@@ -74,7 +74,7 @@ SELECT * FROM users WHERE email = 'test@test.com' ALLOW FILTERING;
 
 **대안:**
 1. 이메일로 별도 테이블 `users_by_email` 생성 (비정규화)
-2. SAI(Storage-Attached Index) 사용 (Cassandra 4.1+)
+2. SAI (Storage-Attached Index, 스토리지 연결 인덱스) 사용 (Cassandra 4.1+)
 
 ---
 
@@ -136,7 +136,7 @@ CREATE TABLE sensor_data (
     value       DOUBLE,
     PRIMARY KEY ((sensor_id, year_month), recorded_at)
 ) WITH CLUSTERING ORDER BY (recorded_at DESC)
-  AND compaction = {'class': 'TimeWindowCompactionStrategy', ...}
+  AND compaction = {'class': 'TimeWindowCompactionStrategy', ...}  -- TWCS: 시간 창 기반 Compaction 전략으로 TTL 데이터 효율적 정리
   AND default_time_to_live = 2592000;  -- 30일 TTL
 ```
 
@@ -155,7 +155,7 @@ Cassandra는 **ACID 트랜잭션을 지원하지 않습니다**.
 - **원자성:** BATCH로 같은 파티션 내에서만 원자적 실행 가능
 - **격리성:** 없음 — 동시 쓰기 시 마지막 타임스탬프가 이김(Last-Write-Wins)
 - **일관성:** 일관성 수준으로 조정 가능하지만 강한 일관성은 성능 저하
-- **LWT(Lightweight Transaction):** `IF` 조건으로 조건부 쓰기 — Paxos 기반, 4배 느림
+- **LWT (Lightweight Transaction, 경량 트랜잭션):** `IF` 조건으로 조건부 쓰기 — Paxos (분산 환경에서 합의를 도출하는 알고리즘) 기반, 4배 느림
 
 **실무 대안:**
 - 결제, 재고처럼 강한 일관성이 필요하면 PostgreSQL 등 RDBMS 사용

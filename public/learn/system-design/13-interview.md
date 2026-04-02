@@ -14,10 +14,10 @@ order: 13
 ```
 1단계 (5분): 요구사항 명확화
   - 핵심 기능 3~4개 선정
-  - DAU/MAU, 읽기:쓰기 비율, 데이터 크기 추정
+  - DAU (Daily Active Users, 일일 활성 사용자)/MAU (Monthly Active Users, 월간 활성 사용자), 읽기:쓰기 비율, 데이터 크기 추정
 
 2단계 (5분): 규모 추정 (Back-of-the-Envelope)
-  - QPS = DAU × 요청수/일 ÷ 86400
+  - QPS (Queries Per Second, 초당 요청 수) = DAU × 요청수/일 ÷ 86400
   - 스토리지 = 일일 데이터 × 365 × 보존기간
 
 3단계 (15-20분): 고수준 설계
@@ -52,7 +52,7 @@ order: 13
 옵션 1: MD5/SHA256 → 첫 7자 (충돌 가능성)
 옵션 2: Base62(a-z, A-Z, 0-9) 인코딩된 ID
   - 62^7 = 3.5조 개 가능
-  - 분산 ID 생성기 (Snowflake 등) 사용
+  - 분산 ID 생성기 (Snowflake — Twitter가 개발한 분산 환경에서 중복 없는 고유 ID를 생성하는 알고리즘 등) 사용
 ```
 
 **DB 설계:**
@@ -94,8 +94,8 @@ Redis Sorted Set: key = "feed:{user_id}", score = timestamp
 
 **통신 방식 선택:**
 - HTTP Polling: 단순, 낮은 실시간성
-- **WebSocket**: 양방향 영구 연결, 실시간 채팅에 적합
-- SSE: 서버→클라이언트 단방향
+- **WebSocket**: 양방향 영구 연결 프로토콜 (HTTP 업그레이드 후 전이중 통신), 실시간 채팅에 적합
+- SSE (Server-Sent Events, 서버→클라이언트 단방향 실시간 이벤트 전송 기술)
 
 **아키텍처:**
 ```
@@ -195,7 +195,7 @@ SQL: 트랜잭션, 조인, 정합성 중요
 NoSQL: 높은 쓰기 처리량, 스키마 유연성, 수평 확장
 ```
 
-**일관성 vs 가용성 (CAP 정리):**
+**일관성 vs 가용성 (CAP 정리 — Consistency·Availability·Partition tolerance, 분산 시스템은 세 속성을 동시에 완전히 만족할 수 없다는 이론):**
 ```
 네트워크 파티션 시 일관성(C) 또는 가용성(A) 중 선택
 - 금융: Consistency 우선

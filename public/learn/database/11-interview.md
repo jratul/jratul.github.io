@@ -12,6 +12,8 @@ order: 11
 인덱스는 **조회 속도를 높이기 위한 자료구조**입니다. 책의 목차처럼 특정 컬럼 값으로 빠르게 행을 찾을 수 있게 합니다.
 
 **B-Tree 인덱스 (기본):**
+
+B-Tree (Balanced Tree - 균형 이진 트리)는 모든 리프 노드가 같은 깊이를 유지하는 자료구조로, 대부분의 RDBMS (Relational Database Management System - 관계형 데이터베이스 관리 시스템)가 기본 인덱스 구조로 사용합니다.
 ```
 일반 조회: O(N) — 전체 테이블 스캔
 인덱스 조회: O(log N) — B-Tree 탐색
@@ -38,6 +40,8 @@ SELECT user_id, created_at FROM orders WHERE user_id = 1;
 
 ## Q2. 트랜잭션의 ACID 특성을 설명해주세요
 
+ACID (Atomicity, Consistency, Isolation, Durability - 원자성, 일관성, 격리성, 지속성)는 데이터베이스 트랜잭션이 안전하게 수행되는 것을 보장하기 위한 4가지 속성입니다.
+
 | 특성 | 의미 | 예시 |
 |-----|------|------|
 | **Atomicity** (원자성) | 전부 성공 또는 전부 실패 | 이체: 출금+입금 모두 성공해야 커밋 |
@@ -60,14 +64,14 @@ SELECT user_id, created_at FROM orders WHERE user_id = 1;
 - **Non-Repeatable Read:** 같은 쿼리 두 번 실행 시 결과 다름
 - **Phantom Read:** 같은 범위 조회 시 행 수가 달라짐
 
-**MySQL InnoDB 기본값:** `REPEATABLE READ` (MVCC로 Phantom Read도 방지)
+**MySQL InnoDB 기본값:** `REPEATABLE READ` (MVCC - Multi-Version Concurrency Control, 다중 버전 동시성 제어로 Phantom Read도 방지)
 **PostgreSQL 기본값:** `READ COMMITTED`
 
 ---
 
 ## Q4. 정규화(Normalization)란 무엇이고 1NF~3NF를 설명하세요
 
-정규화는 **데이터 중복을 제거하고 이상(anomaly)을 방지**하기 위한 테이블 설계 과정입니다.
+정규화는 **데이터 중복을 제거하고 이상(anomaly - 삽입/수정/삭제 시 발생하는 데이터 불일치)을 방지**하기 위한 테이블 설계 과정입니다.
 
 **1NF (1정규형):** 원자값만 허용, 반복 그룹 제거
 
@@ -78,6 +82,8 @@ SELECT user_id, created_at FROM orders WHERE user_id = 1;
 
 **2NF (2정규형):** 1NF + 부분 함수 종속 제거 (복합 PK일 때 적용)
 
+부분 함수 종속이란 복합 기본 키(PK - Primary Key)의 일부 컬럼에만 종속된 컬럼이 존재하는 것을 의미합니다.
+
 ```
 ❌ order_items(order_id, product_id, product_name)  — product_name은 product_id에만 종속
 ✅ products(product_id, product_name)
@@ -85,6 +91,8 @@ SELECT user_id, created_at FROM orders WHERE user_id = 1;
 ```
 
 **3NF (3정규형):** 2NF + 이행적 종속 제거
+
+이행적 종속이란 A → B → C처럼 기본 키가 아닌 컬럼을 거쳐 다른 컬럼에 종속되는 관계를 의미합니다.
 
 ```
 ❌ employees(emp_id, dept_id, dept_name)  — dept_name → dept_id에 종속
@@ -119,6 +127,8 @@ LEFT JOIN orders o ON u.id = o.user_id;
 ---
 
 ## Q6. N+1 문제를 SQL 관점에서 어떻게 해결하나요?
+
+N+1 문제란 1번의 쿼리로 N개의 레코드를 가져온 후, 각 레코드에 대해 추가로 N번의 쿼리를 실행하는 비효율적인 패턴입니다.
 
 ```sql
 -- N+1 발생 패턴
@@ -176,7 +186,7 @@ CREATE TABLE orders (
 );
 ```
 
-**샤딩:** 데이터를 **여러 DB 서버**에 분산
+**샤딩(Sharding):** 데이터를 **여러 DB 서버**에 분산하는 수평 파티셔닝 기법
 
 ```
 User 1~1000만 → DB Server 1

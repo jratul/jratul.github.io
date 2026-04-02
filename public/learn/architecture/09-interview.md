@@ -179,7 +179,7 @@ Saga Orchestrator가 각 단계를 직접 호출하고 조율
 ```
 
 **선행 조건:**
-- CI/CD 파이프라인 구축
+- CI/CD (Continuous Integration/Continuous Deployment, 지속적 통합/배포) 파이프라인 구축
 - 컨테이너화 (Docker/Kubernetes)
 - 서비스 모니터링 & 분산 트레이싱
 - API Gateway 설정
