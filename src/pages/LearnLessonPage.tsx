@@ -42,7 +42,7 @@ export function LearnLessonPage() {
         keywords={[category!, 'learn', 'tutorial']}
       />
 
-      <div className="sticky top-16 mx-auto flex h-[calc(100vh-4rem)] max-w-7xl gap-8 overflow-hidden px-4">
+      <div className="sticky top-16 mx-auto flex h-[calc(100dvh-4rem)] max-w-7xl gap-8 overflow-hidden px-4">
         {/* 사이드바 (데스크탑) */}
         <LearnSidebar currentCat={category as LearnCategory} />
 

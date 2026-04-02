@@ -100,7 +100,7 @@ export function Learn() {
         keywords={[meta.label.toLowerCase(), 'learn', 'tutorial', '학습']}
       />
 
-      <div className="sticky top-16 mx-auto flex h-[calc(100vh-4rem)] max-w-7xl gap-8 overflow-hidden px-4">
+      <div className="sticky top-16 mx-auto flex h-[calc(100dvh-4rem)] max-w-7xl gap-8 overflow-hidden px-4">
         {/* 사이드바 (데스크탑) */}
         <LearnSidebar currentCat={cat} />
 
