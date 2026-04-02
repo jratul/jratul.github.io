@@ -36,7 +36,14 @@ export function TableOfContents({ items }: Props) {
 
   const handleClick = (id: string) => {
     const el = document.getElementById(id);
-    el?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (!el) return;
+    const container = document.getElementById('learn-scroll');
+    if (container) {
+      const offset = el.getBoundingClientRect().top - container.getBoundingClientRect().top + container.scrollTop - 24;
+      container.scrollTo({ top: offset, behavior: 'smooth' });
+    } else {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   };
 
   return (
