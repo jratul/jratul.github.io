@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useParams, Navigate, Link, useNavigate } from 'react-router-dom';
 import { ArrowRight, ChevronDown } from 'lucide-react';
 import { SEO } from '@/components/seo/SEO';
@@ -80,14 +80,6 @@ export function Learn() {
   const { category } = useParams<{ category: string }>();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const mql = window.matchMedia('(min-width: 1024px)');
-    const update = () => { document.documentElement.style.overflow = mql.matches ? 'hidden' : ''; };
-    update();
-    mql.addEventListener('change', update);
-    return () => { document.documentElement.style.overflow = ''; mql.removeEventListener('change', update); };
-  }, []);
-
   if (!category || !ALL_CATEGORIES.includes(category as LearnCategory)) {
     return <Navigate to="/learn/html" replace />;
   }
@@ -108,12 +100,12 @@ export function Learn() {
         keywords={[meta.label.toLowerCase(), 'learn', 'tutorial', '학습']}
       />
 
-      <div className="mx-auto max-w-7xl px-4 lg:flex lg:h-[calc(100dvh-4rem)] lg:gap-8 lg:overflow-hidden">
+      <div className="mx-auto max-w-7xl px-4 lg:flex lg:gap-8">
         {/* 사이드바 (데스크탑) */}
         <LearnSidebar currentCat={cat} />
 
         {/* 메인 */}
-        <main className="min-w-0 flex-1 pt-8 pb-16 lg:overflow-y-auto lg:overscroll-contain lg:py-8">
+        <main className="min-w-0 flex-1 pt-8 pb-24">
           {/* 모바일 카테고리 선택기 */}
           <MobileCategorySelector currentCat={cat} onSelect={handleSelect} />
 

@@ -1,4 +1,3 @@
-import { useEffect, useRef } from 'react';
 import { useParams, Link, Navigate } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, BookOpen } from 'lucide-react';
 import { useLearn } from '@/hooks/useLearn';
@@ -13,16 +12,6 @@ import { LearnSidebar } from '@/components/learn/LearnSidebar';
 export function LearnLessonPage() {
   const { category, lessonSlug } = useParams<{ category: string; lessonSlug: string }>();
   const { lessons, loading, getPrevNext } = useLearn(category);
-
-  const scrollRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const mql = window.matchMedia('(min-width: 1024px)');
-    const update = () => { document.documentElement.style.overflow = mql.matches ? 'hidden' : ''; };
-    update();
-    mql.addEventListener('change', update);
-    return () => { document.documentElement.style.overflow = ''; mql.removeEventListener('change', update); };
-  }, []);
 
   if (loading) {
     return (
@@ -53,12 +42,12 @@ export function LearnLessonPage() {
         keywords={[category!, 'learn', 'tutorial']}
       />
 
-      <div className="mx-auto max-w-7xl px-4 lg:flex lg:h-[calc(100dvh-4rem)] lg:gap-8 lg:overflow-hidden">
+      <div className="mx-auto max-w-7xl px-4 lg:flex lg:gap-8">
         {/* 사이드바 (데스크탑) */}
         <LearnSidebar currentCat={category as LearnCategory} />
 
         {/* 메인 콘텐츠 */}
-        <div ref={scrollRef} className="min-w-0 flex-1 overflow-y-auto overscroll-contain pt-8 pb-16 lg:py-8">
+        <div className="min-w-0 flex-1 pt-8 pb-24">
           <article>
             {/* Header */}
             <header className="relative px-4 py-10 mb-2 rounded-xl border border-dark-border bg-dark-card/30">
@@ -101,7 +90,7 @@ export function LearnLessonPage() {
 
                 {toc.length > 0 && (
                   <aside className="hidden lg:block">
-                    <TableOfContents items={toc} scrollContainer={scrollRef} />
+                    <TableOfContents items={toc} />
                   </aside>
                 )}
               </div>
