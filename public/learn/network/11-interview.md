@@ -9,7 +9,7 @@ order: 11
 
 ## Q1. TCP 3-way handshake를 설명해주세요
 
-TCP 연결을 맺는 과정으로, 신뢰성 있는 통신 채널을 수립합니다.
+TCP(Transmission Control Protocol, 전송 제어 프로토콜) 연결을 맺는 과정으로, 신뢰성 있는 통신 채널을 수립합니다.
 
 ```
 Client                    Server
@@ -24,7 +24,7 @@ Client                    Server
 FIN → ACK → FIN → ACK
 ```
 
-**TCP vs UDP:**
+**TCP vs UDP(User Datagram Protocol, 비연결형 전송 프로토콜):**
 | TCP | UDP |
 |-----|-----|
 | 연결 지향 | 비연결 |
@@ -36,15 +36,15 @@ FIN → ACK → FIN → ACK
 
 ## Q2. HTTP와 HTTPS의 차이는?
 
-**HTTP:** 평문 전송 → 도청 가능
+**HTTP(HyperText Transfer Protocol, 웹 문서 전송 프로토콜):** 평문 전송 → 도청 가능
 
-**HTTPS:** HTTP + **TLS/SSL** 암호화
+**HTTPS:** HTTP + **TLS/SSL(Transport Layer Security / Secure Sockets Layer, 전송 계층 암호화 프로토콜)** 암호화
 
 **TLS Handshake 과정:**
 ```
 1. Client Hello — 지원하는 암호화 목록 전송
 2. Server Hello — 사용할 암호화 방식 선택 + 인증서 전송
-3. 인증서 검증 — CA(Certificate Authority)로 서명 확인
+3. 인증서 검증 — CA(Certificate Authority, 인증서 발급 기관)로 서명 확인
 4. 세션 키 교환 — 대칭 키 암호화로 실제 데이터 암호화
 5. 암호화 통신 시작
 ```
@@ -53,7 +53,7 @@ FIN → ACK → FIN → ACK
 - 도청 방지 (암호화)
 - 위변조 방지 (무결성)
 - 서버 신원 확인 (인증)
-- SEO 점수 향상
+- SEO(Search Engine Optimization, 검색 엔진 최적화) 점수 향상
 
 ---
 
@@ -70,15 +70,15 @@ FIN → ACK → FIN → ACK
 - ❌ TCP 레벨 HOL Blocking은 여전히 존재
 
 **HTTP/3:**
-- TCP 대신 **QUIC (UDP 기반)** 사용
-- 연결 수립 속도 향상 (0-RTT)
+- TCP 대신 **QUIC (Quick UDP Internet Connections, UDP 기반 차세대 전송 프로토콜)** 사용
+- 연결 수립 속도 향상 (0-RTT(Round-Trip Time, 왕복 지연 시간))
 - 패킷 손실 시에도 다른 스트림에 영향 없음
 
 ---
 
 ## Q4. REST API 설계 원칙을 설명해주세요
 
-**REST 6가지 제약 조건:**
+**REST(Representational State Transfer, 자원 상태 전달 아키텍처 스타일) 6가지 제약 조건:**
 1. **클라이언트-서버 분리**
 2. **무상태(Stateless)** — 각 요청은 독립적
 3. **캐시 가능** — 응답에 캐시 가능 여부 명시
@@ -101,16 +101,16 @@ FIN → ACK → FIN → ACK
 
 ---
 
-## Q5. DNS 동작 과정을 설명해주세요
+## Q5. DNS(Domain Name System, 도메인 이름 시스템) 동작 과정을 설명해주세요
 
 도메인 이름을 IP 주소로 변환하는 과정입니다.
 
 ```
 1. 브라우저 캐시 확인
 2. OS 캐시 확인 (/etc/hosts)
-3. Local DNS 서버 (ISP 제공) 조회
+3. Local DNS 서버 (ISP(Internet Service Provider, 인터넷 서비스 제공자) 제공) 조회
 4. Local DNS 캐시 없으면 → Root DNS 서버 질의
-5. Root → TLD(.com) DNS 서버 → 권한 DNS 서버
+5. Root → TLD(Top-Level Domain, 최상위 도메인)(.com) DNS 서버 → 권한 DNS 서버
 6. 권한 DNS → IP 주소 반환
 7. Local DNS 캐시 저장 후 클라이언트 응답
 ```
@@ -130,14 +130,14 @@ FIN → ACK → FIN → ACK
 
 **쿠키:**
 - 브라우저에 저장, HTTP 요청마다 자동 전송
-- `HttpOnly`(JS 접근 금지), `Secure`(HTTPS만), `SameSite`(CSRF 방지) 옵션 중요
+- `HttpOnly`(JS 접근 금지), `Secure`(HTTPS만), `SameSite`(CSRF(Cross-Site Request Forgery, 사이트 간 요청 위조) 방지) 옵션 중요
 
 **세션:**
 - 서버 메모리/DB에 상태 저장, 쿠키에 세션 ID만 전달
 - ✅ 서버에서 즉시 무효화 가능
 - ❌ 서버 확장(스케일아웃) 시 세션 공유 문제
 
-**JWT:**
+**JWT(JSON Web Token, JSON 기반 인증 토큰):**
 - 서버가 상태 저장 안 함 (Stateless)
 - ✅ 마이크로서비스, 서버 확장에 유리
 - ❌ 토큰 탈취 시 만료 전까지 무효화 어려움
@@ -147,7 +147,7 @@ FIN → ACK → FIN → ACK
 
 ## Q7. CORS란 무엇이고 어떻게 해결하나요?
 
-**CORS(Cross-Origin Resource Sharing):** 브라우저가 보안을 위해 **다른 출처(origin) 간 요청을 기본 차단**하는 정책입니다.
+**CORS(Cross-Origin Resource Sharing, 교차 출처 리소스 공유):** 브라우저가 보안을 위해 **다른 출처(origin) 간 요청을 기본 차단**하는 정책입니다.
 
 출처 = `프로토콜 + 도메인 + 포트`
 
@@ -180,7 +180,7 @@ public class WebConfig implements WebMvcConfigurer {
 
 ## Q8. 로드밸런서의 동작 방식과 알고리즘을 설명해주세요
 
-**L4 vs L7 로드밸런서:**
+**L4 vs L7 로드밸런서 (L4: OSI 4계층 전송 계층, L7: OSI 7계층 애플리케이션 계층):**
 
 | 비교 | L4 (Transport) | L7 (Application) |
 |-----|---------------|-----------------|

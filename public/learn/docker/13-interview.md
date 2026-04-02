@@ -7,7 +7,7 @@ order: 13
 
 Docker / 컨테이너 기술 면접에서 빈출되는 핵심 질문들입니다.
 
-## Q1. 컨테이너와 VM(가상 머신)의 차이를 설명해주세요
+## Q1. 컨테이너와 VM(Virtual Machine, 가상 머신)의 차이를 설명해주세요
 
 ```
 VM:
@@ -37,7 +37,7 @@ Container:
 ## Q2. Docker 이미지와 컨테이너의 차이는?
 
 - **이미지:** 읽기 전용 템플릿. 코드, 런타임, 라이브러리, 설정 포함. (붕어빵 틀)
-- **컨테이너:** 이미지의 실행 인스턴스. 쓰기 가능한 레이어 추가. (붕어빵)
+- **컨테이너:** 이미지의 실행 인스턴스(실제로 메모리에 올라가 동작 중인 상태). 쓰기 가능한 레이어 추가. (붕어빵)
 
 ```bash
 docker images              # 이미지 목록
@@ -111,7 +111,7 @@ CMD ["java", "-jar", "app.jar"]
 
 ## Q5. Docker Compose의 역할은?
 
-여러 컨테이너를 **하나의 파일로 선언적으로 관리**합니다.
+여러 컨테이너를 **하나의 YAML 파일로 선언적으로 관리**합니다. 서비스 간 의존관계, 네트워크, 볼륨 설정을 한 곳에서 정의할 수 있습니다.
 
 ```yaml
 services:
@@ -154,7 +154,7 @@ volumes:
 | **overlay** | 다중 호스트 네트워크 | Docker Swarm, Kubernetes |
 
 ```bash
-# 사용자 정의 브릿지 네트워크 (DNS로 컨테이너 이름 사용 가능)
+# 사용자 정의 브릿지 네트워크 (DNS(Domain Name System, 도메인 이름 시스템)로 컨테이너 이름 사용 가능)
 docker network create mynet
 docker run --network mynet --name db postgres
 docker run --network mynet app  # 'db' 호스트명으로 접근 가능
@@ -184,7 +184,7 @@ RUN apk add --no-cache curl  # 캐시 삭제
 docker run \
   --read-only \                    # 읽기 전용 파일시스템
   --no-new-privileges \            # 권한 상승 금지
-  --cap-drop ALL \                 # 모든 Linux Capability 제거
+  --cap-drop ALL \                 # 모든 Linux Capability(프로세스에 부여되는 세분화된 권한 단위) 제거
   --security-opt no-new-privileges \
   myapp
 ```
