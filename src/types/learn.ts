@@ -16,6 +16,7 @@ export type LearnCategory =
   | 'kotlin'
   | 'spring'
   | 'android'
+  | 'cpp'
   | 'docker'
   | 'k8s'
   | 'linux'
@@ -55,6 +56,11 @@ export const CATEGORY_META: Record<LearnCategory, { label: string; description: 
     label: 'Spring Boot',
     description: '실무에서 가장 많이 쓰는 Java 백엔드 프레임워크',
     color: 'from-green-500 to-emerald-500',
+  },
+  cpp: {
+    label: 'C++',
+    description: '시스템 프로그래밍부터 고성능 애플리케이션까지, 제로 오버헤드 추상화',
+    color: 'from-blue-600 to-cyan-500',
   },
   docker: {
     label: 'Docker',
