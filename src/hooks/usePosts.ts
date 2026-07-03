@@ -1,34 +1,53 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import type { PostMeta, PostsIndex, TagFrequency } from '@/types/blog';
 
+let postsIndexCache: PostsIndex | null = null;
+let postsIndexPromise: Promise<PostsIndex | null> | null = null;
+
+function loadPostsIndex(): Promise<PostsIndex | null> {
+  if (postsIndexCache) return Promise.resolve(postsIndexCache);
+  if (!postsIndexPromise) {
+    postsIndexPromise = fetch('/posts-index.json')
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to load posts index');
+        return res.json();
+      })
+      .then((data: PostsIndex) => {
+        postsIndexCache = data;
+        return data;
+      })
+      .catch(() => {
+        postsIndexPromise = null;
+        return null;
+      });
+  }
+  return postsIndexPromise;
+}
+
 /**
  * Hook to manage posts data, search, and filtering
  */
 export function usePosts(initialTags: string[] = []) {
-  const [postsIndex, setPostsIndex] = useState<PostsIndex | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [postsIndex, setPostsIndex] = useState<PostsIndex | null>(
+    postsIndexCache
+  );
+  const [loading, setLoading] = useState(!postsIndexCache);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTags, setSelectedTags] = useState<string[]>(initialTags);
 
   // Load posts index on mount
   useEffect(() => {
-    async function loadPosts() {
-      try {
-        setLoading(true);
-        const response = await fetch('/posts-index.json');
-        if (!response.ok) {
-          throw new Error('Failed to load posts index');
-        }
-        const data: PostsIndex = await response.json();
+    if (postsIndexCache) return;
+    let cancelled = false;
+    loadPostsIndex().then(data => {
+      if (!cancelled) {
         setPostsIndex(data);
-      } catch {
-        // silently fail — no UI for error state
-      } finally {
         setLoading(false);
       }
-    }
-
-    loadPosts();
+    });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   // Calculate tag frequencies
@@ -79,9 +98,7 @@ export function usePosts(initialTags: string[] = []) {
 
   const toggleTag = useCallback((tag: string) => {
     setSelectedTags(prev =>
-      prev.includes(tag)
-        ? prev.filter(t => t !== tag)
-        : [...prev, tag]
+      prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]
     );
   }, []);
 
@@ -101,6 +118,7 @@ export function usePosts(initialTags: string[] = []) {
     tagFrequencies,
     searchQuery,
     selectedTags,
+    setSelectedTags,
     loading,
     setSearchQuery,
     toggleTag,

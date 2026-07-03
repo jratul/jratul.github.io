@@ -81,7 +81,7 @@ export function TagCloud({
     };
 
     // Try multiple times with increasing delays to ensure we get the dimensions
-    const timeouts: NodeJS.Timeout[] = [];
+    const timeouts: ReturnType<typeof setTimeout>[] = [];
 
     // Immediate attempt
     updateDimensions();
@@ -150,6 +150,9 @@ export function TagCloud({
       });
 
     layout.start();
+    // tagsKey is a stable proxy for tags' content; re-running on every new
+    // tags array reference would defeat the point of the cache key.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tagsKey, dimensions]);
 
   // Draw the cached layout whenever selectedTags change
@@ -243,6 +246,9 @@ export function TagCloud({
         .style('cursor', 'pointer')
         .attr('text-anchor', 'middle')
         .attr('transform', d => `translate(${d.x},${d.y})rotate(${d.rotate})`)
+        .attr('tabindex', 0)
+        .attr('role', 'button')
+        .attr('aria-pressed', d => selectedTags.includes(d.text))
         .text(d => d.text);
 
       // Apply gradient fills to SVG text
@@ -254,6 +260,12 @@ export function TagCloud({
           .attr('fill', `url(#gradient-${i})`)
           .style('opacity', isSelected ? '1' : '0.75')
           .attr('filter', isSelected ? 'url(#glow-normal)' : null)
+          .on('keydown', function (event: KeyboardEvent) {
+            if (event.key === 'Enter' || event.key === ' ') {
+              event.preventDefault();
+              onTagClick(d.text);
+            }
+          })
           .on('mouseenter', function (this: SVGTextElement) {
             const wordData = select(this).datum() as CloudWord;
             select(this)
@@ -287,7 +299,6 @@ export function TagCloud({
       // Add tooltips
       text.append('title').text(d => `${d.text} (${d.count}개 글)`);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cachedLayout, selectedTags, dimensions, onTagClick]);
 
   if (tags.length === 0) {

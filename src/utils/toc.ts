@@ -22,7 +22,9 @@ function toPlainText(markdownText: string): string {
   let match;
 
   while ((match = codeSpanRegex.exec(markdownText)) !== null) {
-    result += markdownText.slice(lastIndex, match.index).replace(/<[^>]+>/g, '');
+    result += markdownText
+      .slice(lastIndex, match.index)
+      .replace(/<[^>]+>/g, '');
     result += match[1];
     lastIndex = match.index + match[0].length;
   }

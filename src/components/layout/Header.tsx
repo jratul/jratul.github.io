@@ -20,9 +20,12 @@ export function Header() {
         <div className="flex items-center gap-4">
           <Link
             to="/learn/html"
+            aria-current={isLearnActive ? 'page' : undefined}
             className={[
               'text-sm font-medium transition-colors duration-200',
-              isLearnActive ? 'text-primary-400' : 'text-gray-400 hover:text-gray-200',
+              isLearnActive
+                ? 'text-primary-400'
+                : 'text-gray-400 hover:text-gray-200',
             ].join(' ')}
           >
             학습
@@ -30,6 +33,7 @@ export function Header() {
 
           <Link
             to="/about"
+            aria-current={location.pathname === '/about' ? 'page' : undefined}
             className="font-medium text-gray-400 hover:text-gray-200 text-sm transition-colors duration-200"
           >
             About

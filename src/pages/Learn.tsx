@@ -3,9 +3,9 @@ import { useParams, Navigate, Link, useNavigate } from 'react-router-dom';
 import { ArrowRight, ChevronDown } from 'lucide-react';
 import { SEO } from '@/components/seo/SEO';
 import { useLearn } from '@/hooks/useLearn';
-import { CATEGORY_META } from '@/types/learn';
+import { CATEGORY_META, LEARN_GROUPS } from '@/types/learn';
 import type { LearnCategory } from '@/types/learn';
-import { LearnSidebar, LEARN_GROUPS } from '@/components/learn/LearnSidebar';
+import { LearnSidebar } from '@/components/learn/LearnSidebar';
 
 const ALL_CATEGORIES = LEARN_GROUPS.flatMap(g => g.categories);
 
@@ -26,50 +26,54 @@ function MobileCategorySelector({
         className="flex w-full items-center justify-between rounded-lg border border-dark-border bg-dark-card px-4 py-3 text-sm text-gray-300"
       >
         <span className="flex items-center gap-2">
-          <span className={`h-2 w-2 rounded-full bg-gradient-to-r ${meta.color}`} />
+          <span
+            className={`h-2 w-2 rounded-full bg-gradient-to-r ${meta.color}`}
+          />
           {meta.label}
         </span>
-        <ChevronDown size={14} className={`transition-transform ${open ? 'rotate-180' : ''}`} />
+        <ChevronDown
+          size={14}
+          className={`transition-transform ${open ? 'rotate-180' : ''}`}
+        />
       </button>
 
       {open && (
         <>
-          <div
-            className="fixed inset-0 z-20"
-            onClick={() => setOpen(false)}
-          />
+          <div className="fixed inset-0 z-20" onClick={() => setOpen(false)} />
           <div className="absolute left-0 right-0 top-full z-30 mt-1 rounded-lg border border-dark-border bg-[#1a1a3e] shadow-xl">
-          <div className="p-2">
-            {LEARN_GROUPS.map(group => (
-              <div key={group.label}>
-                <p className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-gray-600">
-                  {group.label}
-                </p>
-                {group.categories.map(cat => {
-                  const m = CATEGORY_META[cat];
-                  return (
-                    <button
-                      key={cat}
-                      onClick={() => {
-                        onSelect(cat);
-                        setOpen(false);
-                      }}
-                      className={[
-                        'flex w-full items-center gap-2.5 rounded-md px-3 py-2 text-sm transition-colors',
-                        cat === currentCat
-                          ? 'bg-primary-500/15 text-primary-300'
-                          : 'text-gray-400 hover:bg-dark-border/50 hover:text-gray-200',
-                      ].join(' ')}
-                    >
-                      <span className={`h-1.5 w-1.5 rounded-full bg-gradient-to-r ${m.color}`} />
-                      {m.label}
-                    </button>
-                  );
-                })}
-              </div>
-            ))}
+            <div className="p-2">
+              {LEARN_GROUPS.map(group => (
+                <div key={group.label}>
+                  <p className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-gray-600">
+                    {group.label}
+                  </p>
+                  {group.categories.map(cat => {
+                    const m = CATEGORY_META[cat];
+                    return (
+                      <button
+                        key={cat}
+                        onClick={() => {
+                          onSelect(cat);
+                          setOpen(false);
+                        }}
+                        className={[
+                          'flex w-full items-center gap-2.5 rounded-md px-3 py-2 text-sm transition-colors',
+                          cat === currentCat
+                            ? 'bg-primary-500/15 text-primary-300'
+                            : 'text-gray-400 hover:bg-dark-border/50 hover:text-gray-200',
+                        ].join(' ')}
+                      >
+                        <span
+                          className={`h-1.5 w-1.5 rounded-full bg-gradient-to-r ${m.color}`}
+                        />
+                        {m.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
         </>
       )}
     </div>
@@ -79,14 +83,16 @@ function MobileCategorySelector({
 export function Learn() {
   const { category } = useParams<{ category: string }>();
   const navigate = useNavigate();
+  const isValidCategory =
+    !!category && ALL_CATEGORIES.includes(category as LearnCategory);
+  const cat = (isValidCategory ? category : 'html') as LearnCategory;
+  const { lessons, loading } = useLearn(cat);
 
-  if (!category || !ALL_CATEGORIES.includes(category as LearnCategory)) {
+  if (!isValidCategory) {
     return <Navigate to="/learn/html" replace />;
   }
 
-  const cat = category as LearnCategory;
   const meta = CATEGORY_META[cat];
-  const { lessons, loading } = useLearn(cat);
 
   const handleSelect = (selected: LearnCategory) => {
     navigate(`/learn/${selected}`);
@@ -98,6 +104,7 @@ export function Learn() {
         title={`${meta.label} 학습`}
         description={meta.description}
         keywords={[meta.label.toLowerCase(), 'learn', 'tutorial', '학습']}
+        canonicalUrl={`https://jratul.github.io/learn/${cat}`}
       />
 
       <div className="mx-auto max-w-7xl px-4 lg:flex lg:gap-8">
@@ -125,7 +132,9 @@ export function Learn() {
               <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary-500/30 border-t-primary-500" />
             </div>
           ) : lessons.length === 0 ? (
-            <p className="py-20 text-center text-gray-500">콘텐츠를 불러올 수 없습니다.</p>
+            <p className="py-20 text-center text-gray-500">
+              콘텐츠를 불러올 수 없습니다.
+            </p>
           ) : (
             <ol className="space-y-2">
               {lessons.map((lesson, index) => {

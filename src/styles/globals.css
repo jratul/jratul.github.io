@@ -91,6 +91,7 @@
     @apply bg-dark-bg text-foreground;
     font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
     letter-spacing: -0.025em; /* tracking-tight */
+    scrollbar-gutter: stable;
   }
 }
 

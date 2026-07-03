@@ -58,7 +58,12 @@ function scanMarkdownFiles(dir: string): PostMeta[] {
             title: data.title || slug,
             date: data.date || new Date().toISOString(),
             tags: data.tags || [],
-            excerpt: data.excerpt || markdown.slice(0, 150).replace(/[#*`\n]/g, ' ').trim(),
+            excerpt:
+              data.excerpt ||
+              markdown
+                .slice(0, 150)
+                .replace(/[#*`\n]/g, ' ')
+                .trim(),
             content: markdown, // 마크다운 원본 유지
             readingTime,
             filePath: fullPath,
@@ -95,10 +100,7 @@ if (!fs.existsSync('public')) {
   fs.mkdirSync('public');
 }
 
-fs.writeFileSync(
-  'public/posts-index.json',
-  JSON.stringify(index, null, 2)
-);
+fs.writeFileSync('public/posts-index.json', JSON.stringify(index, null, 2));
 
 console.log(`\n✅ Generated posts-index.json with ${posts.length} post(s)`);
 console.log(`📍 Output: public/posts-index.json`);

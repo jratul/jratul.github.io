@@ -14,7 +14,7 @@ export function PostCard({ post, className = '' }: PostCardProps) {
     <Link
       to={`/post/${post.slug}`}
       className={`
-        group block
+        group relative block
         bg-dark-surface/50 backdrop-blur-sm
         border border-dark-border rounded-xl
         p-6 transition-all duration-300
@@ -25,13 +25,15 @@ export function PostCard({ post, className = '' }: PostCardProps) {
       `}
     >
       {/* Title */}
-      <h3 className="
+      <h3
+        className="
         text-xl font-bold mb-3
         text-transparent bg-clip-text bg-gradient-to-r
         from-gray-100 to-gray-300
         group-hover:from-primary-300 group-hover:to-accent-cyan
         transition-all duration-300
-      ">
+      "
+      >
         {post.title}
       </h3>
 

@@ -19,7 +19,6 @@ export function About() {
             <h1 className="bg-clip-text bg-gradient-to-r from-primary-300 mb-6 font-bold text-transparent text-4xl md:text-6xl to-accent-blue via-accent-cyan">
               About
             </h1>
-
           </div>
         </section>
 
@@ -42,7 +41,7 @@ export function About() {
                   <span>GitHub</span>
                 </a>
                 <a
-                  href="mailto:your-email@example.com"
+                  href="mailto:jratul3@gmail.com"
                   className="flex items-center gap-2 text-gray-400 hover:text-primary-400 transition-colors duration-200"
                 >
                   <Mail size={20} />

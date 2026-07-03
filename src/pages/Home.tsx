@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { usePosts } from '@/hooks/usePosts';
 import { SEO } from '@/components/seo/SEO';
@@ -9,22 +9,35 @@ import { PostList } from '@/components/blog/PostList';
 export function Home() {
   const [searchParams] = useSearchParams();
 
-  // URL에서 태그 파라미터 읽기
+  // URL에서 태그 파라미터 읽기 (최초 마운트 시 초기값)
   const initialTags = useMemo(() => {
     const tagParam = searchParams.get('tag');
     return tagParam ? [tagParam] : [];
-  }, [searchParams]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const {
     filteredPosts,
     tagFrequencies,
     searchQuery,
     selectedTags,
+    setSelectedTags,
     loading,
     setSearchQuery,
     toggleTag,
     clearFilters,
   } = usePosts(initialTags);
+
+  // 뒤로/앞으로 가기 등으로 URL의 ?tag= 값이 바뀌면 필터 상태를 재동기화한다.
+  useEffect(() => {
+    const tagParam = searchParams.get('tag');
+    const urlTags = tagParam ? [tagParam] : [];
+    setSelectedTags(prev =>
+      prev.length === urlTags.length && prev.every((t, i) => t === urlTags[i])
+        ? prev
+        : urlTags
+    );
+  }, [searchParams, setSelectedTags]);
 
   const hasActiveFilters = searchQuery.trim() !== '' || selectedTags.length > 0;
 
@@ -69,7 +82,7 @@ export function Home() {
                   ))}
                   {searchQuery && (
                     <span className="px-3 py-1 text-gray-400 text-sm">
-                      검색: "{searchQuery}"
+                      검색: &quot;{searchQuery}&quot;
                     </span>
                   )}
                 </div>

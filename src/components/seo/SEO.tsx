@@ -11,8 +11,15 @@ interface SEOProps {
 }
 
 const DEFAULT_TITLE = 'jratul.github.io';
-const DEFAULT_DESCRIPTION = 'Frontend 개발 블로그 - React, TypeScript, Web Development';
-const DEFAULT_KEYWORDS = ['react', 'typescript', 'frontend', 'web development', 'blog'];
+const DEFAULT_DESCRIPTION =
+  'Frontend 개발 블로그 - React, TypeScript, Web Development';
+const DEFAULT_KEYWORDS = [
+  'react',
+  'typescript',
+  'frontend',
+  'web development',
+  'blog',
+];
 const DEFAULT_AUTHOR = 'jratul';
 const SITE_URL = 'https://jratul.github.io';
 

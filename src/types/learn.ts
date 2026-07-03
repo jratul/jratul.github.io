@@ -1,9 +1,8 @@
 export interface LearnLesson {
-  id: string;         // "java/01-variables"
-  category: string;  // "java" | "kotlin" | "spring"
+  id: string; // "java/01-variables"
+  category: string; // "java" | "kotlin" | "spring"
   order: number;
   title: string;
-  content: string;   // 마크다운 전문
 }
 
 export interface LearnIndex {
@@ -41,7 +40,10 @@ export type LearnCategory =
   | 'nextjs'
   | 'tooling';
 
-export const CATEGORY_META: Record<LearnCategory, { label: string; description: string; color: string }> = {
+export const CATEGORY_META: Record<
+  LearnCategory,
+  { label: string; description: string; color: string }
+> = {
   java: {
     label: 'Java',
     description: '객체지향 프로그래밍의 기초부터 고급 개념까지',
@@ -59,7 +61,8 @@ export const CATEGORY_META: Record<LearnCategory, { label: string; description: 
   },
   cpp: {
     label: 'C++',
-    description: '시스템 프로그래밍부터 고성능 애플리케이션까지, 제로 오버헤드 추상화',
+    description:
+      '시스템 프로그래밍부터 고성능 애플리케이션까지, 제로 오버헤드 추상화',
     color: 'from-blue-600 to-cyan-500',
   },
   docker: {
@@ -183,3 +186,39 @@ export const CATEGORY_META: Record<LearnCategory, { label: string; description: 
     color: 'from-amber-400 to-yellow-300',
   },
 };
+
+export const LEARN_GROUPS: { label: string; categories: LearnCategory[] }[] = [
+  {
+    label: '프론트엔드',
+    categories: [
+      'html',
+      'css',
+      'javascript',
+      'typescript',
+      'react',
+      'nextjs',
+      'tooling',
+    ],
+  },
+  {
+    label: '언어 & 프레임워크',
+    categories: ['java', 'kotlin', 'spring', 'android', 'cpp'],
+  },
+  { label: '인프라', categories: ['docker', 'k8s', 'linux', 'aws'] },
+  {
+    label: '데이터 & 네트워크',
+    categories: [
+      'network',
+      'database',
+      'redis',
+      'cassandra',
+      'elasticsearch',
+      'kafka',
+    ],
+  },
+  { label: '데이터 엔지니어링', categories: ['airbyte', 'hive'] },
+  {
+    label: '설계 & CS',
+    categories: ['system-design', 'algorithms', 'architecture', 'git'],
+  },
+];
