@@ -1,15 +1,20 @@
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import type { ReactElement, ReactNode } from 'react';
 import type { Components } from 'react-markdown';
 import { slugify } from '@/utils/toc';
+import { SyntaxHighlighter } from '@/lib/prismLanguages';
 
-function extractText(children: React.ReactNode): string {
+function extractText(children: ReactNode): string {
   if (typeof children === 'string') return children;
   if (Array.isArray(children)) return children.map(extractText).join('');
-  if (children !== null && typeof children === 'object' && 'props' in (children as object)) {
-    return extractText((children as React.ReactElement).props.children);
+  if (
+    children !== null &&
+    typeof children === 'object' &&
+    'props' in (children as object)
+  ) {
+    return extractText((children as ReactElement).props.children);
   }
   return '';
 }
@@ -19,7 +24,10 @@ interface MarkdownRendererProps {
   className?: string;
 }
 
-export function MarkdownRenderer({ content, className = '' }: MarkdownRendererProps) {
+export function MarkdownRenderer({
+  content,
+  className = '',
+}: MarkdownRendererProps) {
   const components: Components = {
     code(props) {
       const { children, className, ...rest } = props;
@@ -60,7 +68,10 @@ export function MarkdownRenderer({ content, className = '' }: MarkdownRendererPr
     h2({ children }) {
       const id = slugify(extractText(children));
       return (
-        <h2 id={id} className="scroll-mt-20 text-3xl font-bold mt-6 mb-3 text-transparent bg-clip-text bg-gradient-to-r from-primary-300 to-accent-blue">
+        <h2
+          id={id}
+          className="scroll-mt-20 text-3xl font-bold mt-6 mb-3 text-transparent bg-clip-text bg-gradient-to-r from-primary-300 to-accent-blue"
+        >
           {children}
         </h2>
       );
@@ -68,7 +79,10 @@ export function MarkdownRenderer({ content, className = '' }: MarkdownRendererPr
     h3({ children }) {
       const id = slugify(extractText(children));
       return (
-        <h3 id={id} className="scroll-mt-20 text-2xl font-semibold mt-5 mb-2 text-primary-200">
+        <h3
+          id={id}
+          className="scroll-mt-20 text-2xl font-semibold mt-5 mb-2 text-primary-200"
+        >
           {children}
         </h3>
       );
@@ -81,11 +95,7 @@ export function MarkdownRenderer({ content, className = '' }: MarkdownRendererPr
       );
     },
     p({ children }) {
-      return (
-        <p className="my-4 leading-relaxed text-gray-300">
-          {children}
-        </p>
-      );
+      return <p className="my-4 leading-relaxed text-gray-300">{children}</p>;
     },
     ul({ children }) {
       return (
@@ -102,11 +112,7 @@ export function MarkdownRenderer({ content, className = '' }: MarkdownRendererPr
       );
     },
     li({ children }) {
-      return (
-        <li className="leading-relaxed">
-          {children}
-        </li>
-      );
+      return <li className="leading-relaxed">{children}</li>;
     },
     blockquote({ children }) {
       return (
@@ -137,11 +143,7 @@ export function MarkdownRenderer({ content, className = '' }: MarkdownRendererPr
       );
     },
     thead({ children }) {
-      return (
-        <thead className="bg-dark-surface">
-          {children}
-        </thead>
-      );
+      return <thead className="bg-dark-surface">{children}</thead>;
     },
     th({ children }) {
       return (
@@ -158,18 +160,13 @@ export function MarkdownRenderer({ content, className = '' }: MarkdownRendererPr
       );
     },
     hr() {
-      return (
-        <hr className="my-8 border-dark-border" />
-      );
+      return <hr className="my-8 border-dark-border" />;
     },
   };
 
   return (
     <div className={`prose prose-invert max-w-none ${className}`}>
-      <ReactMarkdown
-        components={components}
-        remarkPlugins={[remarkGfm]}
-      >
+      <ReactMarkdown components={components} remarkPlugins={[remarkGfm]}>
         {content}
       </ReactMarkdown>
     </div>

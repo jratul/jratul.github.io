@@ -7,7 +7,6 @@ interface LearnLesson {
   category: string;
   order: number;
   title: string;
-  content: string;
 }
 
 interface LearnIndex {
@@ -35,7 +34,7 @@ function scanLearnFiles(dir: string): LearnLesson[] {
       const fullPath = path.join(categoryPath, file);
       try {
         const raw = fs.readFileSync(fullPath, 'utf-8');
-        const { data, content: markdown } = matter(raw);
+        const { data } = matter(raw);
 
         // 파일명에서 순서 추출: "01-variables.md" → 1
         const orderMatch = file.match(/^(\d+)/);
@@ -48,7 +47,6 @@ function scanLearnFiles(dir: string): LearnLesson[] {
           category,
           order,
           title: data.title || file.replace(/^\d+-/, '').replace(/\.md$/, ''),
-          content: markdown,
         });
 
         console.log(`✓ Processed: ${id}`);

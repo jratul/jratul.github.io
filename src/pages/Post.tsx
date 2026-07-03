@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useParams, Link, Navigate } from 'react-router-dom';
 import { Calendar, Clock, ArrowLeft } from 'lucide-react';
 import { usePosts } from '@/hooks/usePosts';
@@ -11,6 +12,8 @@ import { extractToc } from '@/utils/toc';
 export function Post() {
   const { '*': slug } = useParams();
   const { getPostBySlug, loading } = usePosts();
+  const post = slug ? getPostBySlug(slug) : undefined;
+  const toc = useMemo(() => (post ? extractToc(post.content) : []), [post]);
 
   if (loading) {
     return (
@@ -23,13 +26,9 @@ export function Post() {
     );
   }
 
-  const post = slug ? getPostBySlug(slug) : undefined;
-
   if (!post) {
     return <Navigate to="/" replace />;
   }
-
-  const toc = extractToc(post.content);
 
   return (
     <>
@@ -92,7 +91,12 @@ export function Post() {
         {/* Content + TOC */}
         <div className="px-4 py-8">
           <div className="mx-auto max-w-5xl">
-            <div className="lg:grid lg:gap-12" style={{ gridTemplateColumns: toc.length > 0 ? '1fr 220px' : '1fr' }}>
+            <div
+              className="lg:grid lg:gap-12"
+              style={{
+                gridTemplateColumns: toc.length > 0 ? '1fr 220px' : '1fr',
+              }}
+            >
               {/* Article body */}
               <div className="min-w-0">
                 <MarkdownRenderer content={post.content} />

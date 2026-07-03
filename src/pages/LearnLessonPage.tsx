@@ -1,6 +1,8 @@
+import { useMemo } from 'react';
 import { useParams, Link, Navigate } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, BookOpen } from 'lucide-react';
 import { useLearn } from '@/hooks/useLearn';
+import { useLessonContent } from '@/hooks/useLessonContent';
 import { SEO } from '@/components/seo/SEO';
 import { MarkdownRenderer } from '@/components/blog/MarkdownRenderer';
 import { TableOfContents } from '@/components/blog/TableOfContents';
@@ -10,10 +12,18 @@ import type { LearnCategory } from '@/types/learn';
 import { LearnSidebar } from '@/components/learn/LearnSidebar';
 
 export function LearnLessonPage() {
-  const { category, lessonSlug } = useParams<{ category: string; lessonSlug: string }>();
+  const { category, lessonSlug } = useParams<{
+    category: string;
+    lessonSlug: string;
+  }>();
   const { lessons, loading, getPrevNext } = useLearn(category);
+  const { content, loading: contentLoading } = useLessonContent(
+    category,
+    lessonSlug
+  );
+  const toc = useMemo(() => (content ? extractToc(content) : []), [content]);
 
-  if (loading) {
+  if (loading || contentLoading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <div className="flex flex-col items-center gap-4">
@@ -27,19 +37,24 @@ export function LearnLessonPage() {
   const lessonId = `${category}/${lessonSlug}`;
   const lesson = lessons.find(l => l.id === lessonId);
 
-  if (!lesson) return <Navigate to={`/learn/${category}`} replace />;
+  if (!lesson || content === null) {
+    return <Navigate to={`/learn/${category}`} replace />;
+  }
 
   const meta = CATEGORY_META[category as LearnCategory];
   const { prev, next } = getPrevNext(lessonId, category!);
-  const toc = extractToc(lesson.content);
   const lessonIndex = lessons.findIndex(l => l.id === lessonId);
 
   return (
     <>
       <SEO
         title={`${lesson.title} | ${meta.label}`}
-        description={lesson.content.slice(0, 120).replace(/[#`*\n]/g, ' ').trim()}
+        description={content
+          .slice(0, 120)
+          .replace(/[#`*\n]/g, ' ')
+          .trim()}
         keywords={[category!, 'learn', 'tutorial']}
+        canonicalUrl={`https://jratul.github.io/learn/${category}/${lessonSlug}`}
       />
 
       <div className="mx-auto max-w-7xl px-4 lg:flex lg:gap-8">
@@ -82,10 +97,12 @@ export function LearnLessonPage() {
             <div className="py-8">
               <div
                 className="lg:grid lg:gap-12"
-                style={{ gridTemplateColumns: toc.length > 0 ? '1fr 220px' : '1fr' }}
+                style={{
+                  gridTemplateColumns: toc.length > 0 ? '1fr 220px' : '1fr',
+                }}
               >
                 <div className="min-w-0">
-                  <MarkdownRenderer content={lesson.content} />
+                  <MarkdownRenderer content={content} />
                 </div>
 
                 {toc.length > 0 && (
@@ -105,9 +122,14 @@ export function LearnLessonPage() {
                     to={`/learn/${category}/${prev.id.split('/')[1]}`}
                     className="flex-1 flex items-center gap-3 px-5 py-4 rounded-lg border border-dark-border hover:border-primary-500/40 bg-dark-card/50 hover:bg-dark-card transition-all duration-200 group"
                   >
-                    <ArrowLeft size={18} className="shrink-0 text-gray-500 group-hover:text-primary-400 transition-colors" />
+                    <ArrowLeft
+                      size={18}
+                      className="shrink-0 text-gray-500 group-hover:text-primary-400 transition-colors"
+                    />
                     <div className="min-w-0">
-                      <p className="text-[11px] text-gray-500 mb-0.5 uppercase tracking-wider">이전 챕터</p>
+                      <p className="text-[11px] text-gray-500 mb-0.5 uppercase tracking-wider">
+                        이전 챕터
+                      </p>
                       <p className="text-sm font-medium text-gray-300 group-hover:text-primary-300 truncate transition-colors">
                         {prev.title}
                       </p>
@@ -124,12 +146,17 @@ export function LearnLessonPage() {
                     className="flex-1 flex items-center justify-end gap-3 px-5 py-4 rounded-lg border border-dark-border hover:border-primary-500/40 bg-dark-card/50 hover:bg-dark-card transition-all duration-200 group text-right"
                   >
                     <div className="min-w-0">
-                      <p className="text-[11px] text-gray-500 mb-0.5 uppercase tracking-wider">다음 챕터</p>
+                      <p className="text-[11px] text-gray-500 mb-0.5 uppercase tracking-wider">
+                        다음 챕터
+                      </p>
                       <p className="text-sm font-medium text-gray-300 group-hover:text-primary-300 truncate transition-colors">
                         {next.title}
                       </p>
                     </div>
-                    <ArrowRight size={18} className="shrink-0 text-gray-500 group-hover:text-primary-400 transition-colors" />
+                    <ArrowRight
+                      size={18}
+                      className="shrink-0 text-gray-500 group-hover:text-primary-400 transition-colors"
+                    />
                   </Link>
                 ) : (
                   <div className="flex-1" />
