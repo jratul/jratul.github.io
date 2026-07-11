@@ -1093,4 +1093,10 @@ excerpt: "1-2문장 요약"
 - GitHub Pages SPA 라우팅은 404.html fallback으로 처리
 - 빌드 시 포스트 인덱스와 sitemap 자동 생성
 - ESLint & Prettier로 코드 품질 관리
-- 마크다운 내 이미지는 상대 경로 사용 권장
+- 마크다운 내 이미지는 절대 경로(`/images/...`, `public/` 기준) 사용 — 상세 규칙은
+  위 "이미지 경로 규칙" 절 참고
+
+## 관련 문서
+- [README.md](./README.md) — 프로젝트 개요, 시작하기 가이드
+- [TECH.md](./TECH.md) — 파일별 기술 상세와 비자명한 구현 예시
+- [PROJECT.md](./PROJECT.md) — 설정 파일 역할, 패키지별 사용처

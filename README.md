@@ -61,4 +61,8 @@ npm run format           # Prettier
 2. `npm run generate:learn` 실행
 3. 커밋 및 푸시
 
-자세한 규칙은 [CLAUDE.md](./CLAUDE.md) 참고.
+## 문서
+
+- [CLAUDE.md](./CLAUDE.md) — 프로젝트 규칙, 아키텍처 요약, 개발 명령어
+- [TECH.md](./TECH.md) — 파일별 기술 상세와 비자명한 구현 예시
+- [PROJECT.md](./PROJECT.md) — 설정 파일 역할, 패키지별 사용처
