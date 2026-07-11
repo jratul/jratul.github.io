@@ -1,6 +1,6 @@
 ---
 title: "Vercel 배포 프로세스와 알아야 할 개념"
-date: "2026-07-03"
+date: "2026-07-11"
 tags: ["vercel", "deployment", "nextjs", "edge", "serverless", "devops"]
 excerpt: "git push 한 번으로 배포되는 것처럼 보이지만, 그 뒤에서 Preview Deployment·Edge Network·서버리스 함수가 어떻게 맞물리는지 정리합니다."
 ---

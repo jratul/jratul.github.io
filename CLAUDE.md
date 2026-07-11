@@ -7,6 +7,10 @@ GitHub Pages를 통한 정적 사이트 배포
 ## Workflow Rules
 - 블로그 포스트를 작성하면 `npm run generate:index`로 인덱스를 재생성한 후, 커밋하고 푸시까지 완료할 것
 - 학습 콘텐츠를 추가/수정하면 `npm run generate:learn`으로 인덱스를 재생성한 후, 커밋하고 푸시까지 완료할 것
+- **새 블로그 포스트의 frontmatter `date`는 절대 이전 포스트 값을 복사하거나 기억에 의존하지
+  말고, 작성 직전에 `date "+%Y-%m-%d"`(Bash) 같은 명령으로 실제 현재 날짜를 확인해 그
+  값을 동적으로 채울 것. 세션 시작 시점의 날짜 컨텍스트가 있어도, 시간이 지나 실제 날짜가
+  바뀌었을 수 있으므로 포스트 작성 시점마다 다시 확인한다.
 
 ## Learn 페이지 (학습 섹션)
 
@@ -1087,6 +1091,9 @@ tags: ["tag1", "tag2", "tag3"]
 excerpt: "1-2문장 요약"
 ---
 ```
+
+`date`는 `date "+%Y-%m-%d"`로 확인한 실제 현재 날짜를 쓴다 — 이전 포스트 날짜를
+복사하지 않는다 (자세한 내용은 상단 "Workflow Rules" 참고).
 
 ## Notes
 - Vite base path는 `/`로 설정 (username.github.io이므로)

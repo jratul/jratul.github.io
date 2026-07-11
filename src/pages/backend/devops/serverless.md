@@ -1,6 +1,6 @@
 ---
 title: "서버리스(Serverless)"
-date: "2026-07-03"
+date: "2026-07-11"
 tags: ["serverless", "faas", "aws-lambda", "vercel", "cloudflare-workers", "devops"]
 excerpt: "서버가 없는 게 아니라 서버 관리를 안 하는 것. FaaS의 동작 원리, Cold Start, 과금 방식, 언제 써야 하는지를 정리합니다."
 ---
