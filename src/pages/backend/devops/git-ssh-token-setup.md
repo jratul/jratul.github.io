@@ -5,7 +5,7 @@ tags: ["git", "github", "ssh", "token", "devops", "setup"]
 excerpt: "새 컴퓨터에서 GitHub를 쓰기 위한 git config, SSH 키, Personal Access Token 설정을 단계별로 정리합니다."
 ---
 
-# 새 기기에서 GitHub 설정하기: SSH 키, 토큰, git config 정리
+# 새 기기에서 GitHub 설정하기: SSH(Secure Shell, 원격 접속 암호화 프로토콜) 키, 토큰, git config 정리
 
 새 컴퓨터를 받으면 GitHub와 연결하기 위해 매번 비슷한 설정을 반복하게 됩니다. `user.name`/`user.email` 설정, SSH 키 생성, 토큰 발급 순서를 헷갈리기 쉬워서 한 번에 정리합니다.
 
@@ -88,7 +88,7 @@ macOS는 `ssh-add --apple-use-keychain ~/.ssh/id_ed25519`로 키체인에 영구
 cat ~/.ssh/id_ed25519.pub   # 출력된 내용을 직접 복사해도 됨
 ```
 
-GitHub > Settings > SSH and GPG keys > New SSH key에 붙여넣고 저장합니다.
+GitHub > Settings > SSH and GPG(GNU Privacy Guard, GNU 개인정보 보호 프로그램) keys > New SSH key에 붙여넣고 저장합니다.
 
 ### 연결 테스트
 
@@ -143,7 +143,7 @@ git clone git@github.com-work:my-company/internal-repo.git
 
 ---
 
-## 4. Personal Access Token (PAT) — HTTPS 인증용
+## 4. Personal Access Token (PAT) — HTTPS(HyperText Transfer Protocol Secure, 암호화된 HTTP 통신 프로토콜) 인증용
 
 SSH 대신 HTTPS로 클론했다면, GitHub는 2021년부터 비밀번호 로그인을 막아서 푸시할 때 PAT가 필요합니다.
 
@@ -194,7 +194,7 @@ git config --global credential.helper osxkeychain
 git config --global credential.helper libsecret  # 또는 cache
 ```
 
-첫 인증 후에는 OS의 자격 증명 저장소에 토큰이 저장되어 재입력이 필요 없습니다.
+첫 인증 후에는 OS(Operating System, 운영체제)의 자격 증명 저장소에 토큰이 저장되어 재입력이 필요 없습니다.
 
 ### SSH vs PAT, 어떤 걸 쓸까
 

@@ -529,7 +529,7 @@ function UserProfile({ user }) {
 
 **해결 방법:**
 
-1. **Context API**
+1. **Context API**(Application Programming Interface, 응용 프로그램 프로그래밍 인터페이스)
 ```typescript
 const UserContext = createContext(null);
 

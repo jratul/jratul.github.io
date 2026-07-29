@@ -181,7 +181,7 @@ Hibernate Exception      → DataAccessException
 
 **이점:**
 - 기술 독립적인 예외 처리
-- JDBC → JPA 변경 시에도 서비스 계층 코드 수정 불필요
+- JDBC(Java Database Connectivity, 자바 데이터베이스 연결 표준) → JPA 변경 시에도 서비스 계층 코드 수정 불필요
 
 ---
 

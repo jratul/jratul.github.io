@@ -9,7 +9,7 @@ excerpt: 'Hive 테이블의 종류와 파티셔닝, 파일 포맷 이해하기'
 
 ## Hive란
 
-Apache Hive는 Hadoop 기반의 데이터 웨어하우스 시스템이다. SQL과 유사한 HiveQL을 사용해 대용량 데이터를 조회하고 분석할 수 있다.
+Apache Hive는 Hadoop 기반의 데이터 웨어하우스 시스템이다. SQL(Structured Query Language, 구조화 질의 언어)과 유사한 HiveQL을 사용해 대용량 데이터를 조회하고 분석할 수 있다.
 
 ```
 사용자 → HiveQL 쿼리 → Hive → MapReduce/Tez/Spark → HDFS
@@ -128,9 +128,9 @@ SELECT * FROM events WHERE event_type = 'click';
 | 포맷 | 압축 | 컬럼형 | 스키마 | 용도 |
 |------|------|--------|--------|------|
 | Text | X | X | X | 단순 로그 |
-| CSV | X | X | X | 외부 연동 |
-| JSON | X | X | O | 반정형 데이터 |
-| ORC | O | O | O | Hive 최적화 |
+| CSV(Comma-Separated Values, 쉼표로 구분된 값) | X | X | X | 외부 연동 |
+| JSON(JavaScript Object Notation, 자바스크립트 객체 표기법) | X | X | O | 반정형 데이터 |
+| ORC(Optimized Row Columnar, 최적화된 행-컬럼형 파일 포맷) | O | O | O | Hive 최적화 |
 | Parquet | O | O | O | 범용 (Spark 등) |
 | Avro | O | X | O | 스키마 진화 |
 

@@ -8,7 +8,7 @@ excerpt: "로그·메트릭·트레이스를 벤더 종속 없이 표준화하�
 # OpenTelemetry
 
 관측성(Observability)을 갖추려고 하면 금방 문제가 생깁니다. 로그는 A사 도구, 메트릭은
-B사 도구, 분산 트레이싱은 C사 SDK로 각각 계측하면, 나중에 벤더를 바꿀 때마다 애플리케이션
+B사 도구, 분산 트레이싱은 C사 SDK(Software Development Kit, 소프트웨어 개발 키트)로 각각 계측하면, 나중에 벤더를 바꿀 때마다 애플리케이션
 코드를 전부 다시 고쳐야 합니다. **OpenTelemetry**(OTel)는 이 계측 코드를 벤더 중립적인
 표준으로 통일한 CNCF 프로젝트입니다. 계측은 한 번만 하고, 데이터를 어디로 보낼지는 설정만
 바꿔서 결정합니다.
@@ -55,7 +55,7 @@ Trace: "사용자가 주문 버튼을 누른 요청"
 형태의 트레이스 시각화가 바로 이 Span 트리를 그린 것입니다.
 
 **Context Propagation**: 서비스 A에서 서비스 B로 요청이 넘어갈 때, 지금 이 요청이
-어느 Trace에 속하는지 정보(trace ID, span ID)를 HTTP 헤더 등에 실어 함께 전달합니다.
+어느 Trace에 속하는지 정보(trace ID, span ID)를 HTTP(HyperText Transfer Protocol, 하이퍼텍스트 전송 프로토콜) 헤더 등에 실어 함께 전달합니다.
 이게 없으면 서비스마다 트레이스가 끊어져서 "전체 요청 흐름"을 재구성할 수 없습니다.
 
 ```
@@ -67,7 +67,7 @@ traceparent: 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
 
 ---
 
-## 구성 요소: API / SDK / Collector
+## 구성 요소: API(Application Programming Interface, 응용 프로그램 인터페이스) / SDK / Collector
 
 ```
 애플리케이션 코드
@@ -189,4 +189,4 @@ OTLP를 쏘는 구성도 가능합니다 — 다만 Collector를 두면 배치 �
 | 마이크로서비스 지연 원인 파악 | 요청 하나가 어느 서비스, 어느 구간에서 느려졌는지 Span 트리로 즉시 확인 |
 | 벤더 락인 회피 | 계측 코드는 그대로 두고 Collector 설정만 바꿔 관측성 벤더 교체 |
 | 에러 발생 시점 재구성 | 에러 로그와 해당 요청의 전체 트레이스를 trace ID로 바로 연결 |
-| SLO/SLI 모니터링 | 메트릭으로 응답 시간 p99, 에러율을 표준화된 방식으로 수집 |
+| SLO(Service Level Objective, 서비스 수준 목표)/SLI(Service Level Indicator, 서비스 수준 지표) 모니터링 | 메트릭으로 응답 시간 p99, 에러율을 표준화된 방식으로 수집 |

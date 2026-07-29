@@ -224,7 +224,7 @@ active_connections 150
 queue_size 25
 ```
 
-**용도:** 메모리, CPU, 온도, 큐 크기
+**용도:** 메모리, CPU(Central Processing Unit, 중앙 처리 장치), 온도, 큐 크기
 
 ---
 
@@ -259,7 +259,7 @@ http_request_duration_seconds_sum 4500
 http_request_duration_seconds_count 10000
 ```
 
-**용도:** 지연 시간, SLA 측정
+**용도:** 지연 시간, SLA(Service Level Agreement, 서비스 수준 협약) 측정
 
 ---
 
@@ -443,7 +443,7 @@ avg(rate(process_cpu_seconds_total{service="user-api"}[5m])) * 100
 
 ## 실전 예제
 
-### 예제 1: API 모니터링
+### 예제 1: API(Application Programming Interface, 응용 프로그램 인터페이스) 모니터링
 
 ```java
 @RestController
@@ -648,7 +648,7 @@ Errors:      오류 수
 |-----|-----|
 | ELK Stack | 가장 널리 사용, 기능 풍부 |
 | Loki | 가벼움, Prometheus와 통합 |
-| Datadog | SaaS, 올인원 |
+| Datadog | SaaS(Software as a Service, 서비스형 소프트웨어), 올인원 |
 | CloudWatch | AWS 네이티브 |
 
 ---

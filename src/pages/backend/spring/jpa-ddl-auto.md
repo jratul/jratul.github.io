@@ -180,7 +180,7 @@ public class User {
 **사용 시점:**
 - 운영 환경
 - Flyway, Liquibase 같은 마이그레이션 도구 사용 시
-- DBA가 직접 스키마를 관리하는 경우
+- DBA(Database Administrator, 데이터베이스 관리자)가 직접 스키마를 관리하는 경우
 
 ```yaml
 spring:

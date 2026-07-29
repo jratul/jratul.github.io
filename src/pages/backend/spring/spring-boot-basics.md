@@ -305,7 +305,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 ## 내장 서버
 
-별도의 WAS 설치 없이 JAR 파일로 실행할 수 있다.
+별도의 WAS(Web Application Server, 웹 애플리케이션 서버) 설치 없이 JAR 파일로 실행할 수 있다.
 
 ```bash
 # 빌드

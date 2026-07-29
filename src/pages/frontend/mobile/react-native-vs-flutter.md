@@ -74,7 +74,7 @@ Canvas에 직접 그리기
 
 **특징:**
 - 자체 렌더링 엔진으로 모든 픽셀을 직접 그림
-- 네이티브 UI 컴포넌트를 사용하지 않음
+- 네이티브 UI(User Interface, 사용자 인터페이스) 컴포넌트를 사용하지 않음
 - 플랫폼 간 완벽히 동일한 UI
 
 ---
@@ -161,7 +161,7 @@ class _UserCardState extends State<UserCard> {
 ```
 
 **장점:**
-- AOT 컴파일로 빠른 실행
+- AOT(Ahead-Of-Time, 사전 컴파일)로 빠른 실행
 - Null Safety 내장
 - Flutter에 최적화된 언어
 

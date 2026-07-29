@@ -174,7 +174,7 @@ public void divide(int a, int b) {
 | 상속 | Exception | RuntimeException |
 | 처리 | 필수 | 선택 |
 | 확인 시점 | 컴파일 타임 | 런타임 |
-| 예시 | IOException, SQLException | NPE, IllegalArgumentException |
+| 예시 | IOException, SQLException | NPE(NullPointerException, 널 포인터 예외), IllegalArgumentException |
 | 목적 | 복구 가능한 예외 | 프로그래밍 오류 |
 | 트랜잭션 | 롤백 안 함 (Spring) | 롤백 (Spring) |
 

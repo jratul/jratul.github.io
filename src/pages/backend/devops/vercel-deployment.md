@@ -10,7 +10,7 @@ excerpt: "git push 한 번으로 배포되는 것처럼 보이지만, 그 뒤에
 Vercel은 Next.js를 만든 회사가 운영하는 프론트엔드 클라우드 플랫폼입니다. `git push`만
 하면 배포되는 것처럼 보이지만, 그 뒤에서는 빌드·Preview 배포·Edge Network·서버리스
 함수 배포가 자동으로 맞물려 돌아갑니다. 이 흐름을 알아야 왜 어떤 배포는 몇 초 만에
-끝나고, 왜 API 라우트만 따로 리전을 설정할 수 있는지 이해할 수 있습니다.
+끝나고, 왜 API(Application Programming Interface, 응용 프로그램 인터페이스) 라우트만 따로 리전을 설정할 수 있는지 이해할 수 있습니다.
 
 ---
 
@@ -32,14 +32,14 @@ git push
    └─ 그 외 브랜치/PR        → Preview 고유 URL
 ```
 
-브랜치마다, 심지어 커밋마다 배포 결과가 별도 URL로 남습니다 — 배포가 실패해도 기존
+브랜치마다, 심지어 커밋마다 배포 결과가 별도 URL(Uniform Resource Locator, 인터넷 자원 위치 지정자)로 남습니다 — 배포가 실패해도 기존
 프로덕션은 그대로 서비스되고, 새 배포가 성공한 뒤에야 트래픽이 전환됩니다(무중단 배포).
 
 ---
 
 ## Preview Deployments
 
-`main`이 아닌 브랜치에 push하거나 PR을 열면, 그 커밋 전용 URL이 자동으로 생성됩니다.
+`main`이 아닌 브랜치에 push하거나 PR(Pull Request, 코드 변경 병합 요청)을 열면, 그 커밋 전용 URL이 자동으로 생성됩니다.
 
 ```
 main 브랜치           → https://my-app.vercel.app (Production)
@@ -73,7 +73,7 @@ DATABASE_URL
 
 ## Edge Network (CDN)
 
-정적으로 생성된 파일(HTML, CSS, JS, 이미지)은 전 세계에 분산된 엣지 서버에 캐싱되어,
+정적으로 생성된 파일(HTML(HyperText Markup Language, 하이퍼텍스트 마크업 언어), CSS(Cascading Style Sheets, 캐스케이딩 스타일 시트), JS, 이미지)은 전 세계에 분산된 엣지 서버에 캐싱되어,
 사용자와 지리적으로 가장 가까운 서버에서 응답합니다. 원본 서버(origin)까지 요청이
 가지 않으므로 지연이 크게 줄어듭니다.
 
@@ -82,7 +82,7 @@ DATABASE_URL
 사용자(뉴욕) → 뉴욕 엣지 서버(캐시 hit) → 즉시 응답
 ```
 
-정적 자산은 배포 시점에 이미 전역에 복제되므로, 별도 CDN 설정 없이 이 이점을
+정적 자산은 배포 시점에 이미 전역에 복제되므로, 별도 CDN(Content Delivery Network, 콘텐츠 전송 네트워크) 설정 없이 이 이점을
 그대로 얻습니다.
 
 ---
@@ -131,7 +131,7 @@ Next.js와 Vercel이 함께 지원하는 기능으로, 정적 페이지를 빌�
 ## `vercel.json`
 
 빌드/라우팅 동작을 세밀하게 제어할 때 프로젝트 루트에 두는 설정 파일입니다. React
-Router 같은 클라이언트 사이드 라우팅 SPA를 배포할 때는 이 설정이 사실상 필수입니다.
+Router 같은 클라이언트 사이드 라우팅 SPA(Single Page Application, 단일 페이지 애플리케이션)를 배포할 때는 이 설정이 사실상 필수입니다.
 
 ```json
 {

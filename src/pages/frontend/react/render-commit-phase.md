@@ -7,7 +7,7 @@ excerpt: "React가 컴포넌트를 렌더링하고 DOM에 반영하는 두 단�
 
 # React의 Render Phase와 Commit Phase
 
-React는 UI 업데이트를 **두 단계**로 나누어 처리합니다.
+React는 UI(User Interface, 사용자 인터페이스) 업데이트를 **두 단계**로 나누어 처리합니다.
 
 ```
 상태 변경
@@ -27,7 +27,7 @@ React는 UI 업데이트를 **두 단계**로 나누어 처리합니다.
 
 ## Render Phase (렌더 단계)
 
-**Virtual DOM을 생성하고 변경 사항을 계산**합니다.
+**Virtual DOM(Document Object Model, 문서 객체 모델)을 생성하고 변경 사항을 계산**합니다.
 
 ### 특징
 

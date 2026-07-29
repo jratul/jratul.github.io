@@ -416,8 +416,8 @@ Turbopack은 증분 계산 엔진을 사용하여 변경된 부분만 다시 처
 
 | | React (Vite) | Next.js |
 |---|---|---|
-| 빌드 결과 | 정적 파일 (HTML, JS, CSS) | 서버 코드 + 정적 파일 |
-| 렌더링 | CSR (클라이언트) | SSR + SSG + CSR |
+| 빌드 결과 | 정적 파일 (HTML(HyperText Markup Language, 하이퍼텍스트 마크업 언어), JS, CSS(Cascading Style Sheets, 계단식 스타일 시트)) | 서버 코드 + 정적 파일 |
+| 렌더링 | CSR(Client-Side Rendering, 클라이언트 사이드 렌더링) (클라이언트) | SSR(Server-Side Rendering, 서버 사이드 렌더링) + SSG(Static Site Generation, 정적 사이트 생성) + CSR |
 | 코드 스플리팅 | 수동 (`lazy()`) | 자동 (페이지 단위) |
 | 컴파일러 | esbuild | SWC |
 | 이미지 최적화 | 별도 설정 필요 | 내장 (`next/image`) |

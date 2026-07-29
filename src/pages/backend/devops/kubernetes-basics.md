@@ -45,7 +45,7 @@ Kubernetes 클러스터
 
 클러스터를 제어하는 두뇌 역할입니다.
 
-- **API Server**: `kubectl` 명령이나 다른 컴포넌트가 통신하는 REST API 서버
+- **API Server**: `kubectl` 명령이나 다른 컴포넌트가 통신하는 REST(Representational State Transfer, 자원 상태 전달 아키텍처) API(Application Programming Interface, 응용 프로그램 인터페이스) 서버
 - **etcd**: 클러스터의 모든 상태(어떤 Pod가 어디서 실행 중인지 등)를 저장
 - **Scheduler**: 새 Pod를 어떤 Node에 배치할지 결정 (리소스, 제약 조건 고려)
 - **Controller Manager**: 선언된 상태와 실제 상태를 비교하고 차이를 맞춤
@@ -124,7 +124,7 @@ kubectl rollout undo deployment/my-app
 
 ### Service
 
-Pod는 IP가 바뀌기 때문에 직접 접근하면 안 됩니다. Service는 Pod 집합에 고정된 접근 지점을 제공합니다.
+Pod는 IP(Internet Protocol, 인터넷 프로토콜)가 바뀌기 때문에 직접 접근하면 안 됩니다. Service는 Pod 집합에 고정된 접근 지점을 제공합니다.
 
 ```yaml
 apiVersion: v1
@@ -152,7 +152,7 @@ Service 타입:
 
 ### Ingress
 
-외부 HTTP/HTTPS 트래픽을 클러스터 내부 Service로 라우팅합니다. 도메인 기반 라우팅이나 경로 기반 라우팅을 설정합니다.
+외부 HTTP(HyperText Transfer Protocol, 웹 문서 전송 프로토콜)/HTTPS(HyperText Transfer Protocol Secure, 암호화된 HTTP 통신 프로토콜) 트래픽을 클러스터 내부 Service로 라우팅합니다. 도메인 기반 라우팅이나 경로 기반 라우팅을 설정합니다.
 
 ```yaml
 apiVersion: networking.k8s.io/v1
@@ -304,7 +304,7 @@ kubectl apply -f deployment.yaml
 
 ## HPA (Horizontal Pod Autoscaler)
 
-CPU/메모리 사용량에 따라 Pod 수를 자동으로 조절합니다.
+CPU(Central Processing Unit, 중앙 처리 장치)/메모리 사용량에 따라 Pod 수를 자동으로 조절합니다.
 
 ```yaml
 apiVersion: autoscaling/v2

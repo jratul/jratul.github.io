@@ -5,7 +5,7 @@ tags: ["browser", "network", "dns", "http", "frontend"]
 excerpt: "브라우저 주소창에 URL을 입력하고 엔터를 눌렀을 때 페이지가 표시되기까지의 전체 과정을 알아봅니다."
 ---
 
-# 브라우저에 URL을 입력했을 때의 처리 과정
+# 브라우저에 URL(Uniform Resource Locator, 인터넷 자원의 위치를 나타내는 주소)을 입력했을 때의 처리 과정
 
 브라우저 주소창에 URL을 입력하고 엔터를 눌렀을 때 페이지가 표시되기까지의 전체 과정을 알아봅니다.
 
@@ -82,7 +82,7 @@ https://www.google.com/search?q=javascript+tutorial
 
 ## 2. HSTS 확인
 
-**HSTS (HTTP Strict Transport Security)**: HTTPS 강제 사용
+**HSTS (HTTP Strict Transport Security)**: HTTPS(HyperText Transfer Protocol Secure, 암호화된 HTTP 통신 프로토콜) 강제 사용
 
 ```
 브라우저 확인:
@@ -102,7 +102,7 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
 
 ## 3. DNS 조회
 
-**DNS (Domain Name System)**: 도메인 이름을 IP 주소로 변환
+**DNS (Domain Name System)**: 도메인 이름을 IP(Internet Protocol, 인터넷 프로토콜) 주소로 변환
 
 ### DNS 조회 과정
 
@@ -256,7 +256,7 @@ example.com.  3600  IN  A  93.184.216.34
 
 ---
 
-### HTTP vs HTTPS
+### HTTP(HyperText Transfer Protocol, 웹 문서 전송 프로토콜) vs HTTPS
 
 ```
 HTTP (포트 80):
@@ -424,7 +424,7 @@ Connection: keep-alive
 
 ---
 
-### HTML 파싱 중 추가 리소스 로드
+### HTML(HyperText Markup Language, 하이퍼텍스트 마크업 언어) 파싱 중 추가 리소스 로드
 
 ```html
 <!DOCTYPE html>
@@ -543,7 +543,7 @@ Cache-Control: public, max-age=31536000, immutable
 
 ---
 
-### 5. CDN 사용
+### 5. CDN(Content Delivery Network, 콘텐츠 전송 네트워크) 사용
 
 ```
 사용자 (서울) → CDN 서버 (서울)   ✅ 빠름 (10ms)

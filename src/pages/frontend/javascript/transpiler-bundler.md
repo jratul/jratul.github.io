@@ -154,7 +154,7 @@ Webpack 자체는 트랜스파일 기능이 없습니다. `babel-loader`, `ts-lo
 
 ### Rollup
 
-라이브러리 번들링에 최적화된 번들러입니다. Tree Shaking이 Webpack보다 강력하고, ESM 출력이 깔끔합니다.
+라이브러리 번들링에 최적화된 번들러입니다. Tree Shaking이 Webpack보다 강력하고, ESM(ECMAScript Module, 자바스크립트 표준 모듈 시스템) 출력이 깔끔합니다.
 
 ```js
 // rollup.config.js

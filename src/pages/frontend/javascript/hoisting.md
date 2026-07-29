@@ -373,7 +373,7 @@ if (true) {
 
 ---
 
-### 예제 3: 즉시 실행 함수 (IIFE)
+### 예제 3: 즉시 실행 함수 (IIFE(Immediately Invoked Function Expression, 즉시 실행 함수 표현식))
 
 ```javascript
 // 호이스팅 문제 회피

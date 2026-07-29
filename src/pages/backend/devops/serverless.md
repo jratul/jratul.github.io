@@ -37,7 +37,7 @@ excerpt: "서버가 없는 게 아니라 서버 관리를 안 하는 것. FaaS�
 ## FaaS: 서버리스의 핵심 형태
 
 서버리스를 실제로 구현하는 방식이 **FaaS**(Function as a Service)입니다. 코드를 함수 단위로
-배포하면, provider가 HTTP 요청·이벤트가 들어올 때마다 그 함수를 실행합니다.
+배포하면, provider가 HTTP(HyperText Transfer Protocol, 하이퍼텍스트 전송 프로토콜) 요청·이벤트가 들어올 때마다 그 함수를 실행합니다.
 
 ```typescript
 // AWS Lambda 함수 예시
@@ -116,7 +116,7 @@ Object Storage)에 둬야 합니다.
 |---|---|
 | AWS Lambda | 최대 15분 |
 | Vercel Serverless Functions | 플랜에 따라 10초 ~ 수 분 |
-| Cloudflare Workers | 기본 밀리초~초 단위(CPU 시간 기준) |
+| Cloudflare Workers | 기본 밀리초~초 단위(CPU(Central Processing Unit, 중앙 처리 장치) 시간 기준) |
 
 오래 걸리는 배치 작업이나 스트리밍처럼 장시간 연결이 필요한 작업은 서버리스 함수
 하나로 처리하기 어렵습니다 — 큐(Queue)로 작업을 쪼개거나, 별도의 상시 서버/워커로
@@ -160,7 +160,7 @@ Vercel Serverless Function(FaaS)으로 처리하는 식입니다.
 |---|---|
 | 트래픽이 불규칙하거나 예측하기 어려움 | 항상 일정하게 높은 트래픽(상시 서버가 더 저렴) |
 | 이벤트 기반 처리(파일 업로드 트리거, webhook) | 낮은 지연이 항상 보장돼야 함(Cold Start 민감) |
-| 빠르게 프로토타입/MVP를 만들어야 함 | 오래 걸리는 배치/스트리밍 작업 |
+| 빠르게 프로토타입/MVP(Minimum Viable Product, 최소 기능 제품)를 만들어야 함 | 오래 걸리는 배치/스트리밍 작업 |
 | 인프라 관리 인력 없이 소규모 팀 운영 | WebSocket처럼 장시간 연결 유지가 필요한 경우 |
 
 ---
@@ -169,7 +169,7 @@ Vercel Serverless Function(FaaS)으로 처리하는 식입니다.
 
 | 용도 | 예시 |
 |------|------|
-| API 엔드포인트 | Next.js API Route를 Vercel Serverless Function으로 배포 |
+| API(Application Programming Interface, 응용 프로그램 인터페이스) 엔드포인트 | Next.js API Route를 Vercel Serverless Function으로 배포 |
 | 이벤트 처리 | S3 업로드 시 썸네일 생성(AWS Lambda 트리거) |
 | 인증 미들웨어 | Cloudflare Workers에서 요청마다 토큰 검증 후 라우팅 |
 | 이미지 최적화 | 요청 시점에 이미지를 리사이즈해 반환(Edge Function) |

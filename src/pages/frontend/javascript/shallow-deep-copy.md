@@ -201,7 +201,7 @@ console.log(original.address.detail.dong);  // 'Gangnam' (변경 안 됨!)
 
 ---
 
-### JSON 방식의 한계
+### JSON(JavaScript Object Notation, JavaScript 객체 표기법) 방식의 한계
 
 ```javascript
 const obj = {
@@ -266,7 +266,7 @@ console.log(copy.date instanceof Date);  // true (Date 유지!)
 
 **제한사항:**
 - 함수 복사 불가
-- DOM 노드 복사 불가
+- DOM(Document Object Model, 문서 객체 모델) 노드 복사 불가
 - Error 객체 복사 불가
 
 ---

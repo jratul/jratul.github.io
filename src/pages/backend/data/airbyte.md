@@ -88,7 +88,7 @@ Connection:
 
 ### Stream
 
-테이블 또는 API 엔드포인트 단위의 데이터 흐름
+테이블 또는 API(Application Programming Interface, 응용 프로그램 인터페이스) 엔드포인트 단위의 데이터 흐름
 
 ---
 

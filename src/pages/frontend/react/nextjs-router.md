@@ -336,7 +336,7 @@ export default function Counter() {
 
 ---
 
-## API 라우트
+## API(Application Programming Interface, 응용 프로그램 프로그래밍 인터페이스) 라우트
 
 ### Page Router
 
@@ -597,7 +597,7 @@ export const config = {
 | 레이아웃 | `_app.tsx` | `layout.tsx` (중첩) |
 | 데이터 페칭 | getServerSideProps, getStaticProps | async 컴포넌트, fetch 옵션 |
 | 기본 컴포넌트 | 클라이언트 | 서버 |
-| 로딩 UI | 직접 구현 | `loading.tsx` |
+| 로딩 UI(User Interface, 사용자 인터페이스) | 직접 구현 | `loading.tsx` |
 | 에러 UI | 직접 구현 | `error.tsx` |
 | 메타데이터 | `<Head>` | `metadata` export |
 | API | `pages/api/` | `app/api/route.ts` |

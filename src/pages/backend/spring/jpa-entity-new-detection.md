@@ -83,7 +83,7 @@ Primitive 타입(`long`, `int` 등)은 `null`이 될 수 없으므로 기본값�
 - `id == 0` → 새로운 엔티티
 - `id != 0` → 기존 엔티티
 
-### 3. UUID 등 할당된 ID의 경우
+### 3. UUID(Universally Unique Identifier, 범용 고유 식별자) 등 할당된 ID의 경우
 
 ```java
 @Entity

@@ -123,7 +123,7 @@ export class AppModule {}
 
 ### Controller
 
-HTTP 요청을 받아서 응답을 반환합니다. 라우팅을 데코레이터로 선언합니다.
+HTTP(HyperText Transfer Protocol, 하이퍼텍스트 전송 프로토콜) 요청을 받아서 응답을 반환합니다. 라우팅을 데코레이터로 선언합니다.
 
 ```typescript
 @Controller('posts')
@@ -163,7 +163,7 @@ export class PostsController {
 
 ### Provider / Service
 
-비즈니스 로직을 담당합니다. `@Injectable()` 데코레이터를 붙이면 NestJS의 DI 컨테이너가 관리합니다.
+비즈니스 로직을 담당합니다. `@Injectable()` 데코레이터를 붙이면 NestJS의 DI(Dependency Injection, 의존성 주입) 컨테이너가 관리합니다.
 
 ```typescript
 @Injectable()
@@ -398,15 +398,15 @@ NestJS는 Spring의 많은 개념을 Node.js 환경으로 가져왔습니다.
 
 | 개념 | Spring | NestJS |
 |---|---|---|
-| DI 컨테이너 | Spring IoC Container | NestJS DI Container |
+| DI 컨테이너 | Spring IoC(Inversion of Control, 제어의 역전) Container | NestJS DI Container |
 | 컨트롤러 | `@RestController` | `@Controller` |
 | 서비스 | `@Service` | `@Injectable` |
 | 모듈 | `@Configuration` | `@Module` |
 | 미들웨어 | Filter / Interceptor | Middleware / Interceptor |
 | 유효성 검증 | `@Valid` + Bean Validation | `ValidationPipe` + class-validator |
-| ORM | JPA / Hibernate | TypeORM / Prisma |
+| ORM(Object-Relational Mapping, 객체-관계 매핑) | JPA(Java Persistence API, 자바 영속성 API) / Hibernate | TypeORM / Prisma |
 | 인증 | Spring Security | Passport + Guards |
-| AOP | `@Aspect` | Interceptor |
+| AOP(Aspect-Oriented Programming, 관점 지향 프로그래밍) | `@Aspect` | Interceptor |
 
 Spring 경험이 있다면 NestJS의 패턴이 익숙하게 느껴질 것입니다.
 

@@ -7,7 +7,7 @@ excerpt: "Shadow DOM의 개념부터 실전 활용까지, 웹 컴포넌트의 �
 
 # Shadow DOM
 
-Shadow DOM은 웹 컴포넌트의 핵심 기술 중 하나로, **캡슐화된 DOM 트리**를 생성하는 브라우저 네이티브 API입니다.
+Shadow DOM은 웹 컴포넌트의 핵심 기술 중 하나로, **캡슐화된 DOM(Document Object Model, 문서 객체 모델) 트리**를 생성하는 브라우저 네이티브 API(Application Programming Interface, 응용 프로그램 인터페이스)입니다.
 
 ---
 
@@ -15,7 +15,7 @@ Shadow DOM은 웹 컴포넌트의 핵심 기술 중 하나로, **캡슐화된 DO
 
 Shadow DOM은 컴포넌트의 내부 구조를 외부로부터 격리시키는 기술입니다:
 
-- ✅ 외부 CSS가 Shadow DOM 내부에 영향을 주지 못함
+- ✅ 외부 CSS(Cascading Style Sheets, 계단식 스타일 시트)가 Shadow DOM 내부에 영향을 주지 못함
 - ✅ 내부 CSS가 외부로 누출되지 않음
 - ✅ JavaScript도 격리됨 (Shadow Root를 통해서만 접근 가능)
 - ✅ 진정한 컴포넌트 캡슐화 구현
@@ -724,14 +724,14 @@ function App() {
 
 ### 단점
 
-❌ **SEO 제한** - 크롤러가 Shadow DOM 내부를 제대로 인덱싱 못할 수 있음
+❌ **SEO(Search Engine Optimization, 검색 엔진 최적화) 제한** - 크롤러가 Shadow DOM 내부를 제대로 인덱싱 못할 수 있음
 ❌ **전역 스타일 적용 안됨** - CSS 변수로 제어해야 함
 ❌ **디버깅 복잡도** - DevTools 설정 필요
 ❌ **러닝 커브** - 새로운 개념 학습 필요
 
 ### 주요 사용 사례
 
-1. **디자인 시스템 / UI 라이브러리**
+1. **디자인 시스템 / UI(User Interface, 사용자 인터페이스) 라이브러리**
 ```javascript
 // 회사 전체에서 사용하는 공통 컴포넌트
 <company-button>Submit</company-button>

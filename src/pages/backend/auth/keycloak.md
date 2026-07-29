@@ -174,7 +174,7 @@ ID Token:
 
 ---
 
-### JWT 구조
+### JWT(JSON Web Token, JSON 기반 인증 토큰) 구조
 
 ```
 eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.
@@ -524,7 +524,7 @@ function App() {
 
 ---
 
-### API 호출 시 토큰 사용
+### API(Application Programming Interface, 응용 프로그램 인터페이스) 호출 시 토큰 사용
 
 ```typescript
 // src/api.ts
@@ -644,7 +644,7 @@ GET /protocol/openid-connect/certs
 
 ---
 
-## Admin REST API
+## Admin REST(Representational State Transfer, 자원 상태 전달 아키텍처) API
 
 ```bash
 # Admin 토큰 발급
@@ -801,11 +801,11 @@ Spring Authorization Server: Spring 기반
 
 1. **Keycloak**: 오픈소스 IAM 솔루션
 2. **주요 개념**: Realm, Client, User, Role, Group
-3. **프로토콜**: OAuth 2.0, OpenID Connect, SAML 2.0
+3. **프로토콜**: OAuth 2.0, OpenID Connect, SAML(Security Assertion Markup Language, 보안 어설션 마크업 언어) 2.0
 4. **토큰**: Access Token, Refresh Token, ID Token (JWT)
 5. **Spring Boot 연동**: `spring-boot-starter-oauth2-resource-server`
 6. **React 연동**: `keycloak-js` 라이브러리
 7. **소셜 로그인**: Google, GitHub 등 Identity Provider 연동
-8. **프로덕션**: HTTPS, 리버스 프록시, 클러스터링
+8. **프로덕션**: HTTPS(HyperText Transfer Protocol Secure, 암호화된 HTTP 통신 프로토콜), 리버스 프록시, 클러스터링
 
-**용도:** SSO가 필요하거나 여러 애플리케이션의 인증을 중앙에서 관리하고 싶을 때 사용합니다.
+**용도:** SSO(Single Sign-On, 통합 인증)가 필요하거나 여러 애플리케이션의 인증을 중앙에서 관리하고 싶을 때 사용합니다.

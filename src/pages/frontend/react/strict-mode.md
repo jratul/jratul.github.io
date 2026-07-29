@@ -152,7 +152,7 @@ useEffect(() => {
 
 ---
 
-### 3. Deprecated API 경고
+### 3. Deprecated API(Application Programming Interface, 응용 프로그램 인터페이스) 경고
 
 ```tsx
 // ❌ 더 이상 사용하지 않는 API

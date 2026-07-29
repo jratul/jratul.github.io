@@ -37,7 +37,7 @@ function ControlledInput() {
 
 ## Uncontrolled Component (비제어 컴포넌트)
 
-**DOM이 직접 입력값을 관리**하는 컴포넌트입니다.
+**DOM(Document Object Model, 문서 객체 모델)이 직접 입력값을 관리**하는 컴포넌트입니다.
 
 ```typescript
 function UncontrolledInput() {
@@ -521,7 +521,7 @@ function HookForm() {
 
 **장점:**
 - Uncontrolled 방식 (성능 좋음)
-- 간단한 API
+- 간단한 API(Application Programming Interface, 응용 프로그램 프로그래밍 인터페이스)
 - 내장 검증
 - TypeScript 지원
 

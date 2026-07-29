@@ -353,7 +353,7 @@ public class Coupons {
 
 ---
 
-## Stream API 활용
+## Stream API(Application Programming Interface, 응용 프로그램 인터페이스) 활용
 
 ```java
 public class Products {
@@ -456,7 +456,7 @@ public class ReadOnlyItems {
 
 ---
 
-## JPA와 일급 컬렉션
+## JPA(Java Persistence API, 자바 영속성 API)와 일급 컬렉션
 
 ### @Embeddable 활용
 
@@ -510,7 +510,7 @@ public class User {
 
 ---
 
-## 일급 컬렉션 vs DTO
+## 일급 컬렉션 vs DTO(Data Transfer Object, 데이터 전송 객체)
 
 ### DTO는 데이터 전달용
 

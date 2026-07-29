@@ -333,7 +333,7 @@ public static boolean equals(Object a, Object b) {
 
 ---
 
-## JPA에서의 동일성과 동등성
+## JPA(Java Persistence API, 자바 영속성 API)에서의 동일성과 동등성
 
 ### 영속성 컨텍스트와 동일성
 

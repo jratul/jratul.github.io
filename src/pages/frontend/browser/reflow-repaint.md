@@ -235,7 +235,7 @@ element.className = 'box-style';
 
 ### 2. 오프라인에서 작업
 
-DOM을 화면에서 분리한 후 작업하고 다시 추가합니다.
+DOM(Document Object Model, 문서 객체 모델)을 화면에서 분리한 후 작업하고 다시 추가합니다.
 
 ```javascript
 // DocumentFragment 사용
@@ -437,7 +437,7 @@ console.table(performance.getEntriesByType('measure'));
 Chrome DevTools → More tools → Rendering:
 - **Paint flashing**: Repaint 영역을 초록색으로 표시
 - **Layout Shift Regions**: Layout 변경 영역 표시
-- **Frame Rendering Stats**: FPS와 렌더링 통계
+- **Frame Rendering Stats**: FPS(Frames Per Second, 초당 프레임 수)와 렌더링 통계
 
 ---
 

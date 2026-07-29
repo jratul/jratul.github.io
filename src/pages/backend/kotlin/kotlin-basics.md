@@ -7,7 +7,7 @@ excerpt: "Kotlin의 핵심 문법과 Java와의 차이점을 정리합니다."
 
 # Kotlin 기본 개념과 특징
 
-Kotlin은 JetBrains이 만든 JVM 기반 언어입니다. Java와 100% 상호운용되며, Android 공식 언어로 채택되어 있습니다. Java보다 간결하고 null 안전성을 언어 차원에서 지원합니다.
+Kotlin은 JetBrains이 만든 JVM(Java Virtual Machine, 자바 가상 머신) 기반 언어입니다. Java와 100% 상호운용되며, Android 공식 언어로 채택되어 있습니다. Java보다 간결하고 null 안전성을 언어 차원에서 지원합니다.
 
 ---
 
@@ -272,7 +272,7 @@ fun main() = runBlocking {
 
 | 항목 | Java | Kotlin |
 |------|------|--------|
-| Null 안전성 | 런타임 NPE | 컴파일 타임 체크 |
+| Null 안전성 | 런타임 NPE(NullPointerException, 널 포인터 예외) | 컴파일 타임 체크 |
 | 데이터 클래스 | 직접 구현 (또는 Lombok) | `data class` 한 줄 |
 | 싱글톤 | 직접 구현 | `object` 키워드 |
 | 확장 메서드 | 불가 | 확장 함수 |

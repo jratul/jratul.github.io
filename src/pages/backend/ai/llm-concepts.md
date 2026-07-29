@@ -7,7 +7,7 @@ excerpt: "Agent, Tool, RAG, Embedding 등 LLM 관련 핵심 용어와 사용 사
 
 # LLM 주요 개념 정리
 
-GPT, Claude, Gemini 같은 LLM(Large Language Model)을 활용하는 시스템을 만들 때 자주 등장하는 용어들을 정리합니다.
+GPT(Generative Pre-trained Transformer, 사전 학습된 생성형 트랜스포머 모델), Claude, Gemini 같은 LLM(Large Language Model)을 활용하는 시스템을 만들 때 자주 등장하는 용어들을 정리합니다.
 
 ---
 
@@ -22,7 +22,7 @@ LLM이 텍스트를 처리하는 기본 단위입니다. 단어, 단어 조각, 
 "안녕하세요"     → ["안", "녕", "하세요"]          (3 tokens, 한글은 더 많이 소모)
 ```
 
-영어보다 한글·일어 등이 토큰을 더 많이 소모합니다. API 비용과 Context Window 계산의 기본 단위이므로 중요합니다.
+영어보다 한글·일어 등이 토큰을 더 많이 소모합니다. API(Application Programming Interface, 응용 프로그램 인터페이스) 비용과 Context Window 계산의 기본 단위이므로 중요합니다.
 
 ---
 
@@ -382,8 +382,8 @@ Agent
 | 패턴 | 사례 |
 |------|------|
 | 단순 Completion | 번역, 요약, 문법 교정 |
-| RAG | 사내 문서 QA, 제품 매뉴얼 챗봇 |
-| Function Calling | 날씨 조회, 일정 등록, DB 조회 연동 |
+| RAG | 사내 문서 QA(Question Answering, 질의응답), 제품 매뉴얼 챗봇 |
+| Function Calling | 날씨 조회, 일정 등록, DB(Database, 데이터베이스) 조회 연동 |
 | Agent | 코드 자동 수정, 리서치 자동화, 이메일 처리 |
 | Fine-tuning | 특정 말투·형식 고정, 도메인 전문 용어 적용 |
 | Embedding | 유사 문서 추천, 시맨틱 검색 |

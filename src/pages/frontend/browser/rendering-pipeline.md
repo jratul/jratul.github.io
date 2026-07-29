@@ -21,7 +21,7 @@ JavaScript
 
 ---
 
-## 1. DOM 생성 (Parsing HTML)
+## 1. DOM(Document Object Model, 문서 객체 모델) 생성 (Parsing HTML)
 
 ### HTML 파싱
 
@@ -77,7 +77,7 @@ DOM Tree
 
 ---
 
-## 2. CSSOM 생성 (Parsing CSS)
+## 2. CSSOM(CSS Object Model, CSS 객체 모델) 생성 (Parsing CSS)
 
 ### CSS 파싱
 
@@ -304,7 +304,7 @@ filter: blur(...);
 
 ---
 
-### GPU 가속
+### GPU(Graphics Processing Unit, 그래픽 처리 장치) 가속
 
 ```css
 /* ✅ GPU 가속 (Composite만 발생) */

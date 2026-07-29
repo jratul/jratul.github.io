@@ -68,7 +68,7 @@ System.out.println(user.getId());  // 1
 **특징:**
 - `persist()` 호출 시 **즉시 INSERT** 실행
 - 쓰기 지연(Write-Behind) 불가능
-- **JDBC 배치 INSERT 불가능**
+- **JDBC(Java Database Connectivity, 자바 데이터베이스 연결 표준) 배치 INSERT 불가능**
 
 ---
 
@@ -245,7 +245,7 @@ H2:         SEQUENCE
 
 ---
 
-### 5. UUID
+### 5. UUID(Universally Unique Identifier, 범용 고유 식별자)
 
 **UUID를 기본 키로 사용**
 
@@ -284,7 +284,7 @@ public class User {
 
 ---
 
-#### UUID 대안: ULID
+#### UUID 대안: ULID(Universally Unique Lexicographically Sortable Identifier, 정렬 가능한 범용 고유 식별자)
 
 ```java
 // ULID: 정렬 가능한 UUID 대안

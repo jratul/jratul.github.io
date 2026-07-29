@@ -20,7 +20,7 @@ excerpt: 'React 애플리케이션에서 인증과 인가를 구현하는 권장
 
 ### 저장 위치별 비교
 
-| 저장 위치 | XSS 취약 | CSRF 취약 | 권장도 |
+| 저장 위치 | XSS(Cross-Site Scripting, 크로스 사이트 스크립팅) 취약 | CSRF(Cross-Site Request Forgery, 사이트 간 요청 위조) 취약 | 권장도 |
 |-----------|----------|-----------|--------|
 | localStorage | O | X | 낮음 |
 | sessionStorage | O | X | 낮음 |
@@ -219,7 +219,7 @@ function App() {
 
 ---
 
-## API 요청 인터셉터
+## API(Application Programming Interface, 응용 프로그램 프로그래밍 인터페이스) 요청 인터셉터
 
 ### Axios 설정
 
@@ -277,7 +277,7 @@ export default api;
 
 ---
 
-## 권한 기반 UI 렌더링
+## 권한 기반 UI(User Interface, 사용자 인터페이스) 렌더링
 
 ```tsx
 // PermissionGate.tsx
@@ -329,7 +329,7 @@ function Dashboard() {
 - [ ] Access Token은 메모리에만 저장
 - [ ] Refresh Token은 HttpOnly, Secure, SameSite=Strict Cookie
 - [ ] HTTPS 필수 사용
-- [ ] CORS 설정 (허용 origin 명시)
+- [ ] CORS(Cross-Origin Resource Sharing, 교차 출처 리소스 공유) 설정 (허용 origin 명시)
 - [ ] CSRF 토큰 적용 (Cookie 사용 시)
 
 ### 권장 사항
@@ -385,7 +385,7 @@ if (user.role === 'ADMIN') {
 
 | 용도 | 라이브러리 |
 |------|-----------|
-| OAuth/Social 로그인 | NextAuth.js, Auth0 React SDK |
+| OAuth/Social 로그인 | NextAuth.js, Auth0 React SDK(Software Development Kit, 소프트웨어 개발 키트) |
 | 상태 관리 | TanStack Query (캐싱, 동기화) |
 | Form 검증 | React Hook Form + Zod |
 

@@ -263,7 +263,7 @@ public class User {
 
 ---
 
-### IDE 자동 생성
+### IDE(Integrated Development Environment, 통합 개발 환경) 자동 생성
 
 ```java
 // IntelliJ: Alt + Insert → equals() and hashCode()
@@ -364,7 +364,7 @@ users.contains(user);  // false! (다른 버킷에서 찾음)
 
 ---
 
-### 3. JPA 엔티티에서의 주의
+### 3. JPA(Java Persistence API, 자바 영속성 API) 엔티티에서의 주의
 
 ```java
 // ❌ 생성 전 id가 null

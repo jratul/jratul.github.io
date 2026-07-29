@@ -63,7 +63,7 @@ first();
 
 ### 2. Web APIs
 
-브라우저가 제공하는 API들입니다.
+브라우저가 제공하는 API(Application Programming Interface, 응용 프로그램 인터페이스)들입니다.
 
 ```javascript
 setTimeout(() => {
@@ -76,8 +76,8 @@ fetch('/api/users')
 
 **제공하는 API:**
 - `setTimeout` / `setInterval`
-- DOM 이벤트
-- `fetch` / AJAX
+- DOM(Document Object Model, 문서 객체 모델) 이벤트
+- `fetch` / AJAX(Asynchronous JavaScript and XML, 비동기 방식으로 서버와 통신하는 기술)
 - `requestAnimationFrame`
 
 ---
@@ -102,8 +102,8 @@ console.log('3');
 - `setTimeout`
 - `setInterval`
 - `setImmediate` (Node.js)
-- I/O 작업
-- UI 렌더링
+- I/O(Input/Output, 입출력) 작업
+- UI(User Interface, 사용자 인터페이스) 렌더링
 
 ---
 

@@ -114,7 +114,7 @@ const packageLocatorsByLocations = new Map([
 - zip 파일을 git에 커밋하면 `yarn install` 자체가 불필요
 
 단점:
-- 일부 네이티브 모듈, IDE, 빌드 도구와 호환 문제 발생
+- 일부 네이티브 모듈, IDE(Integrated Development Environment, 통합 개발 환경), 빌드 도구와 호환 문제 발생
 - 기존 npm/node_modules 생태계와 마찰
 
 ```yaml

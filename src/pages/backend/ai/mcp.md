@@ -7,7 +7,7 @@ excerpt: "LLM 애플리케이션이 외부 도구·데이터에 접근하는 방
 
 # MCP (Model Context Protocol)
 
-Claude, GPT 같은 LLM을 실제 애플리케이션에 연결하려면 파일 시스템, DB, 사내 API, GitHub 같은 외부 시스템과 주고받을 방법이 필요합니다. MCP는 이 연결 방식을 표준화한 오픈 프로토콜입니다. Anthropic이 2024년 11월 공개했고, 이후 다른 LLM 벤더와 여러 애플리케이션들도 채택하면서 사실상 업계 표준으로 자리잡았습니다.
+Claude, GPT(Generative Pre-trained Transformer, 사전 학습된 생성형 트랜스포머 모델) 같은 LLM(Large Language Model, 대규모 언어 모델)을 실제 애플리케이션에 연결하려면 파일 시스템, DB(Database, 데이터베이스), 사내 API(Application Programming Interface, 응용 프로그램 인터페이스), GitHub 같은 외부 시스템과 주고받을 방법이 필요합니다. MCP는 이 연결 방식을 표준화한 오픈 프로토콜입니다. Anthropic이 2024년 11월 공개했고, 이후 다른 LLM 벤더와 여러 애플리케이션들도 채택하면서 사실상 업계 표준으로 자리잡았습니다.
 
 ---
 
@@ -66,7 +66,7 @@ MCP는 세 가지 역할로 구성됩니다.
 
 ## 통신 방식
 
-### 메시지 포맷: JSON-RPC 2.0
+### 메시지 포맷: JSON-RPC(JSON Remote Procedure Call, JSON 형식 기반 원격 프로시저 호출 프로토콜) 2.0
 
 Client와 Server는 [JSON-RPC 2.0](https://www.jsonrpc.org/) 규격으로 요청/응답/알림을 주고받습니다.
 
@@ -116,7 +116,7 @@ HTTP 기반 (원격 서버용)
   → 여러 사용자가 공유하는 원격 서비스(사내 API, SaaS 연동)에 적합
 ```
 
-로컬 개발용 서버는 대부분 stdio를 쓰고, 여러 클라이언트가 접속하는 프로덕션 서비스는 HTTP 기반 transport를 씁니다. 어떤 transport를 쓰든 위에 실리는 JSON-RPC 메시지 내용은 동일합니다 — Host 입장에서는 transport만 바뀔 뿐 도구 호출 로직은 그대로입니다.
+로컬 개발용 서버는 대부분 stdio를 쓰고, 여러 클라이언트가 접속하는 프로덕션 서비스는 HTTP(HyperText Transfer Protocol, 웹 문서 전송 프로토콜) 기반 transport를 씁니다. 어떤 transport를 쓰든 위에 실리는 JSON-RPC 메시지 내용은 동일합니다 — Host 입장에서는 transport만 바뀔 뿐 도구 호출 로직은 그대로입니다.
 
 ---
 
@@ -152,7 +152,7 @@ LLM이 스스로 호출 여부와 인자를 결정하는 함수입니다. Functi
 
 ### Resources
 
-파일, DB 레코드, API 응답처럼 **읽기 전용 데이터**입니다. REST의 GET 엔드포인트와 비슷하게, URI로 식별하고 애플리케이션(Host)이 사용자 요청 컨텍스트에 미리 포함시킬지 결정합니다. LLM이 호출 여부를 판단하는 Tool과 달리, "이 대화에 이 파일을 컨텍스트로 넣을지"는 Host/사용자 쪽 결정입니다.
+파일, DB 레코드, API 응답처럼 **읽기 전용 데이터**입니다. REST(Representational State Transfer, 자원 상태 전달 아키텍처)의 GET 엔드포인트와 비슷하게, URI(Uniform Resource Identifier, 자원 식별자)로 식별하고 애플리케이션(Host)이 사용자 요청 컨텍스트에 미리 포함시킬지 결정합니다. LLM이 호출 여부를 판단하는 Tool과 달리, "이 대화에 이 파일을 컨텍스트로 넣을지"는 Host/사용자 쪽 결정입니다.
 
 ```json
 {
@@ -164,7 +164,7 @@ LLM이 스스로 호출 여부와 인자를 결정하는 함수입니다. Functi
 
 ### Prompts
 
-자주 쓰는 요청 패턴을 재사용 가능한 템플릿으로 미리 정의해둔 것입니다. 사용자가 IDE나 채팅 UI에서 슬래시 커맨드처럼 명시적으로 골라 씁니다.
+자주 쓰는 요청 패턴을 재사용 가능한 템플릿으로 미리 정의해둔 것입니다. 사용자가 IDE(Integrated Development Environment, 통합 개발 환경)나 채팅 UI(User Interface, 사용자 인터페이스)에서 슬래시 커맨드처럼 명시적으로 골라 씁니다.
 
 ```json
 {
@@ -261,7 +261,7 @@ MCP
 | 용도 | 예시 |
 |------|------|
 | 로컬 개발 환경 연동 | 파일시스템, git, 로컬 DB 조회 |
-| 협업 도구 연동 | GitHub 이슈/PR 조회, Slack 메시지 발송 |
+| 협업 도구 연동 | GitHub 이슈/PR(Pull Request, 풀 리퀘스트) 조회, Slack 메시지 발송 |
 | 사내 시스템 연동 | 사내 API, 사내 문서 검색(RAG 소스로 활용) |
 | 여러 앱에서 재사용 | 한 번 만든 MCP 서버를 Claude Desktop, IDE, 커스텀 에이전트에서 동일하게 사용 |
 | 에이전트의 도구 확장 | 에이전트가 실행 중 필요한 도구를 MCP 서버에서 동적으로 탐색 |

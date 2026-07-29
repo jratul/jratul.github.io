@@ -67,7 +67,7 @@ spec:
 
 **Kubernetes가 더 유연:**
 - 여러 노드에 분산
-- 오토스케일링 (HPA)
+- 오토스케일링 (HPA(Horizontal Pod Autoscaler, 파드 자동 수평 확장))
 - 리소스 기반 스케줄링
 
 ```yaml

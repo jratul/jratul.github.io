@@ -484,4 +484,4 @@ const { data } = useQuery({
 7. **최적화**: 데이터 특성에 맞게 설정
 8. **관계**: gcTime >= staleTime 권장
 
-staleTime과 gcTime을 적절히 조절하면 불필요한 API 호출을 줄이고 사용자 경험을 개선할 수 있습니다.
+staleTime과 gcTime을 적절히 조절하면 불필요한 API(Application Programming Interface, 응용 프로그램 인터페이스) 호출을 줄이고 사용자 경험을 개선할 수 있습니다.

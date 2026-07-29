@@ -41,7 +41,7 @@ Spring Boot의 dependency management가 버전을 관리하므로 버전 명시 
 
 ---
 
-### IDE 설정
+### IDE(Integrated Development Environment, 통합 개발 환경) 설정
 
 **IntelliJ IDEA:**
 1. Settings → Plugins → Lombok 설치 (최신 버전은 기본 포함)
@@ -694,7 +694,7 @@ public class User {
 | @EqualsAndHashCode | equals(), hashCode() 생성 |
 | @NoArgsConstructor | 기본 생성자 |
 | @AllArgsConstructor | 모든 필드 생성자 |
-| @RequiredArgsConstructor | final 필드 생성자 (DI에 유용) |
+| @RequiredArgsConstructor | final 필드 생성자 (DI(Dependency Injection, 의존성 주입)에 유용) |
 | @Data | 위 조합 (Entity 지양) |
 | @Value | 불변 객체 |
 | @Builder | 빌더 패턴 |
