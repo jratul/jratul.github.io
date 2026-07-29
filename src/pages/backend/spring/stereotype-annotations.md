@@ -133,7 +133,7 @@ public class UserService {
 
 ## @Repository
 
-**데이터 접근 계층(DAO)**을 나타냅니다.
+**데이터 접근 계층**(DAO)을 나타냅니다.
 
 ```java
 @Repository

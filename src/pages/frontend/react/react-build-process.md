@@ -319,7 +319,7 @@ console.log(add(1, 2));
 // 빌드 결과: subtract, multiply는 제거됨
 ```
 
-Tree Shaking은 **ESM(ES Modules)**에서만 동작합니다. `import/export` 구문이 정적으로 분석 가능하기 때문입니다. CommonJS의 `require()`는 동적이라 분석이 어렵습니다.
+Tree Shaking은 **ESM**(ES Modules)에서만 동작합니다. `import/export` 구문이 정적으로 분석 가능하기 때문입니다. CommonJS의 `require()`는 동적이라 분석이 어렵습니다.
 
 ---
 

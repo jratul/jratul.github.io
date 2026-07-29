@@ -36,7 +36,7 @@ excerpt: "서버가 없는 게 아니라 서버 관리를 안 하는 것. FaaS�
 
 ## FaaS: 서버리스의 핵심 형태
 
-서버리스를 실제로 구현하는 방식이 **FaaS(Function as a Service)**입니다. 코드를 함수 단위로
+서버리스를 실제로 구현하는 방식이 **FaaS**(Function as a Service)입니다. 코드를 함수 단위로
 배포하면, provider가 HTTP 요청·이벤트가 들어올 때마다 그 함수를 실행합니다.
 
 ```typescript
@@ -140,7 +140,7 @@ Object Storage)에 둬야 합니다.
 
 ## FaaS vs BaaS
 
-서버리스라는 말이 FaaS만 가리키는 건 아닙니다. **BaaS(Backend as a Service)**도 넓은
+서버리스라는 말이 FaaS만 가리키는 건 아닙니다. **BaaS**(Backend as a Service)도 넓은
 의미의 서버리스에 포함됩니다 — 직접 백엔드 코드를 짜는 대신, 인증·DB·스토리지 같은
 백엔드 기능 자체를 관리형 서비스로 가져다 쓰는 방식입니다.
 

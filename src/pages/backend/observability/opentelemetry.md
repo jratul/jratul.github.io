@@ -9,7 +9,7 @@ excerpt: "로그·메트릭·트레이스를 벤더 종속 없이 표준화하�
 
 관측성(Observability)을 갖추려고 하면 금방 문제가 생깁니다. 로그는 A사 도구, 메트릭은
 B사 도구, 분산 트레이싱은 C사 SDK로 각각 계측하면, 나중에 벤더를 바꿀 때마다 애플리케이션
-코드를 전부 다시 고쳐야 합니다. **OpenTelemetry(OTel)**는 이 계측 코드를 벤더 중립적인
+코드를 전부 다시 고쳐야 합니다. **OpenTelemetry**(OTel)는 이 계측 코드를 벤더 중립적인
 표준으로 통일한 CNCF 프로젝트입니다. 계측은 한 번만 하고, 데이터를 어디로 보낼지는 설정만
 바꿔서 결정합니다.
 
@@ -158,7 +158,7 @@ orderCounter.add(1, { status: 'success' });
 
 ## OTLP: 전송 프로토콜
 
-**OTLP(OpenTelemetry Protocol)**는 SDK가 Collector로, 혹은 Collector가 백엔드로
+**OTLP**(OpenTelemetry Protocol)는 SDK가 Collector로, 혹은 Collector가 백엔드로
 데이터를 보낼 때 쓰는 표준 전송 프로토콜입니다. gRPC와 HTTP(protobuf/JSON) 두 방식을
 지원합니다. 대부분의 최신 관측성 벤더(Datadog, Grafana Cloud, Honeycomb 등)가 OTLP
 수신을 지원하기 때문에, 극단적으로는 Collector 없이 SDK가 벤더 엔드포인트로 바로

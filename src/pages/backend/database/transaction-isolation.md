@@ -245,7 +245,7 @@ BEGIN TRANSACTION ISOLATION LEVEL REPEATABLE READ;
 
 ## MySQL InnoDB의 MVCC
 
-MySQL InnoDB는 **MVCC(Multi-Version Concurrency Control)**를 사용합니다.
+MySQL InnoDB는 **MVCC**(Multi-Version Concurrency Control)를 사용합니다.
 
 ### MVCC 동작 방식
 

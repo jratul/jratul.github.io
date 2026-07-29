@@ -9,7 +9,7 @@ excerpt: "Next.js 16에서 Turbopack이 정식 기본 번들러가 되고, 캐�
 
 Next.js 16의 핵심 변화는 두 가지입니다. **Turbopack이 개발·프로덕션 빌드 모두에서
 정식 기본 번들러**가 됐고, 캐싱 방식이 "알아서 캐싱되는" 암묵적 모델에서 **`use cache`로
-명시적으로 켜는 모델(Cache Components)**로 바뀌었습니다.
+명시적으로 켜는 모델**(Cache Components)로 바뀌었습니다.
 
 ---
 

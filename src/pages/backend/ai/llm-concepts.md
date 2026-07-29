@@ -255,7 +255,7 @@ Step 3 - Answer: "Next.js 15.2의 주요 변경사항은..."
 
 ### Skill
 
-Agent가 사용할 수 있는 **개별 능력(함수)**을 Skill 또는 Tool이라고 부릅니다. Function Calling에서 정의하는 함수와 동일한 개념이지만, Agent 맥락에서는 Skill·Tool·Action으로 표현합니다.
+Agent가 사용할 수 있는 **개별 능력**(함수)을 Skill 또는 Tool이라고 부릅니다. Function Calling에서 정의하는 함수와 동일한 개념이지만, Agent 맥락에서는 Skill·Tool·Action으로 표현합니다.
 
 ```python
 # Skill 예시
