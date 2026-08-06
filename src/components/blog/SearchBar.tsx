@@ -54,7 +54,7 @@ export function SearchBar({
           w-full h-12 pl-12 pr-20
           bg-dark-surface/50 backdrop-blur-sm
           border-2 rounded-xl
-          text-gray-200 placeholder-gray-500
+          text-white font-medium placeholder-gray-500
           transition-all duration-300
           focus:outline-none
           ${

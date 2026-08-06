@@ -29,6 +29,7 @@ export default {
         dark: {
           bg: '#0a0a1f',
           card: '#1a1a3e',
+          surface: '#1a1a3e',
           border: '#2d2d5f',
         },
         border: 'hsl(var(--border))',
