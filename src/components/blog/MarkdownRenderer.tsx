@@ -166,7 +166,10 @@ export function MarkdownRenderer({
 
   return (
     <div className={`prose prose-invert max-w-none ${className}`}>
-      <ReactMarkdown components={components} remarkPlugins={[remarkGfm]}>
+      <ReactMarkdown
+        components={components}
+        remarkPlugins={[[remarkGfm, { singleTilde: false }]]}
+      >
         {content}
       </ReactMarkdown>
     </div>
