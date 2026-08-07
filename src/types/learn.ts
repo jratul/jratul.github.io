@@ -16,6 +16,7 @@ export type LearnCategory =
   | 'spring'
   | 'android'
   | 'cpp'
+  | 'go'
   | 'docker'
   | 'k8s'
   | 'linux'
@@ -64,6 +65,12 @@ export const CATEGORY_META: Record<
     description:
       '시스템 프로그래밍부터 고성능 애플리케이션까지, 제로 오버헤드 추상화',
     color: 'from-blue-600 to-cyan-500',
+  },
+  go: {
+    label: 'Go',
+    description:
+      '간결한 문법과 고루틴 기반 동시성, 클라우드 네이티브의 표준 언어',
+    color: 'from-cyan-500 to-blue-500',
   },
   docker: {
     label: 'Docker',
@@ -202,7 +209,7 @@ export const LEARN_GROUPS: { label: string; categories: LearnCategory[] }[] = [
   },
   {
     label: '언어 & 프레임워크',
-    categories: ['java', 'kotlin', 'spring', 'android', 'cpp'],
+    categories: ['java', 'kotlin', 'spring', 'android', 'cpp', 'go'],
   },
   { label: '인프라', categories: ['docker', 'k8s', 'linux', 'aws'] },
   {
