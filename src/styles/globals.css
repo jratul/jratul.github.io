@@ -95,6 +95,35 @@
   }
 }
 
+/* 커스텀 스크롤바 — 다크 테마 + 보라/시안 그라데이션 룩앤필에 맞춤 */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #6366f1 #0a0a1f; /* thumb track (Firefox) */
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0a1f;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #6366f1, #06b6d4);
+  border-radius: 9999px;
+  border: 2px solid #0a0a1f;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #818cf8, #3b82f6);
+}
+
+::-webkit-scrollbar-corner {
+  background: #0a0a1f;
+}
+
 /* Fix syntax highlighter first line spacing */
 .prose pre > div {
   margin: 0 !important;
