@@ -1,4 +1,5 @@
 import ReactMarkdown from 'react-markdown';
+import remarkCjkFriendly from 'remark-cjk-friendly';
 import remarkGfm from 'remark-gfm';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import type { ReactElement, ReactNode } from 'react';
@@ -168,7 +169,7 @@ export function MarkdownRenderer({
     <div className={`prose prose-invert max-w-none ${className}`}>
       <ReactMarkdown
         components={components}
-        remarkPlugins={[[remarkGfm, { singleTilde: false }]]}
+        remarkPlugins={[[remarkGfm, { singleTilde: false }], remarkCjkFriendly]}
       >
         {content}
       </ReactMarkdown>

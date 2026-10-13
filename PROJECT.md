@@ -177,11 +177,12 @@ TailwindCSS 유틸리티 클래스를 직접 문자열로 조합해서 작성되
 | `react-helmet-async` | `src/components/seo/SEO.tsx` — `<title>`, OG/Twitter 메타 태그, canonical URL을 페이지별로 주입 |
 | `react-markdown` | `src/components/blog/MarkdownRenderer.tsx` — 마크다운 문자열을 React 엘리먼트로 렌더링하는 핵심 라이브러리 |
 | `remark-gfm` | `MarkdownRenderer`의 remark 플러그인 — GitHub Flavored Markdown(표, 취소선, 자동 링크 등) 지원 |
+| `remark-cjk-friendly` | `MarkdownRenderer`의 remark 플러그인 — `**C#**으로`, `**용어(설명)**이`처럼 구두점으로 끝나는 강조 바로 뒤에 한글 조사가 붙으면 CommonMark 규칙상 볼드가 풀리는 문제를 해결 |
 | `react-syntax-highlighter` | `src/lib/prismLanguages.ts` — 코드 블록 신택스 하이라이팅. `PrismLight` + 실제 쓰는 언어만 선택 등록(전체 Prism 번들 대비 번들 크기 대폭 절감) |
 | `date-fns`, `date-fns/locale` (ko) | `src/utils/formatDate.ts` — 포스트 날짜를 한국어 로케일로 포맷 |
 | `lucide-react` | 전체 아이콘(Calendar, Clock, Search, ChevronDown, ArrowLeft/Right 등) |
 | `d3`, `d3-cloud`, `d3-transition` | `src/components/blog/TagCloud.tsx` — 태그 워드클라우드 레이아웃 계산(`d3-cloud`)과 SVG 조작(`d3-selection`은 `d3`/`d3-cloud`의 전이 의존성), hover 애니메이션(`d3-transition`이 `.transition()` 메서드를 활성화) |
-| `rehype-raw`, `rehype-slug`, `rehype-autolink-headings` | `package.json`에 있지만 `MarkdownRenderer.tsx`는 `remark-gfm`만 실제로 사용 중이다. 헤딩 `id`는 자체 유틸(`src/utils/toc.ts`의 `slugify`)로 만들고 있어 `rehype-slug`/`rehype-autolink-headings`는 현재 미사용. `rehype-raw`(HTML 원본 통과)도 마찬가지로 rehype 플러그인 배열에 연결되어 있지 않다. |
+| `rehype-raw`, `rehype-slug`, `rehype-autolink-headings` | `package.json`에 있지만 `MarkdownRenderer.tsx`는 `remark-gfm`과 `remark-cjk-friendly`만 실제로 사용 중이다. 헤딩 `id`는 자체 유틸(`src/utils/toc.ts`의 `slugify`)로 만들고 있어 `rehype-slug`/`rehype-autolink-headings`는 현재 미사용. `rehype-raw`(HTML 원본 통과)도 마찬가지로 rehype 플러그인 배열에 연결되어 있지 않다. |
 
 ### devDependencies (빌드/개발 도구)
 
