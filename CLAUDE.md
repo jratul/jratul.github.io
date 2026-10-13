@@ -21,7 +21,7 @@ GitHub Pages를 통한 정적 사이트 배포
 ## Learn 페이지 (학습 섹션)
 
 ### 개요
-블로그와 별도로 Java/Kotlin/Spring/C++/인프라/CS 등 28개 카테고리를 단계별로 학습할 수 있는 섹션.
+블로그와 별도로 Java/Kotlin/Spring/C++/Unity/인프라/CS 등 29개 카테고리를 단계별로 학습할 수 있는 섹션.
 - URL: `/learn/:category` (목차), `/learn/:category/:lessonSlug` (레슨 상세)
 - 헤더의 "학습" 링크는 드롭다운이 아니라 `/learn/html`로 바로 이동하는 단순 링크.
   카테고리 선택 UI는 데스크탑에서는 좌측 `LearnSidebar`(그룹별 접기/펼치기), 모바일에서는
@@ -36,7 +36,7 @@ public/learn/
 ├── kotlin/
 ├── spring/
 ├── cpp/
-└── ...         ← src/types/learn.ts의 LearnCategory에 정의된 28개 카테고리
+└── ...         ← src/types/learn.ts의 LearnCategory에 정의된 29개 카테고리
 ```
 
 ### 데이터 로딩 구조 (중요)

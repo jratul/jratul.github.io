@@ -17,6 +17,7 @@ export type LearnCategory =
   | 'android'
   | 'cpp'
   | 'go'
+  | 'unity'
   | 'docker'
   | 'k8s'
   | 'linux'
@@ -71,6 +72,11 @@ export const CATEGORY_META: Record<
     description:
       '간결한 문법과 고루틴 기반 동시성, 클라우드 네이티브의 표준 언어',
     color: 'from-cyan-500 to-blue-500',
+  },
+  unity: {
+    label: 'Unity',
+    description: 'C# 스크립팅, 물리, UI, 렌더링, 최적화까지 Unity 게임 개발',
+    color: 'from-slate-300 to-zinc-500',
   },
   docker: {
     label: 'Docker',
@@ -211,6 +217,7 @@ export const LEARN_GROUPS: { label: string; categories: LearnCategory[] }[] = [
     label: '언어 & 프레임워크',
     categories: ['java', 'kotlin', 'spring', 'android', 'cpp', 'go'],
   },
+  { label: '게임 개발', categories: ['unity'] },
   { label: '인프라', categories: ['docker', 'k8s', 'linux', 'aws'] },
   {
     label: '데이터 & 네트워크',

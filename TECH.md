@@ -46,7 +46,7 @@ const order = orderMatch ? parseInt(orderMatch[1], 10) : 99;
 `posts-index.json`과 `learn-index.json`을 모두 읽어 정적 URL(`/`, `/about`) +
 포스트 URL + 학습 카테고리 URL(`/learn/:category`) + 레슨 URL
 (`/learn/:category/:lessonSlug`)을 한 `sitemap.xml`로 합친다. 학습 URL을 빠뜨리면
-검색엔진이 콘텐츠의 대부분(포스트 50개 대비 레슨 362개 + 카테고리 28개)을 색인하지
+검색엔진이 콘텐츠의 대부분(포스트 50개 대비 레슨 396개 + 카테고리 29개)을 색인하지
 못하게 된다.
 
 세 스크립트는 `npm run build` 안에서 `generate:index → generate:learn →
